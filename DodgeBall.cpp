@@ -162,6 +162,108 @@ bool DodgeBall::go(void)
     mDetailsPanel->setParamValue(9, "Bilinear");
     mDetailsPanel->setParamValue(10, "Solid");
     mDetailsPanel->hide();
+
+/////////////////////////////////////////////////////////////////////////////////// WALLS YAY
+    Ogre::Plane roofFront(Ogre::Vector3::NEGATIVE_UNIT_Y, -100);
+    Ogre::Plane roofBack(Ogre::Vector3::UNIT_Y, 100);
+    Ogre::Plane floorFront(Ogre::Vector3::UNIT_Y, -100);
+    Ogre::Plane floorBack(Ogre::Vector3::NEGATIVE_UNIT_Y, 100);
+    Ogre::Plane rightWallFront(Ogre::Vector3::NEGATIVE_UNIT_X, -100);
+    Ogre::Plane rightWallBack(Ogre::Vector3::UNIT_X, 100);
+    Ogre::Plane leftWallFront(Ogre::Vector3::UNIT_X, -100);
+    Ogre::Plane leftWallBack(Ogre::Vector3::NEGATIVE_UNIT_X, 100);
+    Ogre::Plane frontWallFront(Ogre::Vector3::UNIT_Z, -300);
+    Ogre::Plane frontWallBack(Ogre::Vector3::NEGATIVE_UNIT_Z, 300);
+    Ogre::Plane backWallFront(Ogre::Vector3::NEGATIVE_UNIT_Z, 300);
+    Ogre::Plane backWallBack(Ogre::Vector3::UNIT_Z, -300);
+
+    
+    Ogre::MeshManager::getSingleton().createPlane("roofFront", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+    roofFront, 200, 600, 20, 20, true, 1, 5, 5, Ogre::Vector3::UNIT_Z);   
+    Ogre::MeshManager::getSingleton().createPlane("roofBack", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+    roofBack, 200, 600, 20, 20, true, 1, 5, 5, Ogre::Vector3::UNIT_Z);
+    Ogre::MeshManager::getSingleton().createPlane("floorFront", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+    floorFront, 200, 600, 20, 20, true, 1, 5, 5, Ogre::Vector3::UNIT_Z);
+    Ogre::MeshManager::getSingleton().createPlane("floorBack", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+    floorBack, 200, 600, 20, 20, true, 1, 5, 5, Ogre::Vector3::UNIT_Z);
+    Ogre::MeshManager::getSingleton().createPlane("rightWallFront", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+    rightWallFront, 600, 200, 20, 20, true, 1, 5, 5, Ogre::Vector3::UNIT_Y);
+    Ogre::MeshManager::getSingleton().createPlane("rightWallBack", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+    rightWallBack, 600, 200, 20, 20, true, 1, 5, 5, Ogre::Vector3::UNIT_Y);
+    Ogre::MeshManager::getSingleton().createPlane("leftWallFront", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+    leftWallFront, 600, 200, 20, 20, true, 1, 5, 5, Ogre::Vector3::UNIT_Y);
+    Ogre::MeshManager::getSingleton().createPlane("leftWallBack", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+    leftWallBack, 600, 200, 20, 20, true, 1, 5, 5, Ogre::Vector3::UNIT_Y);
+    Ogre::MeshManager::getSingleton().createPlane("frontWallFront", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+    frontWallFront, 200, 200, 20, 20, true, 1, 5, 5, Ogre::Vector3::UNIT_X);
+    Ogre::MeshManager::getSingleton().createPlane("frontWallBack", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+    frontWallBack, 200, 200, 20, 20, true, 1, 5, 5, Ogre::Vector3::UNIT_X);
+    Ogre::MeshManager::getSingleton().createPlane("backWallFront", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+    backWallFront, 200, 200, 20, 20, true, 1, 5, 5, Ogre::Vector3::UNIT_X);
+    Ogre::MeshManager::getSingleton().createPlane("backWallBack", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
+    backWallBack, 200, 200, 20, 20, true, 1, 5, 5, Ogre::Vector3::UNIT_X); 
+    
+
+    Ogre::Entity* entFrontWallFront = mSceneMgr->createEntity("FrontWallFront", "frontWallFront");
+    mSceneMgr->getRootSceneNode()->createChildSceneNode()->attachObject(entFrontWallFront);
+    entFrontWallFront->setMaterialName("Examples/Rockwall");
+    entFrontWallFront->setCastShadows(false);
+
+    Ogre::Entity* entFrontWallBack = mSceneMgr->createEntity("FrontWallBack", "frontWallBack");
+    mSceneMgr->getRootSceneNode()->createChildSceneNode()->attachObject(entFrontWallBack);
+    entFrontWallBack->setMaterialName("Examples/Rockwall");
+    entFrontWallBack->setCastShadows(false);
+
+    Ogre::Entity* entBackWallFront = mSceneMgr->createEntity("BackWallFront", "backWallFront");
+    mSceneMgr->getRootSceneNode()->createChildSceneNode()->attachObject(entBackWallFront);
+    entBackWallFront->setMaterialName("Examples/Rockwall");
+    entBackWallFront->setCastShadows(false);
+
+    Ogre::Entity* entBackWallBack = mSceneMgr->createEntity("BackWallBack", "backWallBack");
+    mSceneMgr->getRootSceneNode()->createChildSceneNode()->attachObject(entBackWallBack);
+    entBackWallBack->setMaterialName("Examples/Rockwall");
+    entBackWallBack->setCastShadows(false);
+
+    
+    Ogre::Entity* entRoofFront = mSceneMgr->createEntity("RoofFrontEntity", "roofFront");
+    mSceneMgr->getRootSceneNode()->createChildSceneNode()->attachObject(entRoofFront);
+    entRoofFront->setMaterialName("Examples/Rockwall");
+    entRoofFront->setCastShadows(false);
+
+    Ogre::Entity* entRoofBack = mSceneMgr->createEntity("RoofBackEntity", "roofBack");
+    mSceneMgr->getRootSceneNode()->createChildSceneNode()->attachObject(entRoofBack);
+    entRoofBack->setMaterialName("Examples/Rockwall");
+    entRoofBack->setCastShadows(false);
+
+    Ogre::Entity* entFloorFront = mSceneMgr->createEntity("FloorFrontEntity", "floorFront");
+    mSceneMgr->getRootSceneNode()->createChildSceneNode()->attachObject(entFloorFront);
+    entFloorFront->setMaterialName("Examples/Rockwall");
+    entFloorFront->setCastShadows(false);
+
+    Ogre::Entity* entFloorBack = mSceneMgr->createEntity("FloorBackEntity", "floorBack");
+    mSceneMgr->getRootSceneNode()->createChildSceneNode()->attachObject(entFloorBack);
+    entFloorBack->setMaterialName("Examples/Rockwall");
+    entFloorBack->setCastShadows(false);
+
+    Ogre::Entity* entRightWallFront = mSceneMgr->createEntity("RightWallFront", "rightWallFront");
+    mSceneMgr->getRootSceneNode()->createChildSceneNode()->attachObject(entRightWallFront);
+    entRightWallFront->setMaterialName("Examples/Rockwall");
+    entRightWallFront->setCastShadows(false);
+
+    Ogre::Entity* entRightWallBack = mSceneMgr->createEntity("RightWallBack", "rightWallBack");
+    mSceneMgr->getRootSceneNode()->createChildSceneNode()->attachObject(entRightWallBack);
+    entRightWallBack->setMaterialName("Examples/Rockwall");
+    entRightWallBack->setCastShadows(false);
+
+    Ogre::Entity* entLeftWallFront = mSceneMgr->createEntity("LefttWallFront", "leftWallFront");
+    mSceneMgr->getRootSceneNode()->createChildSceneNode()->attachObject(entLeftWallFront);
+    entLeftWallFront->setMaterialName("Examples/Rockwall");
+    entLeftWallFront->setCastShadows(false);
+
+    Ogre::Entity* entLeftWallBack = mSceneMgr->createEntity("LeftWallBack", "leftWallBack");
+    mSceneMgr->getRootSceneNode()->createChildSceneNode()->attachObject(entLeftWallBack);
+    entLeftWallBack->setMaterialName("Examples/Rockwall");
+    entLeftWallBack->setCastShadows(false);
  
     mRoot->addFrameListener(this);
 //-------------------------------------------------------------------------------------
@@ -170,7 +272,7 @@ bool DodgeBall::go(void)
     return true;
 }
 
-bool MinimalOgre::frameRenderingQueued(const Ogre::FrameEvent& evt)
+bool DodgeBall::frameRenderingQueued(const Ogre::FrameEvent& evt)
 {
     if(mWindow->isClosed())
         return false;
@@ -202,7 +304,7 @@ bool MinimalOgre::frameRenderingQueued(const Ogre::FrameEvent& evt)
     return true;
 }
 //-------------------------------------------------------------------------------------
-bool MinimalOgre::keyPressed( const OIS::KeyEvent &arg )
+bool DodgeBall::keyPressed( const OIS::KeyEvent &arg )
 {
     if (mTrayMgr->isDialogVisible()) return true;   // don't process any more keys if dialog is up
  
@@ -296,27 +398,27 @@ bool MinimalOgre::keyPressed( const OIS::KeyEvent &arg )
     return true;
 }
  
-bool MinimalOgre::keyReleased( const OIS::KeyEvent &arg )
+bool DodgeBall::keyReleased( const OIS::KeyEvent &arg )
 {
     mCameraMan->injectKeyUp(arg);
     return true;
 }
  
-bool MinimalOgre::mouseMoved( const OIS::MouseEvent &arg )
+bool DodgeBall::mouseMoved( const OIS::MouseEvent &arg )
 {
     if (mTrayMgr->injectMouseMove(arg)) return true;
     mCameraMan->injectMouseMove(arg);
     return true;
 }
  
-bool MinimalOgre::mousePressed( const OIS::MouseEvent &arg, OIS::MouseButtonID id )
+bool DodgeBall::mousePressed( const OIS::MouseEvent &arg, OIS::MouseButtonID id )
 {
     if (mTrayMgr->injectMouseDown(arg, id)) return true;
     mCameraMan->injectMouseDown(arg, id);
     return true;
 }
  
-bool MinimalOgre::mouseReleased( const OIS::MouseEvent &arg, OIS::MouseButtonID id )
+bool DodgeBall::mouseReleased( const OIS::MouseEvent &arg, OIS::MouseButtonID id )
 {
     if (mTrayMgr->injectMouseUp(arg, id)) return true;
     mCameraMan->injectMouseUp(arg, id);
@@ -324,7 +426,7 @@ bool MinimalOgre::mouseReleased( const OIS::MouseEvent &arg, OIS::MouseButtonID 
 }
  
 //Adjust mouse clipping area
-void MinimalOgre::windowResized(Ogre::RenderWindow* rw)
+void DodgeBall::windowResized(Ogre::RenderWindow* rw)
 {
     unsigned int width, height, depth;
     int left, top;
@@ -336,7 +438,7 @@ void MinimalOgre::windowResized(Ogre::RenderWindow* rw)
 }
  
 //Unattach OIS before window shutdown (very important under Linux)
-void MinimalOgre::windowClosed(Ogre::RenderWindow* rw)
+void DodgeBall::windowClosed(Ogre::RenderWindow* rw)
 {
     //Only close for window that created OIS (the main window in these demos)
     if( rw == mWindow )
@@ -370,7 +472,7 @@ extern "C" {
 #endif
     {
         // Create application object
-        MinimalOgre app;
+        DodgeBall app;
  
         try {
             app.go();

@@ -37,12 +37,13 @@ This source file is part of the
 #include <GUIManager.h>
 #include <SoundManager.h>
 #include <NetworkManager.h>
+#include <Simulator.h>
  
 class DodgeBall : public Ogre::FrameListener, public Ogre::WindowEventListener, public OIS::KeyListener, public OIS::MouseListener, OgreBites::SdkTrayListener
 {
 public:
-    DodgeBall(void);
-    virtual ~DodgeBall(void);
+    //DodgeBall(void);
+    //virtual ~DodgeBall(void);
     bool go(void);
 protected:
     Ogre::Root *mRoot;

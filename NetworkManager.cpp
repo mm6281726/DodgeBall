@@ -71,7 +71,7 @@ void NetworkManager::NetworkClient(char* str)    //http://content.gpwiki.org/ind
  
 }
 
-void NetworkManager::NetworkCommunicator(PaddleManager* hostPaddle, PaddleManager* clientPaddle, BallManager* ball)    //make it receive paddlemanagers and ballmanagers to change positions into messages (break up server messages since it'll send ball and paddle to network... easy to write, not to read)
+void NetworkManager::NetworkCommunicator()    //make it receive paddlemanagers and ballmanagers to change positions into messages (break up server messages since it'll send ball and paddle to network... easy to write, not to read)
 {                           //call this from game loop
 	int len;				//	commented out code should be correct (I can't check it yet though) once networking works right
 	char buffer[512];	
@@ -79,8 +79,7 @@ void NetworkManager::NetworkCommunicator(PaddleManager* hostPaddle, PaddleManage
 	char str[512];
 	if(!server)
 	{
-		strcpy(buffer,NetworkManager::Vector3ToString(clientPaddle->getPosition()));
-		//strcpy(buffer,"test message");
+		//strcpy(buffer,NetworkManager::Vector3ToString(clientPaddle->getPosition()));
 		len = strlen(buffer) + 1;
 		if (SDLNet_TCP_Send(targetSocket, (void *)buffer, len) < len)
 		{
@@ -92,9 +91,9 @@ void NetworkManager::NetworkCommunicator(PaddleManager* hostPaddle, PaddleManage
 			std::string decode = std::string(buffer);
 			unsigned found = decode.find_first_of("&");
 			Ogre::Vector3 v = NetworkManager::StringToVector3(buffer,0);
-			hostPaddle->setPosition(v);
+			//hostPaddle->setPosition(v);
 			v = NetworkManager::StringToVector3(buffer,found+1);
-			ball->setPosition(v);
+			//ball->setPosition(v);
 			printf("Host say: %s\n", buffer);
 		
 		}
@@ -105,12 +104,12 @@ void NetworkManager::NetworkCommunicator(PaddleManager* hostPaddle, PaddleManage
 		if (SDLNet_TCP_Recv(targetSocket, buffer, 512) > 0)
 		{
 			Ogre::Vector3 v = NetworkManager::StringToVector3(buffer,0);
-			clientPaddle->setPosition(v);
+			//clientPaddle->setPosition(v);
 			printf("Client say: %s\n", buffer);
 		}
-		strcpy(str, NetworkManager::Vector3ToString(hostPaddle->getPosition()));
+		//strcpy(str, NetworkManager::Vector3ToString(hostPaddle->getPosition()));
 		strcat(str, " ");
-		strcat(str, NetworkManager::Vector3ToString(ball->getPosition()));
+		//strcat(str, NetworkManager::Vector3ToString(ball->getPosition()));
 		strcpy(buffer,str);
 		//strcpy(buffer,"test reply");
 		int len = strlen(buffer) + 1;

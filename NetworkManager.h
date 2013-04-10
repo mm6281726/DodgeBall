@@ -7,8 +7,6 @@
 #include <sstream>
 #include <string>
 #include <OgreEntity.h>
-#include "PaddleManager.h"
-#include "BallManager.h"
 
 class NetworkManager{
 	public:
@@ -16,7 +14,7 @@ class NetworkManager{
 		void NetworkHost(void);
 		void NetworkClient(char* str);
 		void Quit(void);
-		void NetworkCommunicator(PaddleManager* hostPaddle, PaddleManager* clientPaddle, BallManager* ball);
+		void NetworkCommunicator();
 		static char* Vector3ToString(Ogre::Vector3 vic);
 		static Ogre::Vector3 StringToVector3(char* str, int i);
 		bool IsHost(void);
