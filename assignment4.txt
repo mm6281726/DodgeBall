@@ -1,0 +1,7 @@
+Michael Madden
+Chris Black
+Ian Ruth
+
+Assignment 4
+
+The game we are planning on making is a first person dodgeball game.  There only needs to be one level type, consisting of a court with a midway point that cannot be passed by players, but if we want to make more, we can change the dimensions of the room or add obstacles.  The main thing that will change are the difficulty and number of enemies. We also want to add cooperative and competitive multiplayer over a network.  The objective of the game is to eliminate the other team by hitting them with balls.  Players can pick up, throw, catch and dodge balls.  If hit or a thrown ball caught, that player is disqualified.  The controls will be that the player will move with wasd, aim with the mouse and use the left mouse button to throw and right mouse button to catch.  The most difficult part of this project will be the AI.  It will need to be able to run after balls on its side of the court, pick them up, throw them at the player, and try to catch balls thrown at it.  There will be a way to charge up throws to make the ball move faster.  For the player this will be from holding the left mouse button down before releasing it to throw the ball.  The AI's charge amount will depend on the difficulty.  Easier AI will throw the balls weakly, but more difficult ones can charge up really fast.  
