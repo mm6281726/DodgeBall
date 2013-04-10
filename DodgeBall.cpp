@@ -174,8 +174,8 @@ bool DodgeBall::go(void)
     Ogre::Plane leftWallBack(Ogre::Vector3::NEGATIVE_UNIT_X, 100);
     Ogre::Plane frontWallFront(Ogre::Vector3::UNIT_Z, -300);
     Ogre::Plane frontWallBack(Ogre::Vector3::NEGATIVE_UNIT_Z, 300);
-    Ogre::Plane backWallFront(Ogre::Vector3::NEGATIVE_UNIT_Z, 300);
-    Ogre::Plane backWallBack(Ogre::Vector3::UNIT_Z, -300);
+    Ogre::Plane backWallFront(Ogre::Vector3::NEGATIVE_UNIT_Z, -300);
+    Ogre::Plane backWallBack(Ogre::Vector3::UNIT_Z, 300);
 
     
     Ogre::MeshManager::getSingleton().createPlane("roofFront", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
