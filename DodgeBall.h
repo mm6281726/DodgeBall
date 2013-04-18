@@ -1,17 +1,16 @@
 /*
 -----------------------------------------------------------------------------
-Filename:    DodgeBall.h
+Filename: DodgeBall.h
 -----------------------------------------------------------------------------
- 
 This source file is part of the
-   ___                 __    __ _ _    _ 
-  /___\__ _ _ __ ___  / / /\ \ (_) | _(_)
- //  // _` | '__/ _ \ \ \/  \/ / | |/ / |
-/ \_// (_| | | |  __/  \  /\  /| |   <| |
-\___/ \__, |_|  \___|   \/  \/ |_|_|\_\_|
-      |___/                              
-      Tutorial Framework
-      http://www.ogre3d.org/tikiwiki/
+___ __ __ _ _ _
+/___\__ _ _ __ ___ / / /\ \ (_) | _(_)
+// // _` | '__/ _ \ \ \/ \/ / | |/ / |
+/ \_// (_| | | | __/ \ /\ /| | <| |
+\___/ \__, |_| \___| \/ \/ |_|_|\_\_|
+|___/
+Tutorial Framework
+http://www.ogre3d.org/tikiwiki/
 -----------------------------------------------------------------------------
 */
 #ifndef __DodgeBall_h_
@@ -38,6 +37,7 @@ This source file is part of the
 #include <SoundManager.h>
 #include <NetworkManager.h>
 #include <Simulator.h>
+#include <Player.h>
  
 class DodgeBall : public Ogre::FrameListener, public Ogre::WindowEventListener, public OIS::KeyListener, public OIS::MouseListener, OgreBites::SdkTrayListener
 {
@@ -47,7 +47,6 @@ public:
     bool go(void);
 protected:
     Ogre::Root *mRoot;
-    Ogre::Camera* mCamera;
     Ogre::SceneManager* mSceneMgr;
     Ogre::RenderWindow* mWindow;
     Ogre::String mResourcesCfg;
@@ -55,14 +54,13 @@ protected:
  
     // OgreBites
     OgreBites::SdkTrayManager* mTrayMgr;
-    OgreBites::SdkCameraMan* mCameraMan;      // basic camera controller
-    OgreBites::ParamsPanel* mDetailsPanel;    // sample details panel
-    bool mCursorWasVisible;                   // was cursor visible before dialog appeared
+    OgreBites::ParamsPanel* mDetailsPanel; // sample details panel
+    bool mCursorWasVisible; // was cursor visible before dialog appeared
     bool mShutDown;
  
     // OIS Input devices
     OIS::InputManager* mInputManager;
-    OIS::Mouse*    mMouse;
+    OIS::Mouse* mMouse;
     OIS::Keyboard* mKeyboard;
  
     // Ogre::FrameListener

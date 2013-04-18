@@ -1,17 +1,16 @@
 /*
 -----------------------------------------------------------------------------
-Filename:    DodgeBall.cpp
+Filename: DodgeBall.cpp
 -----------------------------------------------------------------------------
- 
 This source file is part of the
-   ___                 __    __ _ _    _ 
-  /___\__ _ _ __ ___  / / /\ \ (_) | _(_)
- //  // _` | '__/ _ \ \ \/  \/ / | |/ / |
-/ \_// (_| | | |  __/  \  /\  /| |   <| |
-\___/ \__, |_|  \___|   \/  \/ |_|_|\_\_|
-      |___/                              
-      Tutorial Framework
-      http://www.ogre3d.org/tikiwiki/
+___ __ __ _ _ _
+/___\__ _ _ __ ___ / / /\ \ (_) | _(_)
+// // _` | '__/ _ \ \ \/ \/ / | |/ / |
+/ \_// (_| | | | __/ \ /\ /| | <| |
+\___/ \__, |_| \___| \/ \/ |_|_|\_\_|
+|___/
+Tutorial Framework
+http://www.ogre3d.org/tikiwiki/
 -----------------------------------------------------------------------------
 */
 #include "DodgeBall.h"
@@ -71,27 +70,7 @@ bool DodgeBall::go(void)
     // choose scenemanager
     // Get the SceneManager, in this case a generic one
     mSceneMgr = mRoot->createSceneManager(Ogre::ST_GENERIC);
-//-------------------------------------------------------------------------------------
-    // create camera
-    // Create the camera
-    mCamera = mSceneMgr->createCamera("PlayerCam");
- 
-    // Position it at 500 in Z direction
-    mCamera->setPosition(Ogre::Vector3(0,0,80));
-    // Look back along -Z
-    mCamera->lookAt(Ogre::Vector3(0,0,-300));
-    mCamera->setNearClipDistance(5);
- 
-    mCameraMan = new OgreBites::SdkCameraMan(mCamera);   // create a default camera controller
-//-------------------------------------------------------------------------------------
-    // create viewports
-    // Create one viewport, entire window
-    Ogre::Viewport* vp = mWindow->addViewport(mCamera);
-    vp->setBackgroundColour(Ogre::ColourValue(0,0,0));
- 
-    // Alter the camera aspect ratio to match the viewport
-    mCamera->setAspectRatio(
-        Ogre::Real(vp->getActualWidth()) / Ogre::Real(vp->getActualHeight()));
+
 //-------------------------------------------------------------------------------------
     // Set default mipmap level (NB some APIs ignore this)
     Ogre::TextureManager::getSingleton().setDefaultNumMipmaps(5);
@@ -102,11 +81,21 @@ bool DodgeBall::go(void)
     // load resources
     Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 //-------------------------------------------------------------------------------------
-    // Create the scene
-    Ogre::Entity* ogreHead = mSceneMgr->createEntity("Head", "ogrehead.mesh");
+
+    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Create Player
+    Player* player1 = new Player(mSceneMgr);
+//-------------------------------------------------------------------------------------
+    // create viewports
+    // Create one viewport, entire window
+    Ogre::Viewport* vp = mWindow->addViewport(mSceneMgr->getCamera("Player1Cam"));
+    vp->setBackgroundColour(Ogre::ColourValue(0,0,0));
  
-    Ogre::SceneNode* headNode = mSceneMgr->getRootSceneNode()->createChildSceneNode();
-    headNode->attachObject(ogreHead);
+    // Alter the camera aspect ratio to match the viewport
+    mSceneMgr->getCamera("Player1Cam")->setAspectRatio(
+        Ogre::Real(vp->getActualWidth()) / Ogre::Real(vp->getActualHeight()));
+
+//-------------------------------------------------------------------------------------
+    // Create the scene
  
     // Set ambient light
     mSceneMgr->setAmbientLight(Ogre::ColourValue(0.5, 0.5, 0.5));
@@ -140,28 +129,8 @@ bool DodgeBall::go(void)
     Ogre::WindowEventUtilities::addWindowEventListener(mWindow, this);
  
     mTrayMgr = new OgreBites::SdkTrayManager("InterfaceName", mWindow, mMouse, this);
-    mTrayMgr->showFrameStats(OgreBites::TL_BOTTOMLEFT);
-    mTrayMgr->showLogo(OgreBites::TL_BOTTOMRIGHT);
     mTrayMgr->hideCursor();
  
-    // create a params panel for displaying sample details
-    Ogre::StringVector items;
-    items.push_back("cam.pX");
-    items.push_back("cam.pY");
-    items.push_back("cam.pZ");
-    items.push_back("");
-    items.push_back("cam.oW");
-    items.push_back("cam.oX");
-    items.push_back("cam.oY");
-    items.push_back("cam.oZ");
-    items.push_back("");
-    items.push_back("Filtering");
-    items.push_back("Poly Mode");
- 
-    mDetailsPanel = mTrayMgr->createParamsPanel(OgreBites::TL_NONE, "DetailsPanel", 200, items);
-    mDetailsPanel->setParamValue(9, "Bilinear");
-    mDetailsPanel->setParamValue(10, "Solid");
-    mDetailsPanel->hide();
 
 /////////////////////////////////////////////////////////////////////////////////// WALLS YAY
     Ogre::Plane roofFront(Ogre::Vector3::NEGATIVE_UNIT_Y, -100);
@@ -179,7 +148,7 @@ bool DodgeBall::go(void)
 
     
     Ogre::MeshManager::getSingleton().createPlane("roofFront", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-    roofFront, 200, 600, 20, 20, true, 1, 5, 5, Ogre::Vector3::UNIT_Z);   
+    roofFront, 200, 600, 20, 20, true, 1, 5, 5, Ogre::Vector3::UNIT_Z);
     Ogre::MeshManager::getSingleton().createPlane("roofBack", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
     roofBack, 200, 600, 20, 20, true, 1, 5, 5, Ogre::Vector3::UNIT_Z);
     Ogre::MeshManager::getSingleton().createPlane("floorFront", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
@@ -201,7 +170,7 @@ bool DodgeBall::go(void)
     Ogre::MeshManager::getSingleton().createPlane("backWallFront", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
     backWallFront, 200, 200, 20, 20, true, 1, 5, 5, Ogre::Vector3::UNIT_X);
     Ogre::MeshManager::getSingleton().createPlane("backWallBack", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-    backWallBack, 200, 200, 20, 20, true, 1, 5, 5, Ogre::Vector3::UNIT_X); 
+    backWallBack, 200, 200, 20, 20, true, 1, 5, 5, Ogre::Vector3::UNIT_X);
     
 
     Ogre::Entity* entFrontWallFront = mSceneMgr->createEntity("FrontWallFront", "frontWallFront");
@@ -288,17 +257,7 @@ bool DodgeBall::frameRenderingQueued(const Ogre::FrameEvent& evt)
  
     if (!mTrayMgr->isDialogVisible())
     {
-        mCameraMan->frameRenderingQueued(evt);   // if dialog isn't up, then update the camera
-        if (mDetailsPanel->isVisible())   // if details panel is visible, then update its contents
-        {
-            mDetailsPanel->setParamValue(0, Ogre::StringConverter::toString(mCamera->getDerivedPosition().x));
-            mDetailsPanel->setParamValue(1, Ogre::StringConverter::toString(mCamera->getDerivedPosition().y));
-            mDetailsPanel->setParamValue(2, Ogre::StringConverter::toString(mCamera->getDerivedPosition().z));
-            mDetailsPanel->setParamValue(4, Ogre::StringConverter::toString(mCamera->getDerivedOrientation().w));
-            mDetailsPanel->setParamValue(5, Ogre::StringConverter::toString(mCamera->getDerivedOrientation().x));
-            mDetailsPanel->setParamValue(6, Ogre::StringConverter::toString(mCamera->getDerivedOrientation().y));
-            mDetailsPanel->setParamValue(7, Ogre::StringConverter::toString(mCamera->getDerivedOrientation().z));
-        }
+        
     }
  
     return true;
@@ -306,86 +265,14 @@ bool DodgeBall::frameRenderingQueued(const Ogre::FrameEvent& evt)
 //-------------------------------------------------------------------------------------
 bool DodgeBall::keyPressed( const OIS::KeyEvent &arg )
 {
-    if (mTrayMgr->isDialogVisible()) return true;   // don't process any more keys if dialog is up
- 
-    if (arg.key == OIS::KC_F)   // toggle visibility of advanced frame stats
-    {
-        mTrayMgr->toggleAdvancedFrameStats();
-    }
-    else if (arg.key == OIS::KC_G)   // toggle visibility of even rarer debugging details
-    {
-        if (mDetailsPanel->getTrayLocation() == OgreBites::TL_NONE)
-        {
-            mTrayMgr->moveWidgetToTray(mDetailsPanel, OgreBites::TL_TOPRIGHT, 0);
-            mDetailsPanel->show();
-        }
-        else
-        {
-            mTrayMgr->removeWidgetFromTray(mDetailsPanel);
-            mDetailsPanel->hide();
-        }
-    }
-    else if (arg.key == OIS::KC_T)   // cycle texture filtering mode
-    {
-        Ogre::String newVal;
-        Ogre::TextureFilterOptions tfo;
-        unsigned int aniso;
- 
-        switch (mDetailsPanel->getParamValue(9).asUTF8()[0])
-        {
-        case 'B':
-            newVal = "Trilinear";
-            tfo = Ogre::TFO_TRILINEAR;
-            aniso = 1;
-            break;
-        case 'T':
-            newVal = "Anisotropic";
-            tfo = Ogre::TFO_ANISOTROPIC;
-            aniso = 8;
-            break;
-        case 'A':
-            newVal = "None";
-            tfo = Ogre::TFO_NONE;
-            aniso = 1;
-            break;
-        default:
-            newVal = "Bilinear";
-            tfo = Ogre::TFO_BILINEAR;
-            aniso = 1;
-        }
- 
-        Ogre::MaterialManager::getSingleton().setDefaultTextureFiltering(tfo);
-        Ogre::MaterialManager::getSingleton().setDefaultAnisotropy(aniso);
-        mDetailsPanel->setParamValue(9, newVal);
-    }
-    else if (arg.key == OIS::KC_R)   // cycle polygon rendering mode
-    {
-        Ogre::String newVal;
-        Ogre::PolygonMode pm;
- 
-        switch (mCamera->getPolygonMode())
-        {
-        case Ogre::PM_SOLID:
-            newVal = "Wireframe";
-            pm = Ogre::PM_WIREFRAME;
-            break;
-        case Ogre::PM_WIREFRAME:
-            newVal = "Points";
-            pm = Ogre::PM_POINTS;
-            break;
-        default:
-            newVal = "Solid";
-            pm = Ogre::PM_SOLID;
-        }
- 
-        mCamera->setPolygonMode(pm);
-        mDetailsPanel->setParamValue(10, newVal);
-    }
-    else if(arg.key == OIS::KC_F5)   // refresh all textures
+    if (mTrayMgr->isDialogVisible()) return true; // don't process any more keys if dialog is up
+
+
+    else if(arg.key == OIS::KC_F5) // refresh all textures
     {
         Ogre::TextureManager::getSingleton().reloadAll();
     }
-    else if (arg.key == OIS::KC_SYSRQ)   // take a screenshot
+    else if (arg.key == OIS::KC_SYSRQ) // take a screenshot
     {
         mWindow->writeContentsToTimestampedFile("screenshot", ".jpg");
     }
@@ -393,35 +280,29 @@ bool DodgeBall::keyPressed( const OIS::KeyEvent &arg )
     {
         mShutDown = true;
     }
- 
-    mCameraMan->injectKeyDown(arg);
     return true;
 }
  
 bool DodgeBall::keyReleased( const OIS::KeyEvent &arg )
 {
-    mCameraMan->injectKeyUp(arg);
     return true;
 }
  
 bool DodgeBall::mouseMoved( const OIS::MouseEvent &arg )
 {
     if (mTrayMgr->injectMouseMove(arg)) return true;
-    mCameraMan->injectMouseMove(arg);
     return true;
 }
  
 bool DodgeBall::mousePressed( const OIS::MouseEvent &arg, OIS::MouseButtonID id )
 {
     if (mTrayMgr->injectMouseDown(arg, id)) return true;
-    mCameraMan->injectMouseDown(arg, id);
     return true;
 }
  
 bool DodgeBall::mouseReleased( const OIS::MouseEvent &arg, OIS::MouseButtonID id )
 {
     if (mTrayMgr->injectMouseUp(arg, id)) return true;
-    mCameraMan->injectMouseUp(arg, id);
     return true;
 }
  
