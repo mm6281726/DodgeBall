@@ -15,6 +15,8 @@ http://www.ogre3d.org/tikiwiki/
 */
 #include "DodgeBall.h"
 
+Player* player1;
+
 bool DodgeBall::go(void)
 {
 #ifdef _DEBUG
@@ -83,7 +85,8 @@ bool DodgeBall::go(void)
 //-------------------------------------------------------------------------------------
 
     //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Create Player
-    Player* player1 = new Player(mSceneMgr);
+    //player1 = new Player(mSceneMgr);
+    player1 = new Player(mSceneMgr);
 //-------------------------------------------------------------------------------------
     // create viewports
     // Create one viewport, entire window
@@ -252,6 +255,8 @@ bool DodgeBall::frameRenderingQueued(const Ogre::FrameEvent& evt)
     //Need to capture/update each device
     mKeyboard->capture();
     mMouse->capture();
+
+    player1->move(evt);
  
     mTrayMgr->frameRenderingQueued(evt);
  
@@ -272,6 +277,22 @@ bool DodgeBall::keyPressed( const OIS::KeyEvent &arg )
     {
         Ogre::TextureManager::getSingleton().reloadAll();
     }
+    else if(arg.key == OIS::KC_W) // refresh all textures
+    {
+        player1->startMove("w");
+    }
+    else if(arg.key == OIS::KC_A) // refresh all textures
+    {
+        player1->startMove("a");
+    }
+    else if(arg.key == OIS::KC_S) // refresh all textures
+    {
+        player1->startMove("s");
+    }
+    else if(arg.key == OIS::KC_D) // refresh all textures
+    {
+        player1->startMove("d");
+    }
     else if (arg.key == OIS::KC_SYSRQ) // take a screenshot
     {
         mWindow->writeContentsToTimestampedFile("screenshot", ".jpg");
@@ -285,12 +306,29 @@ bool DodgeBall::keyPressed( const OIS::KeyEvent &arg )
  
 bool DodgeBall::keyReleased( const OIS::KeyEvent &arg )
 {
+    if(arg.key == OIS::KC_W) // refresh all textures
+    {
+        player1->stopMove("w");
+    }
+    else if(arg.key == OIS::KC_A) // refresh all textures
+    {
+        player1->stopMove("a");
+    }
+    else if(arg.key == OIS::KC_S) // refresh all textures
+    {
+        player1->stopMove("s");
+    }
+    else if(arg.key == OIS::KC_D) // refresh all textures
+    {
+        player1->stopMove("d");
+    }
     return true;
 }
  
 bool DodgeBall::mouseMoved( const OIS::MouseEvent &arg )
 {
     if (mTrayMgr->injectMouseMove(arg)) return true;
+    player1->lookAround(arg);
     return true;
 }
  
