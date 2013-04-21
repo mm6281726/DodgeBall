@@ -22,6 +22,8 @@ class Player{
 		Ogre::Camera* camPlayer;
 		Ogre::Entity* entPlayer;
 		Ogre::SceneNode* nodePlayer;
+
+		bool hasBall;
 	public:
 		Player(Ogre::SceneManager* sceneMgr);
 		void move(const Ogre::FrameEvent& evt);

@@ -7,10 +7,9 @@ Ogre::Vector3 transVector = Ogre::Vector3::ZERO;
 
 Player::Player(Ogre::SceneManager* sceneMgr){
 	mSceneMgr = sceneMgr;
+    hasBall = false;
+
 	camPlayer = mSceneMgr->createCamera("Player1Cam");
- 
-    // Look back along -Z
-    //camPlayer->lookAt(Ogre::Vector3(0,0,-300));
     camPlayer->setNearClipDistance(5);
 
     entPlayer = mSceneMgr->createEntity("entPlayer", "ninja.mesh");
@@ -81,4 +80,8 @@ void Player::lookAround(const OIS::MouseEvent &arg){
             camPlayer->setOrientation(Ogre::Quaternion(Ogre::Math::Sqrt(0.5f),
                                                                 -Ogre::Math::Sqrt(0.5f), 0, 0));
     }
+}
+
+void Player::pickupBall(){
+    
 }
