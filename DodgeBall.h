@@ -38,6 +38,7 @@ http://www.ogre3d.org/tikiwiki/
 #include <NetworkManager.h>
 #include <Simulator.h>
 #include <Player.h>
+#include <Ball.h>
  
 class DodgeBall : public Ogre::FrameListener, public Ogre::WindowEventListener, public OIS::KeyListener, public OIS::MouseListener, OgreBites::SdkTrayListener
 {

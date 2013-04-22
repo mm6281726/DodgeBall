@@ -16,6 +16,7 @@ http://www.ogre3d.org/tikiwiki/
 #include "DodgeBall.h"
 
 Player* player1;
+Ball* ball1;
 
 bool DodgeBall::go(void)
 {
@@ -84,9 +85,10 @@ bool DodgeBall::go(void)
     Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 //-------------------------------------------------------------------------------------
 
-    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Create Player
-    //player1 = new Player(mSceneMgr);
+    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Create Player/Ball
+    mSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_ADDITIVE);
     player1 = new Player(mSceneMgr);
+    ball1 = new Ball(mSceneMgr);
 //-------------------------------------------------------------------------------------
     // create viewports
     // Create one viewport, entire window
@@ -335,6 +337,15 @@ bool DodgeBall::mouseMoved( const OIS::MouseEvent &arg )
 bool DodgeBall::mousePressed( const OIS::MouseEvent &arg, OIS::MouseButtonID id )
 {
     if (mTrayMgr->injectMouseDown(arg, id)) return true;
+    switch (id)
+    {
+        case OIS::MB_Left:
+            break;
+        case OIS::MB_Right:
+            break;
+    default:
+        break;
+    }
     return true;
 }
  

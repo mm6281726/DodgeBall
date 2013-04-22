@@ -3,7 +3,7 @@
 
 static Ogre::Real mMove = 150;      // The movement constant
 static Ogre::Real mRotate = 0.13;
-Ogre::Vector3 transVector = Ogre::Vector3::ZERO;
+static Ogre::Vector3 transVector = Ogre::Vector3::ZERO;
 
 Player::Player(Ogre::SceneManager* sceneMgr){
 	mSceneMgr = sceneMgr;
@@ -13,6 +13,7 @@ Player::Player(Ogre::SceneManager* sceneMgr){
     camPlayer->setNearClipDistance(5);
 
     entPlayer = mSceneMgr->createEntity("entPlayer", "ninja.mesh");
+    entPlayer->setCastShadows(true);
  
     nodePlayer = mSceneMgr->getRootSceneNode()->createChildSceneNode("nodePlayer", Ogre::Vector3(0,-100,200));
     nodePlayer->attachObject(entPlayer);

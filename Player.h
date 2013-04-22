@@ -30,6 +30,7 @@ class Player{
 		void startMove(Ogre::String key);
 		void stopMove(Ogre::String key);
 		void lookAround(const OIS::MouseEvent &arg);
+		void pickupBall();
 };
 
 #endif
