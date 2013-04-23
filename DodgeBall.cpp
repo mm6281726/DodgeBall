@@ -259,6 +259,7 @@ bool DodgeBall::frameRenderingQueued(const Ogre::FrameEvent& evt)
     mMouse->capture();
 
     player1->move(evt);
+    player1->pickupBall(ball1);
  
     mTrayMgr->frameRenderingQueued(evt);
  
@@ -337,15 +338,6 @@ bool DodgeBall::mouseMoved( const OIS::MouseEvent &arg )
 bool DodgeBall::mousePressed( const OIS::MouseEvent &arg, OIS::MouseButtonID id )
 {
     if (mTrayMgr->injectMouseDown(arg, id)) return true;
-    switch (id)
-    {
-        case OIS::MB_Left:
-            break;
-        case OIS::MB_Right:
-            break;
-    default:
-        break;
-    }
     return true;
 }
  

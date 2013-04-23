@@ -17,14 +17,10 @@ Ball::Ball(Ogre::SceneManager* sceneMgr){
     nodeBall->scale(.1,.1,.1);
 }
 
-void Ball::move(const Ogre::FrameEvent& evt){
-    nodeBall->translate(transVector * evt.timeSinceLastFrame, Ogre::Node::TS_LOCAL);
-    if(nodeBall->getPosition().y < -80)
-        nodeBall->setPosition(nodeBall->getPosition().x, -80, nodeBall->getPosition().z);
-    if(nodeBall->getPosition().y > 180)
-        nodeBall->setPosition(nodeBall->getPosition().x, 180, nodeBall->getPosition().z);
-    if(nodeBall->getPosition().x < -80)
-        nodeBall->setPosition(-80, nodeBall->getPosition().y, nodeBall->getPosition().z);
-    if(nodeBall->getPosition().x > 80)
-        nodeBall->setPosition(80, nodeBall->getPosition().y, nodeBall->getPosition().z);
+Ogre::Vector3 Ball::getPosition(){
+    return nodeBall->getPosition();
+}
+
+Ogre::SceneNode* Ball::getSceneNode(){
+    return nodeBall;
 }

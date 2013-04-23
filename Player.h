@@ -16,6 +16,8 @@
 #include <OISKeyboard.h>
 #include <OISMouse.h>
 
+#include <Ball.h>
+
 class Player{
 	private:
 		Ogre::SceneManager* mSceneMgr;
@@ -30,7 +32,7 @@ class Player{
 		void startMove(Ogre::String key);
 		void stopMove(Ogre::String key);
 		void lookAround(const OIS::MouseEvent &arg);
-		void pickupBall();
+		void pickupBall(Ball* ball);
 };
 
 #endif

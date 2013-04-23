@@ -83,6 +83,9 @@ void Player::lookAround(const OIS::MouseEvent &arg){
     }
 }
 
-void Player::pickupBall(){
-    
+void Player::pickupBall(Ball* ball){
+    if(hasBall == false && (std::abs(nodePlayer->getPosition().x - ball->getPosition().x) < 5 && std::abs(nodePlayer->getPosition().z - ball->getPosition().z) < 5 )){
+        nodePlayer->addChild(ball->getSceneNode());
+        hasBall == true;
+    }
 }

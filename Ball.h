@@ -23,7 +23,8 @@ class Ball{
 		Ogre::SceneNode* nodeBall;
 	public:
 		Ball(Ogre::SceneManager* sceneMgr);
-		void move(const Ogre::FrameEvent& evt);
+		Ogre::Vector3 getPosition();
+		Ogre::SceneNode* getSceneNode();
 };
 
 #endif
