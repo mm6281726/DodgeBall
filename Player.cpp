@@ -26,9 +26,8 @@ Player::Player(Ogre::SceneManager* sceneMgr){
 
 void Player::move(const Ogre::FrameEvent& evt){
     nodePlayer->translate(transVector * evt.timeSinceLastFrame, Ogre::Node::TS_LOCAL);
-    
-    if(mHasBall && ( nodePlayer->getPosition().z >= 0 && nodePlayer->getPosition().z <= 290 && nodePlayer->getPosition().x >= -90 && nodePlayer->getPosition().x <= 90 ))
-        ball->translate(transVector * evt.timeSinceLastFrame);
+    if(mHasBall)
+        ball->setPosition(nodePlayer->getPosition().x, nodePlayer->getPosition().y + 75, nodePlayer->getPosition().z - 5);
 
     if(nodePlayer->getPosition().z < 0)
         nodePlayer->setPosition(nodePlayer->getPosition().x, nodePlayer->getPosition().y, 0);
@@ -65,8 +64,6 @@ void Player::stopMove(Ogre::String key){
 void Player::lookAround(const OIS::MouseEvent &arg){
     camPlayer->pitch(Ogre::Degree(-(arg.state.Y.rel) * mRotate));
     nodePlayer->yaw(Ogre::Degree(-(arg.state.X.rel) * mRotate));
-    //ball->setPosition(arg.state.X.rel, nodePlayer->getPosition().y + 75, nodePlayer->getPosition().z - 30);
-
 
     // Angle of rotation around the X-axis.
     Ogre::Real pitchAngle = (2 * Ogre::Degree(Ogre::Math::ACos(camPlayer->getOrientation().w)).valueDegrees());
@@ -96,7 +93,7 @@ bool Player::hasBall(){
 void Player::pickupBall(Ball* baller){
     if(std::abs(nodePlayer->getPosition().x - baller->getPosition().x) < 5 && std::abs(nodePlayer->getPosition().z - baller->getPosition().z) < 5){
         ball = baller;
-        ball->setPosition(nodePlayer->getPosition().x, nodePlayer->getPosition().y + 75, nodePlayer->getPosition().z - 30);
+        ball->setPosition(nodePlayer->getPosition().x, nodePlayer->getPosition().y + 75, nodePlayer->getPosition().z - 5);
         mHasBall = true;
     }
 }

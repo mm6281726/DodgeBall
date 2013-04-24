@@ -25,7 +25,9 @@ class Ball{
 		Ball(Ogre::SceneManager* sceneMgr);
 		Ogre::Vector3 getPosition();
 		void setPosition(int x, int y, int z);
+		void setPosition(const Ogre::Vector3 &  pos);
 		void translate(const Ogre::Vector3 & d, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_PARENT);
+		void yaw(Ogre::Degree d);
 };
 
 #endif

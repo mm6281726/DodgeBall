@@ -25,6 +25,14 @@ void Ball::setPosition(int x, int y, int z){
     nodeBall->setPosition(x,y,z);
 }
 
+void Ball::setPosition(const Ogre::Vector3 &  pos){
+    nodeBall->setPosition(pos);
+}
+
 void Ball::translate(const Ogre::Vector3 & d, Ogre::Node::TransformSpace relativeTo){
     nodeBall->translate(d, relativeTo);
+}
+
+void Ball::yaw(Ogre::Degree d){
+    nodeBall->yaw(d);
 }
