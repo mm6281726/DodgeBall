@@ -15,6 +15,8 @@ http://www.ogre3d.org/tikiwiki/
 */
 #include "DodgeBall.h"
 
+Simulator* simulator;
+btDiscreteDynamicsWorld* world;
 Player* player1;
 Ball* ball1;
 
@@ -84,11 +86,15 @@ bool DodgeBall::go(void)
     // load resources
     Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 //-------------------------------------------------------------------------------------
+    // set up physics
+		simulator = new Simulator();
+		world = simulator->setupSimulator();
+//-------------------------------------------------------------------------------------
 
     //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Create Player/Ball
     mSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_ADDITIVE);
     player1 = new Player(mSceneMgr);
-    ball1 = new Ball(mSceneMgr);
+    ball1 = new Ball(mSceneMgr, simulator);
 //-------------------------------------------------------------------------------------
     // create viewports
     // Create one viewport, entire window
@@ -238,11 +244,12 @@ bool DodgeBall::go(void)
     mSceneMgr->getRootSceneNode()->createChildSceneNode()->attachObject(entLeftWallBack);
     entLeftWallBack->setMaterialName("Examples/Rockwall");
     entLeftWallBack->setCastShadows(false);
- 
+
     mRoot->addFrameListener(this);
 //-------------------------------------------------------------------------------------
     mRoot->startRendering();
  
+		printf("finished go\n");
     return true;
 }
 
@@ -254,12 +261,21 @@ bool DodgeBall::frameRenderingQueued(const Ogre::FrameEvent& evt)
     if(mShutDown)
         return false;
  
+		//printf("before step simulation\n");
+		world->stepSimulation(1/60.0);
+		//printf("after step simulation\n");
+		
+		btTransform t;
+	  ball1->getBody()->getMotionState()->getWorldTransform(t);
+    btVector3 position = t.getOrigin();
+    ball1->setPosition(Ogre::Vector3((float)position[0],(float)position[1],(float)position[2]));
+
     //Need to capture/update each device
     mKeyboard->capture();
     mMouse->capture();
 
     player1->move(evt);
-    player1->pickupBall(ball1);
+    //player1->pickupBall(ball1);
  
     mTrayMgr->frameRenderingQueued(evt);
  
