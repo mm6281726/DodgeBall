@@ -25,14 +25,17 @@ class Player{
 		Ogre::Entity* entPlayer;
 		Ogre::SceneNode* nodePlayer;
 
-		bool hasBall;
+		Ball* ball;
+		bool mHasBall;
 	public:
 		Player(Ogre::SceneManager* sceneMgr);
 		void move(const Ogre::FrameEvent& evt);
 		void startMove(Ogre::String key);
 		void stopMove(Ogre::String key);
 		void lookAround(const OIS::MouseEvent &arg);
+		bool hasBall();
 		void pickupBall(Ball* ball);
+		void throwBall();
 };
 
 #endif

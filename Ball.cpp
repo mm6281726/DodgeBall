@@ -12,15 +12,19 @@ Ball::Ball(Ogre::SceneManager* sceneMgr){
     entBall->setMaterialName("Examples/SphereMappedRustySteel");
     entBall->setCastShadows(true);
  
-    nodeBall = mSceneMgr->getRootSceneNode()->createChildSceneNode("nodeBall", Ogre::Vector3(0,-90,0));
+    nodeBall = mSceneMgr->getRootSceneNode()->createChildSceneNode("nodeBall", Ogre::Vector3(0,-95,0));
     nodeBall->attachObject(entBall);
-    nodeBall->scale(.1,.1,.1);
+    nodeBall->scale(.05,.05,.05);
 }
 
 Ogre::Vector3 Ball::getPosition(){
     return nodeBall->getPosition();
 }
 
-Ogre::SceneNode* Ball::getSceneNode(){
-    return nodeBall;
+void Ball::setPosition(int x, int y, int z){
+    nodeBall->setPosition(x,y,z);
+}
+
+void Ball::translate(const Ogre::Vector3 & d, Ogre::Node::TransformSpace relativeTo){
+    nodeBall->translate(d, relativeTo);
 }

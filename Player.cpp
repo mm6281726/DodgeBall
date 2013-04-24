@@ -7,7 +7,8 @@ static Ogre::Vector3 transVector = Ogre::Vector3::ZERO;
 
 Player::Player(Ogre::SceneManager* sceneMgr){
 	mSceneMgr = sceneMgr;
-    hasBall = false;
+    mHasBall = false;
+    ball = NULL;
 
 	camPlayer = mSceneMgr->createCamera("Player1Cam");
     camPlayer->setNearClipDistance(5);
@@ -25,6 +26,10 @@ Player::Player(Ogre::SceneManager* sceneMgr){
 
 void Player::move(const Ogre::FrameEvent& evt){
     nodePlayer->translate(transVector * evt.timeSinceLastFrame, Ogre::Node::TS_LOCAL);
+    
+    if(mHasBall && ( nodePlayer->getPosition().z >= 0 && nodePlayer->getPosition().z <= 290 && nodePlayer->getPosition().x >= -90 && nodePlayer->getPosition().x <= 90 ))
+        ball->translate(transVector * evt.timeSinceLastFrame);
+
     if(nodePlayer->getPosition().z < 0)
         nodePlayer->setPosition(nodePlayer->getPosition().x, nodePlayer->getPosition().y, 0);
     if(nodePlayer->getPosition().z > 280)
@@ -60,6 +65,7 @@ void Player::stopMove(Ogre::String key){
 void Player::lookAround(const OIS::MouseEvent &arg){
     camPlayer->pitch(Ogre::Degree(-(arg.state.Y.rel) * mRotate));
     nodePlayer->yaw(Ogre::Degree(-(arg.state.X.rel) * mRotate));
+    //ball->setPosition(arg.state.X.rel, nodePlayer->getPosition().y + 75, nodePlayer->getPosition().z - 30);
 
 
     // Angle of rotation around the X-axis.
@@ -83,9 +89,19 @@ void Player::lookAround(const OIS::MouseEvent &arg){
     }
 }
 
-void Player::pickupBall(Ball* ball){
-    if(hasBall == false && (std::abs(nodePlayer->getPosition().x - ball->getPosition().x) < 5 && std::abs(nodePlayer->getPosition().z - ball->getPosition().z) < 5 )){
-        nodePlayer->addChild(ball->getSceneNode());
-        hasBall == true;
+bool Player::hasBall(){
+    return mHasBall;
+}
+
+void Player::pickupBall(Ball* baller){
+    if(std::abs(nodePlayer->getPosition().x - baller->getPosition().x) < 5 && std::abs(nodePlayer->getPosition().z - baller->getPosition().z) < 5){
+        ball = baller;
+        ball->setPosition(nodePlayer->getPosition().x, nodePlayer->getPosition().y + 75, nodePlayer->getPosition().z - 30);
+        mHasBall = true;
     }
+}
+
+void Player::throwBall(){
+    mHasBall = false;
+    ball = NULL;
 }
