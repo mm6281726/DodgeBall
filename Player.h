@@ -28,7 +28,7 @@ class Player{
 		Ball* ball;
 		bool mHasBall;
 	public:
-		Player(Ogre::SceneManager* sceneMgr);
+		Player(Ogre::SceneManager* sceneMgr, int x, int z, bool enemy);
 		void move(const Ogre::FrameEvent& evt);
 		void startMove(Ogre::String key);
 		void stopMove(Ogre::String key);

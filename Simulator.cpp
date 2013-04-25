@@ -40,7 +40,7 @@ btRigidBody* Simulator::addSphere(float rad,float x,float y,float z,float mass)
 	btMotionState* motion=new btDefaultMotionState(t);	//set the position (and motion)
 	btRigidBody::btRigidBodyConstructionInfo info(mass,motion,sphere,inertia);	//create the constructioninfo, you can create multiple bodies with the same info
 	btRigidBody* body=new btRigidBody(info);	//let's create the body itself
-  body->setRestitution(1);
+  	body->setRestitution(0.9);
 	body->setLinearVelocity(btVector3(0,0,0));
 	world->addRigidBody(body);	//and let the world know about it
 	bodies.push_back(body);	//to be easier to clean, I store them a vector
@@ -54,11 +54,11 @@ btDiscreteDynamicsWorld* Simulator::setupSimulator(void)
 	btBroadphaseInterface* overlappingPairCache = new btDbvtBroadphase();
 	btSequentialImpulseConstraintSolver* solver = new btSequentialImpulseConstraintSolver;
 	world = new btDiscreteDynamicsWorld(dispatcher,overlappingPairCache,solver,collisionConfiguration);
-	world->setGravity(btVector3(0,-25,0));
+	world->setGravity(btVector3(0,-40,0));
 
 	addPlane(-100,0,0,btVector3(1,0,0));
 	addPlane(100,0,0,btVector3(-1,0,0));
-  addPlane(0,-100,0,btVector3(0,1,0));
+  	addPlane(0,-100,0,btVector3(0,1,0));
 	addPlane(0,100,0,btVector3(0,-1,0));
 	addPlane(0,0,-300,btVector3(0,0,1));
 	addPlane(0,0,300,btVector3(0,0,-1));

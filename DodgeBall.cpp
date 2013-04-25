@@ -18,6 +18,7 @@ http://www.ogre3d.org/tikiwiki/
 Simulator* simulator;
 btDiscreteDynamicsWorld* world;
 Player* player1;
+Player* enemy;
 Ball* ball1;
 
 bool DodgeBall::go(void)
@@ -93,7 +94,8 @@ bool DodgeBall::go(void)
 
     //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Create Player/Ball
     mSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_ADDITIVE);
-    player1 = new Player(mSceneMgr);
+    player1 = new Player(mSceneMgr, 0, 200, false);
+    enemy = new Player(mSceneMgr, 0, -200, true);
     ball1 = new Ball(mSceneMgr, simulator);
 //-------------------------------------------------------------------------------------
     // create viewports
@@ -260,12 +262,12 @@ bool DodgeBall::frameRenderingQueued(const Ogre::FrameEvent& evt)
     if(mShutDown)
         return false;
  
-		//printf("before step simulation\n");
-		world->stepSimulation(1/60.0);
-		//printf("after step simulation\n");
+	//printf("before step simulation\n");
+	world->stepSimulation(1/60.0);
+	//printf("after step simulation\n");
 		
-		btTransform t;
-	  ball1->getBody()->getMotionState()->getWorldTransform(t);
+	btTransform t;
+	ball1->getBody()->getMotionState()->getWorldTransform(t);
     btVector3 position = t.getOrigin();
     ball1->setPosition(Ogre::Vector3((float)position[0],(float)position[1],(float)position[2]));
 
@@ -276,6 +278,10 @@ bool DodgeBall::frameRenderingQueued(const Ogre::FrameEvent& evt)
     player1->move(evt);
     if(!player1->hasBall())
         player1->pickupBall(ball1);
+    if(!enemy->hasBall())
+        enemy->pickupBall(ball1);
+    else
+        enemy->throwBall();
 
     mTrayMgr->frameRenderingQueued(evt);
  

@@ -55,7 +55,7 @@ void Ball::addToBullet(btVector3 dir)
 	btVector3 pos = btVector3(nodeBall->getPosition().x,nodeBall->getPosition().y,nodeBall->getPosition().z);
 	t.setOrigin(pos);
 	physicsBall->proceedToTransform(t);
-	physicsBall->setLinearVelocity(dir*100);
+	physicsBall->setLinearVelocity(dir*200);
 	simulator->getWorld()->addRigidBody(physicsBall);
 }
 

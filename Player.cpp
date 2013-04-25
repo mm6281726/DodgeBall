@@ -6,32 +6,36 @@ static Ogre::Real mMove = 150;      // The movement constant
 static Ogre::Real mRotate = 0.13;
 static Ogre::Vector3 transVector = Ogre::Vector3::ZERO;
 
-Player::Player(Ogre::SceneManager* sceneMgr){
+Player::Player(Ogre::SceneManager* sceneMgr, int x, int z, bool enemy){
 	mSceneMgr = sceneMgr;
     mHasBall = false;
     ball = NULL;
 
-	camPlayer = mSceneMgr->createCamera("Player1Cam");
-    camPlayer->setNearClipDistance(5);
+    if(!enemy){
+        entPlayer = mSceneMgr->createEntity("entPlayer", "ninja.mesh");
+        nodePlayer = mSceneMgr->getRootSceneNode()->createChildSceneNode("nodePlayer", Ogre::Vector3(x,-100,z));
+        camPlayer = mSceneMgr->createCamera("Player1Cam");
+        nodePlayer->attachObject(camPlayer);
+        
+    }else{
+        entPlayer = mSceneMgr->createEntity("entEnemy", "ninja.mesh");
+        nodePlayer = mSceneMgr->getRootSceneNode()->createChildSceneNode("nodeEnemy", Ogre::Vector3(x,-100,z));
+        camPlayer = mSceneMgr->createCamera("EnemyCam");
+        nodePlayer->attachObject(camPlayer);
+        nodePlayer->yaw(Ogre::Degree(180));
+    }
 
-    entPlayer = mSceneMgr->createEntity("entPlayer", "ninja.mesh");
     entPlayer->setCastShadows(true);
- 
-    nodePlayer = mSceneMgr->getRootSceneNode()->createChildSceneNode("nodePlayer", Ogre::Vector3(0,-100,200));
-    nodePlayer->attachObject(entPlayer);
-    nodePlayer->attachObject(camPlayer);
-    nodePlayer->scale(.50,.50,.50);
-
     camPlayer->setPosition(nodePlayer->getPosition().x, nodePlayer->getPosition().y + 180, nodePlayer->getPosition().x -10);
+    camPlayer->setNearClipDistance(5);
+    nodePlayer->attachObject(entPlayer);
+    nodePlayer->scale(.50,.50,.50);
 }
 
 void Player::move(const Ogre::FrameEvent& evt){
     nodePlayer->translate(transVector * evt.timeSinceLastFrame, Ogre::Node::TS_LOCAL);
     if(mHasBall)
-		{
         ball->setPosition(nodePlayer->getPosition().x, nodePlayer->getPosition().y + 75, nodePlayer->getPosition().z);
-
-		}
 
     if(nodePlayer->getPosition().z < 0)
         nodePlayer->setPosition(nodePlayer->getPosition().x, nodePlayer->getPosition().y, 0);
@@ -97,18 +101,19 @@ bool Player::hasBall(){
 }
 
 void Player::pickupBall(Ball* baller){
-    if(std::abs(nodePlayer->getPosition().x - baller->getPosition().x) < 5 && std::abs(nodePlayer->getPosition().z - baller->getPosition().z) < 5){
+    Ogre::Vector3 diff = Ogre::Vector3(nodePlayer->getPosition().x - baller->getPosition().x ,0,nodePlayer->getPosition().z - baller->getPosition().z);
+    if(diff.length() < 7.0f &&  baller->getPosition().y < 0){
         ball = baller;
         ball->setPosition(nodePlayer->getPosition().x, nodePlayer->getPosition().y + 75, nodePlayer->getPosition().z);
-				ball->removeFromBullet();
+		ball->removeFromBullet();
         mHasBall = true;
     }
 }
 
 void Player::throwBall(){
     mHasBall = false;
-		Ogre::Vector3 muldir=Ogre::Vector3(camPlayer->getDerivedDirection().x,0,camPlayer->getDerivedDirection().z);
-		float mult = 6.0f/muldir.length();
+	Ogre::Vector3 muldir=Ogre::Vector3(camPlayer->getDerivedDirection().x,0,camPlayer->getDerivedDirection().z);
+	float mult = 7.5f/muldir.length();
     ball->setPosition(nodePlayer->getPosition().x+(camPlayer->getDerivedDirection().x*mult), nodePlayer->getPosition().y + 75, nodePlayer->getPosition().z+(camPlayer->getDerivedDirection().z*mult));
 	/*	std::stringstream ss (std::stringstream::in | std::stringstream::out);
   	ss << camPlayer->getDerivedDirection().x;
@@ -119,7 +124,7 @@ void Player::throwBall(){
 		ss.str(std::string());
 		ss << camPlayer->getDerivedDirection().z;
 		std::cout<<" z="+ss.str()+"\n";*/
-		btVector3 dir=btVector3(camPlayer->getDerivedDirection().x,camPlayer->getDerivedDirection().y,camPlayer->getDerivedDirection().z);
-		ball->addToBullet(dir);	
+	btVector3 dir=btVector3(camPlayer->getDerivedDirection().x,camPlayer->getDerivedDirection().y,camPlayer->getDerivedDirection().z);
+	ball->addToBullet(dir);	
     ball = NULL;
 }
