@@ -33,9 +33,6 @@ Ogre::Vector3 Ball::getPosition(){
     return nodeBall->getPosition();
 }
 
-Ogre::SceneNode* Ball::getSceneNode(){
-    return nodeBall;
-}
 void Ball::translate(const Ogre::Vector3 & d, Ogre::Node::TransformSpace relativeTo){
     nodeBall->translate(d, relativeTo);
 }

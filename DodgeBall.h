@@ -74,6 +74,8 @@ protected:
     virtual bool mouseMoved( const OIS::MouseEvent &arg );
     virtual bool mousePressed( const OIS::MouseEvent &arg, OIS::MouseButtonID id );
     virtual bool mouseReleased( const OIS::MouseEvent &arg, OIS::MouseButtonID id );
+
+    void buttonHit(OgreBites::Button* button);
  
     // Ogre::WindowEventListener
     virtual void windowResized(Ogre::RenderWindow* rw);

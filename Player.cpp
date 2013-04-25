@@ -101,8 +101,13 @@ bool Player::hasBall(){
 }
 
 void Player::pickupBall(Ball* baller){
+    //Ogre::AxisAlignedBox bounds = entPlayer->getBoundingBox();
+    //Ogre::Vector3 max = bounds.getMaximum();
+    //Ogre::Vector3 min = bounds.getMinimum();
+
     Ogre::Vector3 diff = Ogre::Vector3(nodePlayer->getPosition().x - baller->getPosition().x ,0,nodePlayer->getPosition().z - baller->getPosition().z);
-    if(diff.length() < 7.0f &&  baller->getPosition().y < 0){
+    if(diff.length() < 15.0f &&  baller->getPosition().y < 0){
+    //if( (baller->getPosition().x-10 <= max.x  && baller->getPosition().x+10 >= min.x) && (baller->getPosition().z <= max.z  && baller->getPosition().z >= min.z) &&  baller->getPosition().y < 0){
         ball = baller;
         ball->setPosition(nodePlayer->getPosition().x, nodePlayer->getPosition().y + 75, nodePlayer->getPosition().z);
 		ball->removeFromBullet();
@@ -113,18 +118,19 @@ void Player::pickupBall(Ball* baller){
 void Player::throwBall(){
     mHasBall = false;
 	Ogre::Vector3 muldir=Ogre::Vector3(camPlayer->getDerivedDirection().x,0,camPlayer->getDerivedDirection().z);
-	float mult = 7.5f/muldir.length();
+	float mult = 20.0f/muldir.length();
     ball->setPosition(nodePlayer->getPosition().x+(camPlayer->getDerivedDirection().x*mult), nodePlayer->getPosition().y + 75, nodePlayer->getPosition().z+(camPlayer->getDerivedDirection().z*mult));
-	/*	std::stringstream ss (std::stringstream::in | std::stringstream::out);
-  	ss << camPlayer->getDerivedDirection().x;
-		std::cout<<"throw dir: x="+ss.str();
-		ss.str(std::string());
-		ss << camPlayer->getDerivedDirection().y;
-		std::cout<<" y="+ss.str();
-		ss.str(std::string());
-		ss << camPlayer->getDerivedDirection().z;
-		std::cout<<" z="+ss.str()+"\n";*/
 	btVector3 dir=btVector3(camPlayer->getDerivedDirection().x,camPlayer->getDerivedDirection().y,camPlayer->getDerivedDirection().z);
 	ball->addToBullet(dir);	
     ball = NULL;
 }
+
+/*  std::stringstream ss (std::stringstream::in | std::stringstream::out);
+    ss << camPlayer->getDerivedDirection().x;
+        std::cout<<"throw dir: x="+ss.str();
+        ss.str(std::string());
+        ss << camPlayer->getDerivedDirection().y;
+        std::cout<<" y="+ss.str();
+        ss.str(std::string());
+        ss << camPlayer->getDerivedDirection().z;
+        std::cout<<" z="+ss.str()+"\n";*/

@@ -142,6 +142,7 @@ bool DodgeBall::go(void)
     Ogre::WindowEventUtilities::addWindowEventListener(mWindow, this);
  
     mTrayMgr = new OgreBites::SdkTrayManager("InterfaceName", mWindow, mMouse, this);
+    GUIManager::GUIControl.setup(mTrayMgr);
     mTrayMgr->hideCursor();
  
 
@@ -276,8 +277,11 @@ bool DodgeBall::frameRenderingQueued(const Ogre::FrameEvent& evt)
     mMouse->capture();
 
     player1->move(evt);
-    if(!player1->hasBall())
+    if(!player1->hasBall()){
         player1->pickupBall(ball1);
+        if(player1->hasBall())
+            GUIManager::GUIControl.hasBall();
+    }
     if(!enemy->hasBall())
         enemy->pickupBall(ball1);
     else
@@ -285,9 +289,14 @@ bool DodgeBall::frameRenderingQueued(const Ogre::FrameEvent& evt)
 
     mTrayMgr->frameRenderingQueued(evt);
  
-    if (!mTrayMgr->isDialogVisible())
+    GUIManager::GUIControl.frameRenderingQueued(evt); 
+
+    if (!GUIManager::GUIControl.isDialogVisible())
     {
-        
+      //if (GUIManager::GUIControl.isScoreboardVisible())   // if details panel is visible, then update its contents
+      //{
+        //GUIManager::GUIControl.inPlay(inPlay, effect, timer, score);
+      //}
     }
  
     return true;
@@ -295,7 +304,7 @@ bool DodgeBall::frameRenderingQueued(const Ogre::FrameEvent& evt)
 //-------------------------------------------------------------------------------------
 bool DodgeBall::keyPressed( const OIS::KeyEvent &arg )
 {
-    if (mTrayMgr->isDialogVisible()) return true; // don't process any more keys if dialog is up
+    if (GUIManager::GUIControl.isDialogVisible()) return true; // don't process any more keys if dialog is up
 
 
     else if(arg.key == OIS::KC_F5) // refresh all textures
@@ -324,7 +333,7 @@ bool DodgeBall::keyPressed( const OIS::KeyEvent &arg )
     }
     else if (arg.key == OIS::KC_ESCAPE)
     {
-        mShutDown = true;
+        GUIManager::GUIControl.pause();
     }
     return true;
 }
@@ -353,7 +362,8 @@ bool DodgeBall::keyReleased( const OIS::KeyEvent &arg )
 bool DodgeBall::mouseMoved( const OIS::MouseEvent &arg )
 {
     if (mTrayMgr->injectMouseMove(arg)) return true;
-    player1->lookAround(arg);
+    if(GUIManager::GUIControl.isPaused())
+        player1->lookAround(arg);
     return true;
 }
  
@@ -361,8 +371,10 @@ bool DodgeBall::mousePressed( const OIS::MouseEvent &arg, OIS::MouseButtonID id 
 {
     if (mTrayMgr->injectMouseDown(arg, id)) return true;
 
-    if(player1->hasBall())
+    if(player1->hasBall()){
         player1->throwBall();
+        GUIManager::GUIControl.threwBall();
+    }
     return true;
 }
  
@@ -370,6 +382,17 @@ bool DodgeBall::mouseReleased( const OIS::MouseEvent &arg, OIS::MouseButtonID id
 {
     if (mTrayMgr->injectMouseUp(arg, id)) return true;
     return true;
+}
+
+void DodgeBall::buttonHit(OgreBites::Button* button){
+    if (button->getName().compare("Exit") == 0 || button->getName().compare("PauseExit") == 0)
+        mShutDown = true;
+    else if(button->getName().compare("Resume") == 0)
+        GUIManager::GUIControl.pause();
+    /*else if(button->getName().compare("MainMenu") == 0){
+        GUIManager::GUIControl.pause();
+        GUIManager::GUIControl.begin_MainScreen();
+    }*/
 }
  
 //Adjust mouse clipping area

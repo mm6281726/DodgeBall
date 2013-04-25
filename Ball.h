@@ -26,10 +26,9 @@ class Ball{
 		btRigidBody* physicsBall;
 	public:
 		Ball(Ogre::SceneManager* sceneMgr, Simulator* s);
-		Ogre::Vector3 getPosition();
-		Ogre::SceneNode* getSceneNode();
 		void setPosition(int x, int y, int z);
 		void setPosition(const Ogre::Vector3 &  pos);
+		Ogre::Vector3 getPosition();
 		void translate(const Ogre::Vector3 & d, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_PARENT);
 		void yaw(Ogre::Degree d);
 		btRigidBody* getBody();
