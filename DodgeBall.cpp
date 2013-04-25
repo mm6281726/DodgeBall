@@ -249,7 +249,6 @@ bool DodgeBall::go(void)
 //-------------------------------------------------------------------------------------
     mRoot->startRendering();
  
-		printf("finished go\n");
     return true;
 }
 
@@ -275,8 +274,9 @@ bool DodgeBall::frameRenderingQueued(const Ogre::FrameEvent& evt)
     mMouse->capture();
 
     player1->move(evt);
-    //player1->pickupBall(ball1);
- 
+    if(!player1->hasBall())
+        player1->pickupBall(ball1);
+
     mTrayMgr->frameRenderingQueued(evt);
  
     if (!mTrayMgr->isDialogVisible())
@@ -354,6 +354,9 @@ bool DodgeBall::mouseMoved( const OIS::MouseEvent &arg )
 bool DodgeBall::mousePressed( const OIS::MouseEvent &arg, OIS::MouseButtonID id )
 {
     if (mTrayMgr->injectMouseDown(arg, id)) return true;
+
+    if(player1->hasBall())
+        player1->throwBall();
     return true;
 }
  

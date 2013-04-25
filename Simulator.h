@@ -17,6 +17,7 @@ class Simulator
 		void handleCollisions(void);
 		btRigidBody* addPlane(float x,float y,float z,btVector3 normal);
 		btRigidBody* addSphere(float rad,float x,float y,float z,float mass);
+		btDiscreteDynamicsWorld* getWorld();
 	protected:
 		btVector3 paddleLocation;
 		btRigidBody* ballBody;

@@ -28,9 +28,14 @@ class Ball{
 		Ball(Ogre::SceneManager* sceneMgr, Simulator* s);
 		Ogre::Vector3 getPosition();
 		Ogre::SceneNode* getSceneNode();
-		void setPosition(Ogre::Vector3);
+		void setPosition(int x, int y, int z);
+		void setPosition(const Ogre::Vector3 &  pos);
+		void translate(const Ogre::Vector3 & d, Ogre::Node::TransformSpace relativeTo = Ogre::Node::TS_PARENT);
+		void yaw(Ogre::Degree d);
 		btRigidBody* getBody();
 		Simulator* simulator;
+		void addToBullet(btVector3 dir);
+		void removeFromBullet(void);
 };
 
 #endif

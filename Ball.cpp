@@ -12,28 +12,54 @@ Ball::Ball(Ogre::SceneManager* sceneMgr, Simulator* s){
   entBall->setMaterialName("Examples/SphereMappedRustySteel");
   entBall->setCastShadows(true);
  
-  nodeBall = mSceneMgr->getRootSceneNode()->createChildSceneNode("nodeBall", Ogre::Vector3(0,0,0));
-  nodeBall->attachObject(entBall);
-  nodeBall->scale(.1,.1,.1);
+    nodeBall = mSceneMgr->getRootSceneNode()->createChildSceneNode("nodeBall", Ogre::Vector3(0,-95,0));
+    nodeBall->attachObject(entBall);
+    nodeBall->scale(.05,.05,.05);
+
 
 	simulator = s;
-	physicsBall = simulator->addSphere(10,0,0,0,5);
+	physicsBall = simulator->addSphere(5,0,0,0,5);
 }
 
-void Ball::setPosition(Ogre::Vector3 vector)
-{
-	nodeBall->setPosition(vector);
+void Ball::setPosition(int x, int y, int z){
+    nodeBall->setPosition(x,y,z);
+}
+
+void Ball::setPosition(const Ogre::Vector3 &  pos){
+    nodeBall->setPosition(pos);
 }
 
 Ogre::Vector3 Ball::getPosition(){
-  return nodeBall->getPosition();
+    return nodeBall->getPosition();
 }
 
 Ogre::SceneNode* Ball::getSceneNode(){
-  return nodeBall;
+    return nodeBall;
+}
+void Ball::translate(const Ogre::Vector3 & d, Ogre::Node::TransformSpace relativeTo){
+    nodeBall->translate(d, relativeTo);
 }
 
+void Ball::yaw(Ogre::Degree d){
+    nodeBall->yaw(d);
+}
 btRigidBody* Ball::getBody()
 {
 	return physicsBall;
-} 
+}
+
+void Ball::addToBullet(btVector3 dir)
+{
+	btTransform t;
+	physicsBall->getMotionState()->getWorldTransform(t);
+	btVector3 pos = btVector3(nodeBall->getPosition().x,nodeBall->getPosition().y,nodeBall->getPosition().z);
+	t.setOrigin(pos);
+	physicsBall->proceedToTransform(t);
+	physicsBall->setLinearVelocity(dir*100);
+	simulator->getWorld()->addRigidBody(physicsBall);
+}
+
+void Ball::removeFromBullet(void)
+{
+	simulator->getWorld()->removeRigidBody(physicsBall);
+}

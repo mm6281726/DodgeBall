@@ -41,7 +41,7 @@ btRigidBody* Simulator::addSphere(float rad,float x,float y,float z,float mass)
 	btRigidBody::btRigidBodyConstructionInfo info(mass,motion,sphere,inertia);	//create the constructioninfo, you can create multiple bodies with the same info
 	btRigidBody* body=new btRigidBody(info);	//let's create the body itself
   body->setRestitution(1);
-	body->setLinearVelocity(btVector3(0,0,-5));
+	body->setLinearVelocity(btVector3(0,0,0));
 	world->addRigidBody(body);	//and let the world know about it
 	bodies.push_back(body);	//to be easier to clean, I store them a vector
 	return body;
@@ -54,7 +54,7 @@ btDiscreteDynamicsWorld* Simulator::setupSimulator(void)
 	btBroadphaseInterface* overlappingPairCache = new btDbvtBroadphase();
 	btSequentialImpulseConstraintSolver* solver = new btSequentialImpulseConstraintSolver;
 	world = new btDiscreteDynamicsWorld(dispatcher,overlappingPairCache,solver,collisionConfiguration);
-	world->setGravity(btVector3(0,-10,0));
+	world->setGravity(btVector3(0,-25,0));
 
 	addPlane(-100,0,0,btVector3(1,0,0));
 	addPlane(100,0,0,btVector3(-1,0,0));
@@ -127,4 +127,8 @@ btVector3 Simulator::getBallLocation(void)			///Discover why this segfaults
 void Simulator::deletePhysics(void)
 {
 	// free all resources
+}
+btDiscreteDynamicsWorld* Simulator::getWorld(void)
+{
+	return world;
 }
