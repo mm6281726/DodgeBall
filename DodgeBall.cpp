@@ -248,6 +248,8 @@ bool DodgeBall::go(void)
     entLeftWallBack->setMaterialName("Examples/Rockwall");
     entLeftWallBack->setCastShadows(false);
 
+    mPause = false;
+
     mRoot->addFrameListener(this);
 //-------------------------------------------------------------------------------------
     mRoot->startRendering();
@@ -262,19 +264,22 @@ bool DodgeBall::frameRenderingQueued(const Ogre::FrameEvent& evt)
  
     if(mShutDown)
         return false;
- 
-	//printf("before step simulation\n");
-	world->stepSimulation(1/60.0);
-	//printf("after step simulation\n");
-		
-	btTransform t;
-	ball1->getBody()->getMotionState()->getWorldTransform(t);
-    btVector3 position = t.getOrigin();
-    ball1->setPosition(Ogre::Vector3((float)position[0],(float)position[1],(float)position[2]));
 
     //Need to capture/update each device
     mKeyboard->capture();
     mMouse->capture();
+
+    if(mPause)
+        return true;
+
+    //printf("before step simulation\n");
+    world->stepSimulation(1/60.0);
+    //printf("after step simulation\n");
+        
+    btTransform t;
+    ball1->getBody()->getMotionState()->getWorldTransform(t);
+    btVector3 position = t.getOrigin();
+    ball1->setPosition(Ogre::Vector3((float)position[0],(float)position[1],(float)position[2]));
 
     player1->move(evt);
     if(!player1->hasBall()){
@@ -334,6 +339,7 @@ bool DodgeBall::keyPressed( const OIS::KeyEvent &arg )
     else if (arg.key == OIS::KC_ESCAPE)
     {
         GUIManager::GUIControl.pause();
+        mPause = mPause ? false : true; 
     }
     return true;
 }
@@ -370,7 +376,7 @@ bool DodgeBall::mouseMoved( const OIS::MouseEvent &arg )
 bool DodgeBall::mousePressed( const OIS::MouseEvent &arg, OIS::MouseButtonID id )
 {
     if (mTrayMgr->injectMouseDown(arg, id)) return true;
-
+    if (mPause) return true;
     if(player1->hasBall()){
         player1->throwBall();
         GUIManager::GUIControl.threwBall();
