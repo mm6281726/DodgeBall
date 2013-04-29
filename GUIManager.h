@@ -9,6 +9,7 @@
 class GUIManager{
     private:
         OgreBites::SdkTrayManager *mTrayMgr;
+        OgreBites::ProgressBar* pb;
 
         bool main;
         bool mPause;
@@ -28,6 +29,8 @@ class GUIManager{
         void threwBall();
         int createPowerBar();
         void destroyPowerBar();
+        bool hasPowerBar();
+        void setPowerBarProgress(Ogre::Real power);
         static GUIManager GUIControl;
 };
 

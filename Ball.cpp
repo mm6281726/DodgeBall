@@ -40,19 +40,20 @@ void Ball::translate(const Ogre::Vector3 & d, Ogre::Node::TransformSpace relativ
 void Ball::yaw(Ogre::Degree d){
     nodeBall->yaw(d);
 }
+
 btRigidBody* Ball::getBody()
 {
 	return physicsBall;
 }
 
-void Ball::addToBullet(btVector3 dir)
+void Ball::addToBullet(btVector3 dir, Ogre::Real power)
 {
 	btTransform t;
 	physicsBall->getMotionState()->getWorldTransform(t);
 	btVector3 pos = btVector3(nodeBall->getPosition().x,nodeBall->getPosition().y,nodeBall->getPosition().z);
 	t.setOrigin(pos);
 	physicsBall->proceedToTransform(t);
-	physicsBall->setLinearVelocity(dir*200);
+	physicsBall->setLinearVelocity(dir*200 * power);
 	simulator->getWorld()->addRigidBody(physicsBall);
 }
 

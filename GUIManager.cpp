@@ -6,7 +6,8 @@ GUIManager GUIManager::GUIControl;
 
     GUIManager::GUIManager() :
     main(true),
-    mPause(false)
+    mPause(false),
+    pb(NULL)
     {}
 
     GUIManager::~GUIManager() {
@@ -103,10 +104,20 @@ GUIManager GUIManager::GUIControl;
     }
 
     int GUIManager::createPowerBar(){
-        OgreBites::ProgressBar* pb = mTrayMgr->createProgressBar(OgreBites::TL_BOTTOM, "Power", "Power", 500, 500);
-
+        pb = mTrayMgr->createProgressBar(OgreBites::TL_BOTTOM, "Power", "Power", 500, 500);
     }
 
     void GUIManager::destroyPowerBar(){
+        pb = NULL;
         mTrayMgr->destroyWidget("Power");
+    }
+
+    bool GUIManager::hasPowerBar(){
+        if(pb == NULL)
+            return false;
+        else return true;
+    }
+
+    void GUIManager::setPowerBarProgress(Ogre::Real power){
+        pb->setProgress(power);
     }

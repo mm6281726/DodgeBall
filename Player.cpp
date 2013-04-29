@@ -10,7 +10,9 @@ Player::Player(Ogre::SceneManager* sceneMgr, int x, int z, bool enemy){
 	mSceneMgr = sceneMgr;
     mHasBall = false;
     ball = NULL;
-    mRayScnQuery = mSceneMgr->createRayQuery(Ogre::Ray());
+    mPower = 1;
+    mThrowing = false;
+    //mRayScnQuery = mSceneMgr->createRayQuery(Ogre::Ray());
 
     if(!enemy){
         entPlayer = mSceneMgr->createEntity("entPlayer", "ninja.mesh");
@@ -136,14 +138,36 @@ void Player::pickupBall(Ball* baller){
     }*/
 }
 
-void Player::throwBall(int power){
+void Player::beginThrow(){
+    GUIManager::GUIControl.createPowerBar();
+    GUIManager::GUIControl.setPowerBarProgress(0);
+    mThrowing = true;	
+}
+
+void Player::chargeThrow(){
+    mPower+=0.02;
+    if(mPower > 3)
+        mPower = 3;
+    GUIManager::GUIControl.setPowerBarProgress(mPower/3);
+}
+
+void Player::endThrow(){
     mHasBall = false;
-	Ogre::Vector3 muldir=Ogre::Vector3(camPlayer->getDerivedDirection().x,0,camPlayer->getDerivedDirection().z);
-	float mult = 20.0f/muldir.length();
+    Ogre::Vector3 muldir=Ogre::Vector3(camPlayer->getDerivedDirection().x,0,camPlayer->getDerivedDirection().z);
+    float mult = 20.0f/muldir.length();
     ball->setPosition(nodePlayer->getPosition().x+(camPlayer->getDerivedDirection().x*mult), nodePlayer->getPosition().y + 75, nodePlayer->getPosition().z+(camPlayer->getDerivedDirection().z*mult));
-	btVector3 dir=btVector3(camPlayer->getDerivedDirection().x,camPlayer->getDerivedDirection().y,camPlayer->getDerivedDirection().z);
-	ball->addToBullet(dir);	
+    btVector3 dir=btVector3(camPlayer->getDerivedDirection().x,camPlayer->getDerivedDirection().y,camPlayer->getDerivedDirection().z);
+    ball->addToBullet(dir, mPower); 
     ball = NULL;
+    mPower = 1;
+    mThrowing = false;
+
+    GUIManager::GUIControl.destroyPowerBar();
+    GUIManager::GUIControl.threwBall();
+}
+
+bool Player::isThrowing(){
+    return mThrowing;
 }
 
 /*  std::stringstream ss (std::stringstream::in | std::stringstream::out);

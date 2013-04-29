@@ -33,7 +33,7 @@ class Ball{
 		void yaw(Ogre::Degree d);
 		btRigidBody* getBody();
 		Simulator* simulator;
-		void addToBullet(btVector3 dir);
+		void addToBullet(btVector3 dir, Ogre::Real power);
 		void removeFromBullet(void);
 };
 

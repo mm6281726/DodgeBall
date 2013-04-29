@@ -17,6 +17,7 @@
 #include <OISMouse.h>
 
 #include <Ball.h>
+#include <GUIManager.h>
 
 class Player{
 	private:
@@ -28,6 +29,8 @@ class Player{
 
 		Ball* ball;
 		bool mHasBall;
+		bool mThrowing;
+		Ogre::Real mPower;
 	public:
 		Player(Ogre::SceneManager* sceneMgr, int x, int z, bool enemy);
 		void move(const Ogre::FrameEvent& evt);
@@ -36,7 +39,10 @@ class Player{
 		void lookAround(const OIS::MouseEvent &arg);
 		bool hasBall();
 		void pickupBall(Ball* ball);
-		void throwBall(int power);
+		void beginThrow();
+		void chargeThrow();
+		void endThrow();
+		bool isThrowing();
 };
 
 #endif
