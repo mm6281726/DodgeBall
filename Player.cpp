@@ -10,6 +10,7 @@ Player::Player(Ogre::SceneManager* sceneMgr, int x, int z, bool enemy){
 	mSceneMgr = sceneMgr;
     mHasBall = false;
     ball = NULL;
+    mRayScnQuery = mSceneMgr->createRayQuery(Ogre::Ray());
 
     if(!enemy){
         entPlayer = mSceneMgr->createEntity("entPlayer", "ninja.mesh");
@@ -101,21 +102,41 @@ bool Player::hasBall(){
 }
 
 void Player::pickupBall(Ball* baller){
-    //Ogre::AxisAlignedBox bounds = entPlayer->getBoundingBox();
-    //Ogre::Vector3 max = bounds.getMaximum();
-    //Ogre::Vector3 min = bounds.getMinimum();
-
     Ogre::Vector3 diff = Ogre::Vector3(nodePlayer->getPosition().x - baller->getPosition().x ,0,nodePlayer->getPosition().z - baller->getPosition().z);
-    if(diff.length() < 15.0f &&  baller->getPosition().y < 0){
     //if( (baller->getPosition().x-10 <= max.x  && baller->getPosition().x+10 >= min.x) && (baller->getPosition().z <= max.z  && baller->getPosition().z >= min.z) &&  baller->getPosition().y < 0){
+    if(diff.length() < 15.0f &&  baller->getPosition().y < 0){
         ball = baller;
         ball->setPosition(nodePlayer->getPosition().x, nodePlayer->getPosition().y + 75, nodePlayer->getPosition().z);
 		ball->removeFromBullet();
         mHasBall = true;
     }
+
+    /*Ogre::Vector3 camPos = camPlayer->getPosition();
+    Ogre::Ray cameraRay(Ogre::Vector3(camPos.x, 5000.0f, camPos.z), Ogre::Vector3::NEGATIVE_UNIT_Y);
+ 
+    mRayScnQuery->setRay(cameraRay);
+ 
+    mRayScnQuery->setSortByDistance(false);
+    Ogre::RaySceneQueryResult& result = mRayScnQuery->execute();
+    Ogre::RaySceneQueryResult::iterator iter = result.begin();
+
+    for(iter; iter != result.end(); iter++)
+    {
+        if(iter->worldFragment)
+        {
+            //gets the results, fixes camera height and breaks the loop
+            Ogre::Real terrainHeight = iter->worldFragment->singleIntersection.y;
+ 
+            if((terrainHeight + 10.0f) > camPos.y)
+            {
+                camPlayer->setPosition(camPos.x, terrainHeight + 10.0f, camPos.z);
+            }
+            break;
+        }
+    }*/
 }
 
-void Player::throwBall(){
+void Player::throwBall(int power){
     mHasBall = false;
 	Ogre::Vector3 muldir=Ogre::Vector3(camPlayer->getDerivedDirection().x,0,camPlayer->getDerivedDirection().z);
 	float mult = 20.0f/muldir.length();

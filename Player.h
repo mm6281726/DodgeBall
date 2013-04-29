@@ -24,6 +24,7 @@ class Player{
 		Ogre::Camera* camPlayer;
 		Ogre::Entity* entPlayer;
 		Ogre::SceneNode* nodePlayer;
+		Ogre::RaySceneQuery* mRayScnQuery;
 
 		Ball* ball;
 		bool mHasBall;
@@ -35,7 +36,7 @@ class Player{
 		void lookAround(const OIS::MouseEvent &arg);
 		bool hasBall();
 		void pickupBall(Ball* ball);
-		void throwBall();
+		void throwBall(int power);
 };
 
 #endif

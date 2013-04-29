@@ -6,7 +6,7 @@ GUIManager GUIManager::GUIControl;
 
     GUIManager::GUIManager() :
     main(true),
-    mPause(true)
+    mPause(false)
     {}
 
     GUIManager::~GUIManager() {
@@ -62,20 +62,20 @@ GUIManager GUIManager::GUIControl;
     }
 
     void GUIManager::pause(){
-        if(mPause){
+        if(!mPause){
             mTrayMgr->showCursor();
             mTrayMgr->createLabel(OgreBites::TL_CENTER, "PauseScreen", "Pause");
             mTrayMgr->createButton(OgreBites::TL_CENTER, "Resume", "Resume", 250);
             //mTrayMgr->createButton(OgreBites::TL_CENTER, "MainMenu", "Main Menu", 250);
             mTrayMgr->createButton(OgreBites::TL_CENTER, "PauseExit", "Exit", 250);
-            mPause = false;
+            mPause = true;
         }else{
             mTrayMgr->hideCursor();
             mTrayMgr->destroyWidget("PauseScreen");
             mTrayMgr->destroyWidget("Resume");
             //mTrayMgr->destroyWidget("MainMenu");
             mTrayMgr->destroyWidget("PauseExit");
-            mPause = true;
+            mPause = false;
         }
     }
 
@@ -100,4 +100,13 @@ GUIManager GUIManager::GUIControl;
     void GUIManager::threwBall(){
         //mTrayMgr->destroyWidget("hasBall");
         mTrayMgr->hideLogo();
+    }
+
+    int GUIManager::createPowerBar(){
+        OgreBites::ProgressBar* pb = mTrayMgr->createProgressBar(OgreBites::TL_BOTTOM, "Power", "Power", 500, 500);
+
+    }
+
+    void GUIManager::destroyPowerBar(){
+        mTrayMgr->destroyWidget("Power");
     }

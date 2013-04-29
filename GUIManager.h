@@ -26,6 +26,8 @@ class GUIManager{
         void frameRenderingQueued(const Ogre::FrameEvent& evt);
         void hasBall();
         void threwBall();
+        int createPowerBar();
+        void destroyPowerBar();
         static GUIManager GUIControl;
 };
 

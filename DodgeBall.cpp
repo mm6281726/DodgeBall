@@ -290,7 +290,7 @@ bool DodgeBall::frameRenderingQueued(const Ogre::FrameEvent& evt)
     if(!enemy->hasBall())
         enemy->pickupBall(ball1);
     else
-        enemy->throwBall();
+        enemy->throwBall(1);
 
     mTrayMgr->frameRenderingQueued(evt);
  
@@ -368,7 +368,7 @@ bool DodgeBall::keyReleased( const OIS::KeyEvent &arg )
 bool DodgeBall::mouseMoved( const OIS::MouseEvent &arg )
 {
     if (mTrayMgr->injectMouseMove(arg)) return true;
-    if(GUIManager::GUIControl.isPaused())
+    if(!GUIManager::GUIControl.isPaused())
         player1->lookAround(arg);
     return true;
 }
@@ -378,7 +378,7 @@ bool DodgeBall::mousePressed( const OIS::MouseEvent &arg, OIS::MouseButtonID id 
     if (mTrayMgr->injectMouseDown(arg, id)) return true;
     if (mPause) return true;
     if(player1->hasBall()){
-        player1->throwBall();
+        player1->throwBall(GUIManager::GUIControl.createPowerBar());
         GUIManager::GUIControl.threwBall();
     }
     return true;
@@ -387,6 +387,7 @@ bool DodgeBall::mousePressed( const OIS::MouseEvent &arg, OIS::MouseButtonID id 
 bool DodgeBall::mouseReleased( const OIS::MouseEvent &arg, OIS::MouseButtonID id )
 {
     if (mTrayMgr->injectMouseUp(arg, id)) return true;
+    GUIManager::GUIControl.destroyPowerBar();
     return true;
 }
 
