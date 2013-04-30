@@ -166,8 +166,38 @@ void Player::endThrow(){
     GUIManager::GUIControl.threwBall();
 }
 
+void Player::extThrow(btVector3 dir, Ogre::Real pow){
+    mHasBall = false;
+    Ogre::Vector3 muldir=Ogre::Vector3(camPlayer->getDerivedDirection().x,0,camPlayer->getDerivedDirection().z);
+    float mult = 20.0f/muldir.length();
+    ball->setPosition(nodePlayer->getPosition().x+(camPlayer->getDerivedDirection().x*mult), nodePlayer->getPosition().y + 75, nodePlayer->getPosition().z+(camPlayer->getDerivedDirection().z*mult));
+    ball->addToBullet(dir, pow); 
+    ball = NULL;
+    mPower = 1;
+    mThrowing = false;
+
+    GUIManager::GUIControl.destroyPowerBar();
+    GUIManager::GUIControl.threwBall();
+}
+
 bool Player::isThrowing(){
     return mThrowing;
+}
+
+btVector3 Player::throwDir(){
+	return btVector3(camPlayer->getDerivedDirection().x,camPlayer->getDerivedDirection().y,camPlayer->getDerivedDirection().z);
+}
+
+Ogre::Real Player::throwPower(){
+	return mPower;
+}
+
+void Player::setRelease(bool b){
+	mRelease=b;
+}
+
+bool Player::isReleasing(){
+	return mRelease;
 }
 
 /*  std::stringstream ss (std::stringstream::in | std::stringstream::out);
