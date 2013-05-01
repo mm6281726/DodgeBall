@@ -25,6 +25,10 @@ Enemy::Enemy(Ogre::SceneManager* sceneMgr, int x, int z){
     nodeEnemy->scale(.50,.50,.50);
 }
 
+Ogre::Vector3 Enemy::getPosition(){
+    return nodeEnemy->getPosition();
+}
+
 bool Enemy::hasBall(){
     return mHasBall;
 }

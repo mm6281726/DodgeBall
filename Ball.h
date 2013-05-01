@@ -25,7 +25,7 @@ class Ball{
 		Ogre::SceneNode* nodeBall;
 		btRigidBody* physicsBall;
 	public:
-		Ball(Ogre::SceneManager* sceneMgr, Simulator* s);
+		Ball(Ogre::SceneManager* sceneMgr, Simulator* s, Ogre::String name, int x);
 		void setPosition(int x, int y, int z);
 		void setPosition(const Ogre::Vector3 &  pos);
 		Ogre::Vector3 getPosition();

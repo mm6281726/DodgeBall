@@ -58,7 +58,8 @@ am_DodgeBall_OBJECTS = DodgeBall-DodgeBall.$(OBJEXT) \
 	DodgeBall-GUIManager.$(OBJEXT) DodgeBall-Simulator.$(OBJEXT) \
 	DodgeBall-NetworkManager.$(OBJEXT) DodgeBall-Player.$(OBJEXT) \
 	DodgeBall-Enemy.$(OBJEXT) DodgeBall-Ball.$(OBJEXT) \
-	DodgeBall-PlayerManager.$(OBJEXT)
+	DodgeBall-PlayerManager.$(OBJEXT) \
+	DodgeBall-BallManager.$(OBJEXT)
 DodgeBall_OBJECTS = $(am_DodgeBall_OBJECTS)
 am__DEPENDENCIES_1 =
 DodgeBall_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
@@ -234,9 +235,9 @@ top_build_prefix =
 top_builddir = .
 top_srcdir = .
 ACLOCAL_AMFLAGS = -I m4
-noinst_HEADERS = DodgeBall.h SoundManager.h GUIManager.h Simulator.h NetworkManager.h Player.h Enemy.h Ball.h PlayerManager.h
+noinst_HEADERS = DodgeBall.h SoundManager.h GUIManager.h Simulator.h NetworkManager.h Player.h Enemy.h Ball.h PlayerManager.h BallManager.h
 DodgeBall_CPPFLAGS = -I$(top_srcdir)
-DodgeBall_SOURCES = DodgeBall.cpp SoundManager.cpp GUIManager.cpp Simulator.cpp NetworkManager.cpp Player.cpp Enemy.cpp Ball.cpp PlayerManager.cpp
+DodgeBall_SOURCES = DodgeBall.cpp SoundManager.cpp GUIManager.cpp Simulator.cpp NetworkManager.cpp Player.cpp Enemy.cpp Ball.cpp PlayerManager.cpp BallManager.cpp
 DodgeBall_CXXFLAGS = $(OGRE_CFLAGS) $(OIS_CFLAGS) $(bullet_CFLAGS) $(SDL_CFLAGS) $(SDL_mixer_CFLAGS) $(SDL_net_CFLAGS)
 DodgeBall_LDADD = $(OGRE_LIBS) $(OIS_LIBS) $(bullet_LIBS) $(SDL_LIBS) $(SDL_mixer_LIBS)  $(SDL_net_LIBS)
 EXTRA_DIST = buildit makeit
@@ -349,6 +350,7 @@ distclean-compile:
 	-rm -f *.tab.c
 
 include ./$(DEPDIR)/DodgeBall-Ball.Po
+include ./$(DEPDIR)/DodgeBall-BallManager.Po
 include ./$(DEPDIR)/DodgeBall-DodgeBall.Po
 include ./$(DEPDIR)/DodgeBall-Enemy.Po
 include ./$(DEPDIR)/DodgeBall-GUIManager.Po
@@ -504,6 +506,20 @@ DodgeBall-PlayerManager.obj: PlayerManager.cpp
 #	source='PlayerManager.cpp' object='DodgeBall-PlayerManager.obj' libtool=no \
 #	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
 #	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(DodgeBall_CPPFLAGS) $(CPPFLAGS) $(DodgeBall_CXXFLAGS) $(CXXFLAGS) -c -o DodgeBall-PlayerManager.obj `if test -f 'PlayerManager.cpp'; then $(CYGPATH_W) 'PlayerManager.cpp'; else $(CYGPATH_W) '$(srcdir)/PlayerManager.cpp'; fi`
+
+DodgeBall-BallManager.o: BallManager.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(DodgeBall_CPPFLAGS) $(CPPFLAGS) $(DodgeBall_CXXFLAGS) $(CXXFLAGS) -MT DodgeBall-BallManager.o -MD -MP -MF $(DEPDIR)/DodgeBall-BallManager.Tpo -c -o DodgeBall-BallManager.o `test -f 'BallManager.cpp' || echo '$(srcdir)/'`BallManager.cpp
+	$(am__mv) $(DEPDIR)/DodgeBall-BallManager.Tpo $(DEPDIR)/DodgeBall-BallManager.Po
+#	source='BallManager.cpp' object='DodgeBall-BallManager.o' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(DodgeBall_CPPFLAGS) $(CPPFLAGS) $(DodgeBall_CXXFLAGS) $(CXXFLAGS) -c -o DodgeBall-BallManager.o `test -f 'BallManager.cpp' || echo '$(srcdir)/'`BallManager.cpp
+
+DodgeBall-BallManager.obj: BallManager.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(DodgeBall_CPPFLAGS) $(CPPFLAGS) $(DodgeBall_CXXFLAGS) $(CXXFLAGS) -MT DodgeBall-BallManager.obj -MD -MP -MF $(DEPDIR)/DodgeBall-BallManager.Tpo -c -o DodgeBall-BallManager.obj `if test -f 'BallManager.cpp'; then $(CYGPATH_W) 'BallManager.cpp'; else $(CYGPATH_W) '$(srcdir)/BallManager.cpp'; fi`
+	$(am__mv) $(DEPDIR)/DodgeBall-BallManager.Tpo $(DEPDIR)/DodgeBall-BallManager.Po
+#	source='BallManager.cpp' object='DodgeBall-BallManager.obj' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(DodgeBall_CPPFLAGS) $(CPPFLAGS) $(DodgeBall_CXXFLAGS) $(CXXFLAGS) -c -o DodgeBall-BallManager.obj `if test -f 'BallManager.cpp'; then $(CYGPATH_W) 'BallManager.cpp'; else $(CYGPATH_W) '$(srcdir)/BallManager.cpp'; fi`
 
 mostlyclean-libtool:
 	-rm -f *.lo

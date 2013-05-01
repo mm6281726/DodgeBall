@@ -34,6 +34,7 @@ class Enemy{
 		bool mRelease;
 	public:
 		Enemy(Ogre::SceneManager* sceneMgr, int x, int z);
+		Ogre::Vector3 getPosition();
 		bool hasBall();
 		void pickupBall(Ball* ball);
 		void beginThrow();
