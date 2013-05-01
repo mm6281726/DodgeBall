@@ -53,7 +53,7 @@ void Ball::addToBullet(btVector3 dir, Ogre::Real power)
 	btVector3 pos = btVector3(nodeBall->getPosition().x,nodeBall->getPosition().y,nodeBall->getPosition().z);
 	t.setOrigin(pos);
 	physicsBall->proceedToTransform(t);
-	physicsBall->setLinearVelocity(dir*200 * power);
+	physicsBall->setLinearVelocity(dir * 200 * power);
 	simulator->getWorld()->addRigidBody(physicsBall);
 }
 

@@ -108,8 +108,10 @@ GUIManager GUIManager::GUIControl;
     }
 
     void GUIManager::destroyPowerBar(){
-        pb = NULL;
-        mTrayMgr->destroyWidget("Power");
+        if(pb != NULL){
+            pb = NULL;
+            mTrayMgr->destroyWidget("Power");
+        }
     }
 
     bool GUIManager::hasPowerBar(){

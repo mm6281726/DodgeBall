@@ -18,7 +18,7 @@ http://www.ogre3d.org/tikiwiki/
 Simulator* simulator;
 btDiscreteDynamicsWorld* world;
 Player* player1;
-Player* enemy;
+Enemy* enemy1;
 Ball* ball1;
 
 bool DodgeBall::go(void)
@@ -92,10 +92,10 @@ bool DodgeBall::go(void)
 		world = simulator->setupSimulator();
 //-------------------------------------------------------------------------------------
 
-    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Create Player/Ball
+    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Create Player/Enemy/Ball
     mSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_ADDITIVE);
-    player1 = new Player(mSceneMgr, 0, 200, false);
-    enemy = new Player(mSceneMgr, 0, -200, true);
+    player1 = new Player(mSceneMgr, 0, 200);
+    enemy1 = new Enemy(mSceneMgr, 0, -200);
     ball1 = new Ball(mSceneMgr, simulator);
 //-------------------------------------------------------------------------------------
     // create viewports
@@ -287,12 +287,12 @@ bool DodgeBall::frameRenderingQueued(const Ogre::FrameEvent& evt)
         if(player1->hasBall())
             GUIManager::GUIControl.hasBall();
     }
-    if(!enemy->hasBall()){
-        enemy->getNearBall(ball1, evt);     
-        enemy->pickupBall(ball1);
+    if(!enemy1->hasBall()){
+        enemy1->getNearBall(ball1, evt);     
+        enemy1->pickupBall(ball1);
     }else{
-        enemy->beginThrow();
-        enemy->endThrow();
+        enemy1->beginThrow();
+        enemy1->endThrow(player1->getPosition());
     }
 
     if(player1->isThrowing()){

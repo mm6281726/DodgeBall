@@ -57,7 +57,8 @@ am_DodgeBall_OBJECTS = DodgeBall-DodgeBall.$(OBJEXT) \
 	DodgeBall-SoundManager.$(OBJEXT) \
 	DodgeBall-GUIManager.$(OBJEXT) DodgeBall-Simulator.$(OBJEXT) \
 	DodgeBall-NetworkManager.$(OBJEXT) DodgeBall-Player.$(OBJEXT) \
-	DodgeBall-Ball.$(OBJEXT) DodgeBall-PlayerManager.$(OBJEXT)
+	DodgeBall-Enemy.$(OBJEXT) DodgeBall-Ball.$(OBJEXT) \
+	DodgeBall-PlayerManager.$(OBJEXT)
 DodgeBall_OBJECTS = $(am_DodgeBall_OBJECTS)
 am__DEPENDENCIES_1 =
 DodgeBall_DEPENDENCIES = $(am__DEPENDENCIES_1) $(am__DEPENDENCIES_1) \
@@ -233,9 +234,9 @@ top_build_prefix =
 top_builddir = .
 top_srcdir = .
 ACLOCAL_AMFLAGS = -I m4
-noinst_HEADERS = DodgeBall.h SoundManager.h GUIManager.h Simulator.h NetworkManager.h Player.h Ball.h PlayerManager.h
+noinst_HEADERS = DodgeBall.h SoundManager.h GUIManager.h Simulator.h NetworkManager.h Player.h Enemy.h Ball.h PlayerManager.h
 DodgeBall_CPPFLAGS = -I$(top_srcdir)
-DodgeBall_SOURCES = DodgeBall.cpp SoundManager.cpp GUIManager.cpp Simulator.cpp NetworkManager.cpp Player.cpp Ball.cpp PlayerManager.cpp
+DodgeBall_SOURCES = DodgeBall.cpp SoundManager.cpp GUIManager.cpp Simulator.cpp NetworkManager.cpp Player.cpp Enemy.cpp Ball.cpp PlayerManager.cpp
 DodgeBall_CXXFLAGS = $(OGRE_CFLAGS) $(OIS_CFLAGS) $(bullet_CFLAGS) $(SDL_CFLAGS) $(SDL_mixer_CFLAGS) $(SDL_net_CFLAGS)
 DodgeBall_LDADD = $(OGRE_LIBS) $(OIS_LIBS) $(bullet_LIBS) $(SDL_LIBS) $(SDL_mixer_LIBS)  $(SDL_net_LIBS)
 EXTRA_DIST = buildit makeit
@@ -349,6 +350,7 @@ distclean-compile:
 
 include ./$(DEPDIR)/DodgeBall-Ball.Po
 include ./$(DEPDIR)/DodgeBall-DodgeBall.Po
+include ./$(DEPDIR)/DodgeBall-Enemy.Po
 include ./$(DEPDIR)/DodgeBall-GUIManager.Po
 include ./$(DEPDIR)/DodgeBall-NetworkManager.Po
 include ./$(DEPDIR)/DodgeBall-Player.Po
@@ -460,6 +462,20 @@ DodgeBall-Player.obj: Player.cpp
 #	source='Player.cpp' object='DodgeBall-Player.obj' libtool=no \
 #	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
 #	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(DodgeBall_CPPFLAGS) $(CPPFLAGS) $(DodgeBall_CXXFLAGS) $(CXXFLAGS) -c -o DodgeBall-Player.obj `if test -f 'Player.cpp'; then $(CYGPATH_W) 'Player.cpp'; else $(CYGPATH_W) '$(srcdir)/Player.cpp'; fi`
+
+DodgeBall-Enemy.o: Enemy.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(DodgeBall_CPPFLAGS) $(CPPFLAGS) $(DodgeBall_CXXFLAGS) $(CXXFLAGS) -MT DodgeBall-Enemy.o -MD -MP -MF $(DEPDIR)/DodgeBall-Enemy.Tpo -c -o DodgeBall-Enemy.o `test -f 'Enemy.cpp' || echo '$(srcdir)/'`Enemy.cpp
+	$(am__mv) $(DEPDIR)/DodgeBall-Enemy.Tpo $(DEPDIR)/DodgeBall-Enemy.Po
+#	source='Enemy.cpp' object='DodgeBall-Enemy.o' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(DodgeBall_CPPFLAGS) $(CPPFLAGS) $(DodgeBall_CXXFLAGS) $(CXXFLAGS) -c -o DodgeBall-Enemy.o `test -f 'Enemy.cpp' || echo '$(srcdir)/'`Enemy.cpp
+
+DodgeBall-Enemy.obj: Enemy.cpp
+	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(DodgeBall_CPPFLAGS) $(CPPFLAGS) $(DodgeBall_CXXFLAGS) $(CXXFLAGS) -MT DodgeBall-Enemy.obj -MD -MP -MF $(DEPDIR)/DodgeBall-Enemy.Tpo -c -o DodgeBall-Enemy.obj `if test -f 'Enemy.cpp'; then $(CYGPATH_W) 'Enemy.cpp'; else $(CYGPATH_W) '$(srcdir)/Enemy.cpp'; fi`
+	$(am__mv) $(DEPDIR)/DodgeBall-Enemy.Tpo $(DEPDIR)/DodgeBall-Enemy.Po
+#	source='Enemy.cpp' object='DodgeBall-Enemy.obj' libtool=no \
+#	DEPDIR=$(DEPDIR) $(CXXDEPMODE) $(depcomp) \
+#	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(DodgeBall_CPPFLAGS) $(CPPFLAGS) $(DodgeBall_CXXFLAGS) $(CXXFLAGS) -c -o DodgeBall-Enemy.obj `if test -f 'Enemy.cpp'; then $(CYGPATH_W) 'Enemy.cpp'; else $(CYGPATH_W) '$(srcdir)/Enemy.cpp'; fi`
 
 DodgeBall-Ball.o: Ball.cpp
 	$(CXX) $(DEFS) $(DEFAULT_INCLUDES) $(INCLUDES) $(DodgeBall_CPPFLAGS) $(CPPFLAGS) $(DodgeBall_CXXFLAGS) $(CXXFLAGS) -MT DodgeBall-Ball.o -MD -MP -MF $(DEPDIR)/DodgeBall-Ball.Tpo -c -o DodgeBall-Ball.o `test -f 'Ball.cpp' || echo '$(srcdir)/'`Ball.cpp
