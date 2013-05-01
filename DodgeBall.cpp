@@ -19,7 +19,6 @@ Simulator* simulator;
 btDiscreteDynamicsWorld* world;
 Player* player1;
 Enemy* enemy1;
-Ball* ball1;
 
 bool DodgeBall::go(void)
 {
@@ -88,16 +87,17 @@ bool DodgeBall::go(void)
     Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 //-------------------------------------------------------------------------------------
     // set up physics
-		simulator = new Simulator();
-		world = simulator->setupSimulator();
+	simulator = new Simulator();
+	world = simulator->setupSimulator();
 //-------------------------------------------------------------------------------------
 
     //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Create Player/Enemy/Ball
     mSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_ADDITIVE);
     player1 = new Player(mSceneMgr, 0, 200);
     enemy1 = new Enemy(mSceneMgr, 0, -200);
-    ball1 = new Ball(mSceneMgr, simulator, "Ball1", 0);
-    BallManager::BallControl.addBall(ball1);
+    BallManager::BallControl.addBall(new Ball(mSceneMgr, simulator, "Ball1", -20));
+    BallManager::BallControl.addBall(new Ball(mSceneMgr, simulator, "Ball2", 0));
+    BallManager::BallControl.addBall(new Ball(mSceneMgr, simulator, "Ball3", 20));
 //-------------------------------------------------------------------------------------
     // create viewports
     // Create one viewport, entire window
@@ -277,20 +277,19 @@ bool DodgeBall::frameRenderingQueued(const Ogre::FrameEvent& evt)
     world->stepSimulation(1/60.0);
     //printf("after step simulation\n");
         
-    btTransform t;
-    ball1->getBody()->getMotionState()->getWorldTransform(t);
-    btVector3 position = t.getOrigin();
-    ball1->setPosition(Ogre::Vector3((float)position[0],(float)position[1],(float)position[2]));
+    BallManager::BallControl.updateBalls();
 
     player1->move(evt);
     if(!player1->hasBall()){
-        player1->pickupBall(BallManager::BallControl.getNearestBall(player1->getPosition()));
+        for(int i = 0; i < BallManager::BallControl.size(); i++)   
+            player1->pickupBall(BallManager::BallControl.getBall(i));
         if(player1->hasBall())
             GUIManager::GUIControl.hasBall();
     }
     if(!enemy1->hasBall()){
-        enemy1->getNearBall(BallManager::BallControl.getNearestBall(enemy1->getPosition()), evt);     
-        enemy1->pickupBall(BallManager::BallControl.getNearestBall(enemy1->getPosition()));
+        enemy1->getNearBall(BallManager::BallControl.getNearestBall(enemy1->getPosition()), evt);  
+        for(int i = 0; i < BallManager::BallControl.size(); i++)   
+            enemy1->pickupBall(BallManager::BallControl.getBall(i));
     }else{
         enemy1->beginThrow();
         enemy1->endThrow(player1->getPosition());
