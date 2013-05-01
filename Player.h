@@ -32,6 +32,7 @@ class Player{
 		bool mThrowing;
 		Ogre::Real mPower;
 		bool mRelease;
+		bool isEnemy;
 	public:
 		Player(Ogre::SceneManager* sceneMgr, int x, int z, bool enemy);
 		void move(const Ogre::FrameEvent& evt);
@@ -47,6 +48,7 @@ class Player{
 		void setRelease(bool b);
 		bool isReleasing();
 		bool isThrowing();
+		void getNearBall(Ball* ball, const Ogre::FrameEvent& evt);
 		btVector3 throwDir();
 		Ogre::Real throwPower();
 

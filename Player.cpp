@@ -12,6 +12,7 @@ Player::Player(Ogre::SceneManager* sceneMgr, int x, int z, bool enemy){
     ball = NULL;
     mPower = 1;
     mThrowing = false;
+    isEnemy = enemy;
     //mRayScnQuery = mSceneMgr->createRayQuery(Ogre::Ray());
 
     if(!enemy){
@@ -182,6 +183,20 @@ void Player::extThrow(btVector3 dir, Ogre::Real pow){
 
 bool Player::isThrowing(){
     return mThrowing;
+}
+
+void Player::getNearBall(Ball* ball, const Ogre::FrameEvent& evt){
+    if (isEnemy && ball->getPosition().z < -10)
+        nodePlayer->translate((ball->getPosition().x - nodePlayer->getPosition().x) * evt.timeSinceLastFrame,0,(ball->getPosition().z - nodePlayer->getPosition().z) * evt.timeSinceLastFrame, Ogre::Node::TS_LOCAL);
+
+    if(nodePlayer->getPosition().z > 0)
+        nodePlayer->setPosition(nodePlayer->getPosition().x, nodePlayer->getPosition().y, 0);
+    if(nodePlayer->getPosition().z < -280)
+        nodePlayer->setPosition(nodePlayer->getPosition().x, nodePlayer->getPosition().y, -280);
+    if(nodePlayer->getPosition().x < -80)
+        nodePlayer->setPosition(-80, nodePlayer->getPosition().y, nodePlayer->getPosition().z);
+    if(nodePlayer->getPosition().x > 80)
+        nodePlayer->setPosition(80, nodePlayer->getPosition().y, nodePlayer->getPosition().z);
 }
 
 btVector3 Player::throwDir(){

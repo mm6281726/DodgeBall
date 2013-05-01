@@ -287,9 +287,10 @@ bool DodgeBall::frameRenderingQueued(const Ogre::FrameEvent& evt)
         if(player1->hasBall())
             GUIManager::GUIControl.hasBall();
     }
-    if(!enemy->hasBall())
+    if(!enemy->hasBall()){
+        enemy->getNearBall(ball1, evt);     
         enemy->pickupBall(ball1);
-    else{
+    }else{
         enemy->beginThrow();
         enemy->endThrow();
     }
