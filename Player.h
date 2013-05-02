@@ -33,7 +33,7 @@ class Player{
 		Ogre::Real mPower;
 		bool mRelease;
 	public:
-		Player(Ogre::SceneManager* sceneMgr, int x, int z);
+		Player(Ogre::SceneManager* sceneMgr, Ogre::String name, int x, int z);
 		Ogre::Vector3 getPosition();
 		void move(const Ogre::FrameEvent& evt);
 		void startMove(Ogre::String key);

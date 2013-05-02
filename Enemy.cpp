@@ -6,15 +6,15 @@ static Ogre::Real mMove = 150;      // The movement constant
 static Ogre::Real mRotate = 0.13;
 static Ogre::Vector3 transVector = Ogre::Vector3::ZERO;
 
-Enemy::Enemy(Ogre::SceneManager* sceneMgr, int x, int z){
+Enemy::Enemy(Ogre::SceneManager* sceneMgr, Ogre::String name, int x, int z){
 	mSceneMgr = sceneMgr;
     mHasBall = false;
     ball = NULL;
     mPower = 1;
     mThrowing = false;
-    entEnemy = mSceneMgr->createEntity("entEnemy", "ninja.mesh");
-    nodeEnemy = mSceneMgr->getRootSceneNode()->createChildSceneNode("nodeEnemy", Ogre::Vector3(x,-100,z));
-    camEnemy = mSceneMgr->createCamera("EnemyCam");
+    entEnemy = mSceneMgr->createEntity("ent" + name, "ninja.mesh");
+    nodeEnemy = mSceneMgr->getRootSceneNode()->createChildSceneNode("node" + name, Ogre::Vector3(x,-100,z));
+    camEnemy = mSceneMgr->createCamera(name + "Cam");
     nodeEnemy->attachObject(camEnemy);
     nodeEnemy->yaw(Ogre::Degree(180));
 
@@ -45,8 +45,6 @@ void Enemy::pickupBall(Ball* baller){
 }
 
 void Enemy::beginThrow(){
-    GUIManager::GUIControl.createPowerBar();
-    GUIManager::GUIControl.setPowerBarProgress(0);
     mThrowing = true;	
 }
 
@@ -54,7 +52,6 @@ void Enemy::chargeThrow(){
     mPower+=0.02;
     if(mPower > 4)
         mPower = 4;
-    GUIManager::GUIControl.setPowerBarProgress(mPower/4);
 }
 
 void Enemy::endThrow(Ogre::Vector3 playerloc){
@@ -69,9 +66,6 @@ void Enemy::endThrow(Ogre::Vector3 playerloc){
     ball = NULL;
     mPower = 1;
     mThrowing = false;
-
-    GUIManager::GUIControl.destroyPowerBar();
-    GUIManager::GUIControl.threwBall();
 }
 
 void Enemy::extThrow(btVector3 dir, Ogre::Real pow){
@@ -83,9 +77,6 @@ void Enemy::extThrow(btVector3 dir, Ogre::Real pow){
     ball = NULL;
     mPower = 1;
     mThrowing = false;
-
-    GUIManager::GUIControl.destroyPowerBar();
-    GUIManager::GUIControl.threwBall();
 }
 
 bool Enemy::isThrowing(){

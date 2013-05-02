@@ -17,8 +17,6 @@ http://www.ogre3d.org/tikiwiki/
 
 Simulator* simulator;
 btDiscreteDynamicsWorld* world;
-Player* player1;
-Enemy* enemy1;
 
 bool DodgeBall::go(void)
 {
@@ -93,8 +91,9 @@ bool DodgeBall::go(void)
 
     //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Create Player/Enemy/Ball
     mSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_ADDITIVE);
-    player1 = new Player(mSceneMgr, 0, 200);
-    enemy1 = new Enemy(mSceneMgr, 0, -200);
+    PlayerManager::PlayerControl.addPlayer(new Player(mSceneMgr, "Player1", 0, 200));
+    PlayerManager::PlayerControl.addEnemy(new Enemy(mSceneMgr, "Enemy1", 50, -200));
+    PlayerManager::PlayerControl.addEnemy(new Enemy(mSceneMgr, "Enemy2",-50, -200));
     BallManager::BallControl.addBall(new Ball(mSceneMgr, simulator, "Ball1", -20));
     BallManager::BallControl.addBall(new Ball(mSceneMgr, simulator, "Ball2", 0));
     BallManager::BallControl.addBall(new Ball(mSceneMgr, simulator, "Ball3", 20));
@@ -279,24 +278,30 @@ bool DodgeBall::frameRenderingQueued(const Ogre::FrameEvent& evt)
         
     BallManager::BallControl.updateBalls();
 
-    player1->move(evt);
-    if(!player1->hasBall()){
-        for(int i = 0; i < BallManager::BallControl.size(); i++)   
-            player1->pickupBall(BallManager::BallControl.getBall(i));
-        if(player1->hasBall())
-            GUIManager::GUIControl.hasBall();
+    Player* player;
+    for(int i = 0; i < PlayerManager::PlayerControl.player_size(); i++){
+        player = PlayerManager::PlayerControl.getPlayer(i);
+        player->move(evt);
+        if(!player->hasBall()){
+            for(int i = 0; i < BallManager::BallControl.size(); i++)   
+                player->pickupBall(BallManager::BallControl.getBall(i));
+            if(player->hasBall())
+                GUIManager::GUIControl.hasBall();
+        }
+        if(player->isThrowing())
+            player->chargeThrow();
     }
-    if(!enemy1->hasBall()){
-        enemy1->getNearBall(BallManager::BallControl.getNearestBall(enemy1->getPosition()), evt);  
-        for(int i = 0; i < BallManager::BallControl.size(); i++)   
-            enemy1->pickupBall(BallManager::BallControl.getBall(i));
-    }else{
-        enemy1->beginThrow();
-        enemy1->endThrow(player1->getPosition());
-    }
-
-    if(player1->isThrowing()){
-        player1->chargeThrow();
+    Enemy* enemy;
+    for(int i = 0; i < PlayerManager::PlayerControl.enemy_size(); i++){
+        enemy = PlayerManager::PlayerControl.getEnemy(i);
+        if(!enemy->hasBall()){
+            enemy->getNearBall(BallManager::BallControl.getNearestBall(enemy->getPosition()), evt);  
+            for(int i = 0; i < BallManager::BallControl.size(); i++)   
+                enemy->pickupBall(BallManager::BallControl.getBall(i));
+        }else{
+            enemy->beginThrow();
+            enemy->endThrow(PlayerManager::PlayerControl.getPlayer(0)->getPosition());
+        }
     }
 
     mTrayMgr->frameRenderingQueued(evt);
@@ -323,23 +328,27 @@ bool DodgeBall::keyPressed( const OIS::KeyEvent &arg )
     {
         Ogre::TextureManager::getSingleton().reloadAll();
     }
-    else if(arg.key == OIS::KC_W) // refresh all textures
-    {
-        player1->startMove("w");
+    Player* player;
+    for(int i = 0; i < PlayerManager::PlayerControl.player_size(); i++){
+        player = PlayerManager::PlayerControl.getPlayer(i);
+        if(arg.key == OIS::KC_W) // refresh all textures
+        {
+            player->startMove("w");
+        }
+        else if(arg.key == OIS::KC_A) // refresh all textures
+        {
+            player->startMove("a");
+        }
+        else if(arg.key == OIS::KC_S) // refresh all textures
+        {
+            player->startMove("s");
+        }
+        else if(arg.key == OIS::KC_D) // refresh all textures
+        {
+            player->startMove("d");
+        }
     }
-    else if(arg.key == OIS::KC_A) // refresh all textures
-    {
-        player1->startMove("a");
-    }
-    else if(arg.key == OIS::KC_S) // refresh all textures
-    {
-        player1->startMove("s");
-    }
-    else if(arg.key == OIS::KC_D) // refresh all textures
-    {
-        player1->startMove("d");
-    }
-    else if (arg.key == OIS::KC_SYSRQ) // take a screenshot
+    if (arg.key == OIS::KC_SYSRQ) // take a screenshot
     {
         mWindow->writeContentsToTimestampedFile("screenshot", ".jpg");
     }
@@ -353,21 +362,25 @@ bool DodgeBall::keyPressed( const OIS::KeyEvent &arg )
  
 bool DodgeBall::keyReleased( const OIS::KeyEvent &arg )
 {
-    if(arg.key == OIS::KC_W) // refresh all textures
-    {
-        player1->stopMove("w");
-    }
-    else if(arg.key == OIS::KC_A) // refresh all textures
-    {
-        player1->stopMove("a");
-    }
-    else if(arg.key == OIS::KC_S) // refresh all textures
-    {
-        player1->stopMove("s");
-    }
-    else if(arg.key == OIS::KC_D) // refresh all textures
-    {
-        player1->stopMove("d");
+    Player* player;
+    for(int i = 0; i < PlayerManager::PlayerControl.player_size(); i++){
+        player = PlayerManager::PlayerControl.getPlayer(i);
+        if(arg.key == OIS::KC_W) // refresh all textures
+        {
+            player->stopMove("w");
+        }
+        else if(arg.key == OIS::KC_A) // refresh all textures
+        {
+            player->stopMove("a");
+        }
+        else if(arg.key == OIS::KC_S) // refresh all textures
+        {
+            player->stopMove("s");
+        }
+        else if(arg.key == OIS::KC_D) // refresh all textures
+        {
+            player->stopMove("d");
+        }
     }
     return true;
 }
@@ -375,8 +388,10 @@ bool DodgeBall::keyReleased( const OIS::KeyEvent &arg )
 bool DodgeBall::mouseMoved( const OIS::MouseEvent &arg )
 {
     if (mTrayMgr->injectMouseMove(arg)) return true;
-    if(!GUIManager::GUIControl.isPaused())
-        player1->lookAround(arg);
+    if(!GUIManager::GUIControl.isPaused()){
+        for(int i = 0; i < PlayerManager::PlayerControl.player_size(); i++)
+            PlayerManager::PlayerControl.getPlayer(i)->lookAround(arg);
+    }
     return true;
 }
  
@@ -384,8 +399,12 @@ bool DodgeBall::mousePressed( const OIS::MouseEvent &arg, OIS::MouseButtonID id 
 {
     if (mTrayMgr->injectMouseDown(arg, id)) return true;
     if (mPause) return true;
-    if(player1->hasBall()){
-        player1->beginThrow();
+
+    Player* player;
+    for(int i = 0; i < PlayerManager::PlayerControl.player_size(); i++){
+        player = PlayerManager::PlayerControl.getPlayer(i);
+        if(player->hasBall())
+            player->beginThrow();
     }
     return true;
 }
@@ -393,8 +412,12 @@ bool DodgeBall::mousePressed( const OIS::MouseEvent &arg, OIS::MouseButtonID id 
 bool DodgeBall::mouseReleased( const OIS::MouseEvent &arg, OIS::MouseButtonID id )
 {
     if (mTrayMgr->injectMouseUp(arg, id)) return true;
-    if(player1->hasBall()){
-        player1->endThrow();
+
+    Player* player;
+    for(int i = 0; i < PlayerManager::PlayerControl.player_size(); i++){
+        player = PlayerManager::PlayerControl.getPlayer(i);
+        if(player->hasBall())
+            player->endThrow();
     }
     return true;
 }

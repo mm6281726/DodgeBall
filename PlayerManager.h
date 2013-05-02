@@ -2,33 +2,24 @@
 #ifndef _PLAYERMANAGER_H_
     #define _PLAYERMANAGER_H_
 
-#include <OgreCamera.h>
-#include <OgreEntity.h>
-#include <OgreLogManager.h>
-#include <OgreRoot.h>
-#include <OgreViewport.h>
-#include <OgreSceneManager.h>
-#include <OgreRenderWindow.h>
-#include <OgreConfigFile.h>
-
-#include <OISEvents.h>
-#include <OISInputManager.h>
-#include <OISKeyboard.h>
-#include <OISMouse.h>
-
-#include <Ball.h>
-#include "Player.h"
-#include <GUIManager.h>
+#include <Player.h>
+#include <Enemy.h>
 
 class PlayerManager{
 	private:
-		std::vector<Player*> players;
+		std::vector<Player*> player_list;
+		std::vector<Enemy*> enemy_list;
 
 	public:
 		PlayerManager();
-		Player* getPlayer(int x);
-		Player* getPlayer(char* str);
+		void addPlayer(Player* player);
+		void addEnemy(Enemy* enemy);
+		int player_size();
+		int enemy_size();
+		Player* getPlayer(int i);
+		Enemy* getEnemy(int i);
 
+		static PlayerManager PlayerControl;
 };
 
 #endif

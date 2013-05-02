@@ -39,6 +39,7 @@ http://www.ogre3d.org/tikiwiki/
 #include <Simulator.h>
 #include <Player.h>
 #include <Enemy.h>
+#include <PlayerManager.h>
 #include <Ball.h>
 #include <BallManager.h>
  

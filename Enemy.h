@@ -33,7 +33,7 @@ class Enemy{
 		Ogre::Real mPower;
 		bool mRelease;
 	public:
-		Enemy(Ogre::SceneManager* sceneMgr, int x, int z);
+		Enemy(Ogre::SceneManager* sceneMgr, Ogre::String name, int x, int z);
 		Ogre::Vector3 getPosition();
 		bool hasBall();
 		void pickupBall(Ball* ball);

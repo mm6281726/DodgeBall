@@ -6,7 +6,7 @@ static Ogre::Real mMove = 150;      // The movement constant
 static Ogre::Real mRotate = 0.13;
 static Ogre::Vector3 transVector = Ogre::Vector3::ZERO;
 
-Player::Player(Ogre::SceneManager* sceneMgr, int x, int z){
+Player::Player(Ogre::SceneManager* sceneMgr, Ogre::String name, int x, int z){
 	mSceneMgr = sceneMgr;
     mHasBall = false;
     ball = NULL;
@@ -14,9 +14,9 @@ Player::Player(Ogre::SceneManager* sceneMgr, int x, int z){
     mThrowing = false;
     //mRayScnQuery = mSceneMgr->createRayQuery(Ogre::Ray());
 
-    entPlayer = mSceneMgr->createEntity("entPlayer", "ninja.mesh");
-    nodePlayer = mSceneMgr->getRootSceneNode()->createChildSceneNode("nodePlayer", Ogre::Vector3(x,-100,z));
-    camPlayer = mSceneMgr->createCamera("Player1Cam");
+    entPlayer = mSceneMgr->createEntity("ent" + name, "ninja.mesh");
+    nodePlayer = mSceneMgr->getRootSceneNode()->createChildSceneNode("node" + name, Ogre::Vector3(x,-100,z));
+    camPlayer = mSceneMgr->createCamera(name + "Cam");
     nodePlayer->attachObject(camPlayer);
 
     entPlayer->setCastShadows(true);

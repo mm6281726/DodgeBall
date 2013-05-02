@@ -1,26 +1,32 @@
 //PlayerManager.cpp
 #include <PlayerManager.h>
-#include <sstream>
 
+PlayerManager PlayerManager::PlayerControl;
+std::vector<Player*> player_list;
+std::vector<Enemy*> enemy_list;
 
+PlayerManager::PlayerManager(){}
 
-PlayerManager::PlayerManager(){
+void PlayerManager::addPlayer(Player* player){
+    player_list.push_back(player);
 }
 
-Player* PlayerManager::getPlayer(int x){
-	return players[x];
+void PlayerManager::addEnemy(Enemy* enemy){
+    enemy_list.push_back(enemy);
 }
 
-Player* PlayerManager::getPlayer(char* str){
-	return players[0];//fix, obviously
+int PlayerManager::player_size(){
+    return player_list.size();
 }
 
-/*  std::stringstream ss (std::stringstream::in | std::stringstream::out);
-    ss << camPlayer->getDerivedDirection().x;
-        std::cout<<"throw dir: x="+ss.str();
-        ss.str(std::string());
-        ss << camPlayer->getDerivedDirection().y;
-        std::cout<<" y="+ss.str();
-        ss.str(std::string());
-        ss << camPlayer->getDerivedDirection().z;
-        std::cout<<" z="+ss.str()+"\n";*/
+int PlayerManager::enemy_size(){
+    return enemy_list.size();
+}
+
+Player* PlayerManager::getPlayer(int i){
+	return player_list[i];
+}
+
+Enemy* PlayerManager::getEnemy(int i){
+    return enemy_list[i];
+}
