@@ -295,7 +295,12 @@ bool DodgeBall::frameRenderingQueued(const Ogre::FrameEvent& evt)
     for(int i = 0; i < PlayerManager::PlayerControl.enemy_size(); i++){
         enemy = PlayerManager::PlayerControl.getEnemy(i);
         if(!enemy->hasBall()){
-            enemy->getNearBall(BallManager::BallControl.getNearestBall(enemy->getPosition()), evt);  
+	    Ball* priority = BallManager::BallControl.getNearestBall(enemy->getPosition());
+	    priority->setDanger(false);
+	    if(!priority->isDangerous())
+            	enemy->getNearBall(priority, evt);
+	    else if(priority->towardsPos(enemy->getPosition()))
+		enemy->getAwayBall(priority, evt);
             for(int i = 0; i < BallManager::BallControl.size(); i++)   
                 enemy->pickupBall(BallManager::BallControl.getBall(i));
         }else{

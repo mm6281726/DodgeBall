@@ -84,9 +84,47 @@ bool Enemy::isThrowing(){
 }
 
 void Enemy::getNearBall(Ball* ball, const Ogre::FrameEvent& evt){
+//    std::cout<<"\nGOTTA CATCH 'EM ALL\n";
+//    std::cout<<ball->isDangerous();
+//    std::cout<<" <- danger\n";
     if (ball->getPosition().z < -10)
-        nodeEnemy->translate((ball->getPosition().x - nodeEnemy->getPosition().x) * evt.timeSinceLastFrame,0,(ball->getPosition().z - nodeEnemy->getPosition().z) * evt.timeSinceLastFrame, Ogre::Node::TS_LOCAL);
+    {
+//	std::cout<<"go to ball\n";
+	Ogre::Vector3 relPos = ball->getPosition() - nodeEnemy->getPosition();
+        relPos=Ogre::Vector3(relPos.x,0,relPos.z);
+	btVector3 speed=ball->getBody()->getLinearVelocity();
+	Ogre::Vector3 vel=Ogre::Vector3(speed.x(),0,speed.z());
+	relPos.normalise();
+	vel.normalise();
+	relPos+=vel;
+	relPos.normalise();
+	nodeEnemy->translate(relPos.x ,0,relPos.z, Ogre::Node::TS_WORLD);
+	//nodeEnemy->translate((ball->getPosition().x - nodeEnemy->getPosition().x) * evt.timeSinceLastFrame,0,(ball->getPosition().z - nodeEnemy->getPosition().z) * evt.timeSinceLastFrame, Ogre::Node::TS_WORLD);
+    }
+    if(nodeEnemy->getPosition().z > 0)
+        nodeEnemy->setPosition(nodeEnemy->getPosition().x, nodeEnemy->getPosition().y, 0);
+    if(nodeEnemy->getPosition().z < -280)
+        nodeEnemy->setPosition(nodeEnemy->getPosition().x, nodeEnemy->getPosition().y, -280);
+    if(nodeEnemy->getPosition().x < -80)
+        nodeEnemy->setPosition(-80, nodeEnemy->getPosition().y, nodeEnemy->getPosition().z);
+    if(nodeEnemy->getPosition().x > 80)
+        nodeEnemy->setPosition(80, nodeEnemy->getPosition().y, nodeEnemy->getPosition().z);
+}
 
+void Enemy::getAwayBall(Ball* ball, const Ogre::FrameEvent& evt){
+//    std::cout<<"\nOHSHIT OHSHIT OHSHIT\n";
+//    std::cout<<ball->isDangerous();
+//    std::cout<<" <- danger\n";
+    if (ball->getPosition().z < -10)
+    {
+	btVector3 ballvel=ball->getBody()->getLinearVelocity();
+	ballvel/=60;
+	ballvel.setY(0);
+	btVector3 newdir = ballvel.cross(btVector3(0,1,0));
+	newdir.normalize();
+	nodeEnemy->translate(newdir.x()*10,0,newdir.z()*10, Ogre::Node::TS_WORLD);
+       // nodeEnemy->translate((ball->getPosition().x - nodeEnemy->getPosition().x) * evt.timeSinceLastFrame,0,(ball->getPosition().z - nodeEnemy->getPosition().z) * evt.timeSinceLastFrame, Ogre::Node::TS_WORLD);
+    }
     if(nodeEnemy->getPosition().z > 0)
         nodeEnemy->setPosition(nodeEnemy->getPosition().x, nodeEnemy->getPosition().y, 0);
     if(nodeEnemy->getPosition().z < -280)

@@ -24,6 +24,7 @@ class Ball{
 		Ogre::Entity* entBall;
 		Ogre::SceneNode* nodeBall;
 		btRigidBody* physicsBall;
+		bool dangerous;
 	public:
 		Ball(Ogre::SceneManager* sceneMgr, Simulator* s, Ogre::String name, int x);
 		void setPosition(int x, int y, int z);
@@ -35,6 +36,11 @@ class Ball{
 		Simulator* simulator;
 		void addToBullet(btVector3 dir, Ogre::Real power);
 		void removeFromBullet(void);
+		int numBounces(void);
+		bool bounceCheck(void);
+		void setDanger(bool dan);
+		bool isDangerous(void);
+		bool towardsPos(Ogre::Vector3 pos);
 };
 
 #endif

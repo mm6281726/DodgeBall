@@ -45,6 +45,7 @@ class Enemy{
 		bool isReleasing();
 		bool isThrowing();
 		void getNearBall(Ball* ball, const Ogre::FrameEvent& evt);
+		void getAwayBall(Ball* ball, const Ogre::FrameEvent& evt);
 		btVector3 throwDir();
 		Ogre::Real throwPower();
 
