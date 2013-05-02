@@ -19,7 +19,7 @@ Enemy::Enemy(Ogre::SceneManager* sceneMgr, Ogre::String name, int x, int z){
     nodeEnemy->yaw(Ogre::Degree(180));
 
     entEnemy->setCastShadows(true);
-    camEnemy->setPosition(nodeEnemy->getPosition().x, nodeEnemy->getPosition().y + 180, nodeEnemy->getPosition().x -10);
+    camEnemy->setPosition(0, nodeEnemy->getPosition().y + 180, nodeEnemy->getPosition().x -10);
     camEnemy->setNearClipDistance(5);
     nodeEnemy->attachObject(entEnemy);
     nodeEnemy->scale(.50,.50,.50);
