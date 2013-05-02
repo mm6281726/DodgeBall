@@ -10,9 +10,9 @@ int mBounce;
 Ball::Ball(Ogre::SceneManager* sceneMgr, Simulator* s, Ogre::String name, int x){
 	mSceneMgr = sceneMgr;
 
-  entBall = mSceneMgr->createEntity("ent" + name, "sphere.mesh");
-  entBall->setMaterialName("Examples/SphereMappedRustySteel");
-  entBall->setCastShadows(true);
+    entBall = mSceneMgr->createEntity("ent" + name, "sphere.mesh");
+    entBall->setMaterialName("Examples/SphereMappedRustySteel");
+    entBall->setCastShadows(true);
  
     nodeBall = mSceneMgr->getRootSceneNode()->createChildSceneNode("node" + name, Ogre::Vector3(x,-95,0));
     nodeBall->attachObject(entBall);

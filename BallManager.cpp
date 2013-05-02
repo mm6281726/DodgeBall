@@ -26,18 +26,16 @@ void BallManager::updateBalls(){
 }
 
 Ball* BallManager::getNearestBall(Ogre::Vector3 playerloc){
-	Ball* closestSoFar = ball_list[0];
+	Ball* closest;
 	float nearest=50000;
-	for(int i = 1; i < ball_list.size(); i++){
-		//if( (playerloc - ball_list[i]->getPosition()) < (playerloc - closestSoFar->getPosition()) )
-		//	closestSoFar = ball_list[i];
+	for(int i = 0; i < ball_list.size(); i++){
 		Ogre::Vector3 dist = playerloc - ball_list[i]->getPosition();
 		if(dist.length()<nearest){
-			closestSoFar = ball_list[i];
+			closest = ball_list[i];
 			nearest=dist.length();
 		}
 	}
-	return closestSoFar;
+	return closest;
 }
 
 Ball* BallManager::getBall(int i){
