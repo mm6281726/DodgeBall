@@ -36,9 +36,31 @@ bool PlayerManager::isClosestEnemy(Ogre::Vector3 enemyloc, Ogre::Vector3 ballloc
         return true;
 
     Ogre::Vector3 enemydist = enemyloc - ballloc;
+    enemydist.y=0;
     for(int i = 0; i < enemy_list.size(); i++){
-        if(enemydist.x > (enemy_list[i]->getPosition() - ballloc).x || enemydist.z > (enemy_list[i]->getPosition() - ballloc).z)
+	Ogre::Vector3 relLoc=enemy_list[i]->getPosition() - ballloc;
+	relLoc.y=0;
+        if(enemydist.length() > relLoc.length())
             return false;
     }
     return true;
+}
+
+Player* PlayerManager::closestEnemy(Ogre::Vector3 loc){
+    if(enemy_list.size() == 1)
+        return enemy_list[0];
+    Player* closest=enemy_list[0];
+    Ogre::Vector3 enemyloc = enemy_list[0]->getPosition();
+    Ogre::Vector3 enemydist = enemyloc - loc;
+    enemydist.y=0;
+    for(int i = 1; i < enemy_list.size(); i++){
+	Ogre::Vector3 relLoc=enemy_list[i]->getPosition() - loc;
+	relLoc.y=0;
+        if(enemydist.length() > relLoc.length())
+	{
+            enemydist=relLoc;
+	    closest=enemy_list[i]
+	}
+    }
+    return closest;
 }

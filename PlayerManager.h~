@@ -2,33 +2,25 @@
 #ifndef _PLAYERMANAGER_H_
     #define _PLAYERMANAGER_H_
 
-#include <OgreCamera.h>
-#include <OgreEntity.h>
-#include <OgreLogManager.h>
-#include <OgreRoot.h>
-#include <OgreViewport.h>
-#include <OgreSceneManager.h>
-#include <OgreRenderWindow.h>
-#include <OgreConfigFile.h>
-
-#include <OISEvents.h>
-#include <OISInputManager.h>
-#include <OISKeyboard.h>
-#include <OISMouse.h>
-
-#include <Ball.h>
-#include "Player.h"
-#include <GUIManager.h>
+#include <Player.h>
+#include <Enemy.h>
 
 class PlayerManager{
 	private:
-		std::vector<Player*> players;
+		std::vector<Player*> player_list;
+		std::vector<Enemy*> enemy_list;
 
 	public:
-		PlayerManager(int x);
-		Player* getPlayer(int x);
-		Player* getPlayer(char* str);
-
+		PlayerManager();
+		void addPlayer(Player* player);
+		void addEnemy(Enemy* enemy);
+		int player_size();
+		int enemy_size();
+		Player* getPlayer(int i);
+		Enemy* getEnemy(int i);
+		bool isClosestEnemy(Ogre::Vector3 enemyloc, Ogre::Vector3 ballloc);
+		Player* closestEnemy(Ogre::Vector3 ballloc);
+		static PlayerManager PlayerControl;
 };
 
 #endif
