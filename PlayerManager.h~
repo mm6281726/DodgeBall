@@ -19,7 +19,7 @@ class PlayerManager{
 		Player* getPlayer(int i);
 		Enemy* getEnemy(int i);
 		bool isClosestEnemy(Ogre::Vector3 enemyloc, Ogre::Vector3 ballloc);
-		Player* closestEnemy(Ogre::Vector3 ballloc);
+		Player* closestEnemy(Ogre::Vector3 loc);
 		static PlayerManager PlayerControl;
 };
 
