@@ -25,6 +25,7 @@ class Ball{
 		Ogre::SceneNode* nodeBall;
 		btRigidBody* physicsBall;
 		bool dangerous;
+		bool mThrownByEnemy;
 	public:
 		Ball(Ogre::SceneManager* sceneMgr, Simulator* s, Ogre::String name, int x);
 		void setPosition(int x, int y, int z);
@@ -41,6 +42,8 @@ class Ball{
 		void setDanger(bool dan);
 		bool isDangerous(void);
 		bool towardsPos(Ogre::Vector3 pos);
+		void thrownBy(bool thrownByEnemy);
+		bool thrownBy();
 };
 
 #endif

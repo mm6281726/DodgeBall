@@ -9,6 +9,7 @@ int mBounce;
 
 Ball::Ball(Ogre::SceneManager* sceneMgr, Simulator* s, Ogre::String name, int x){
 	mSceneMgr = sceneMgr;
+	mThrownByEnemy = false;
 
     entBall = mSceneMgr->createEntity("ent" + name, "sphere.mesh");
     entBall->setMaterialName("Examples/SphereMappedRustySteel");
@@ -127,7 +128,13 @@ bool Ball::towardsPos(Ogre::Vector3 pos)
 	
 }
 
+void Ball::thrownBy(bool thrownByEnemy){
+	mThrownByEnemy = thrownByEnemy;
+}
 
+bool Ball::thrownBy(){
+	return mThrownByEnemy;
+}
 
 
 
