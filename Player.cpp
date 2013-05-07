@@ -15,7 +15,8 @@ Player::Player(Ogre::SceneManager* sceneMgr, Ogre::String name, int x, int z){
     //mRayScnQuery = mSceneMgr->createRayQuery(Ogre::Ray());
 
     entPlayer = mSceneMgr->createEntity("ent" + name, "ninja.mesh");
-    nodePlayer = mSceneMgr->getRootSceneNode()->createChildSceneNode("node" + name, Ogre::Vector3(x,-100,z));
+    spawnPoint=Ogre::Vector3(x,-100,z);
+    nodePlayer = mSceneMgr->getRootSceneNode()->createChildSceneNode("node" + name, spawnPoint);
     camPlayer = mSceneMgr->createCamera(name + "Cam");
     nodePlayer->attachObject(camPlayer);
 
@@ -24,6 +25,7 @@ Player::Player(Ogre::SceneManager* sceneMgr, Ogre::String name, int x, int z){
     camPlayer->setNearClipDistance(5);
     nodePlayer->attachObject(entPlayer);
     nodePlayer->scale(.50,.50,.50);
+    inPlay=true;
 }
 
 Ogre::Vector3 Player::getPosition(){
@@ -193,6 +195,21 @@ void Player::setRelease(bool b){
 
 bool Player::isReleasing(){
 	return mRelease;
+}
+
+bool Player::isInPlay()
+{
+	return inPlay;
+}
+
+void Player::setInPlay(bool b)
+{
+	inPlay=b;
+}
+
+void Player::respawn()
+{
+	nodePlayer->setPosition(spawnPoint);
 }
 
 /*  std::stringstream ss (std::stringstream::in | std::stringstream::out);

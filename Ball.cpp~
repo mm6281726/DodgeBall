@@ -10,11 +10,11 @@ int mBounce;
 Ball::Ball(Ogre::SceneManager* sceneMgr, Simulator* s, Ogre::String name, int x){
 	mSceneMgr = sceneMgr;
 
-  entBall = mSceneMgr->createEntity("ent" + name, "sphere.mesh");
-  entBall->setMaterialName("Examples/SphereMappedRustySteel");
-  entBall->setCastShadows(true);
- 
-    nodeBall = mSceneMgr->getRootSceneNode()->createChildSceneNode("node" + name, Ogre::Vector3(x,-95,0));
+    entBall = mSceneMgr->createEntity("ent" + name, "sphere.mesh");
+    entBall->setMaterialName("Examples/SphereMappedRustySteel");
+    entBall->setCastShadows(true);
+    spawnPoint=Ogre::Vector3(x,-95,0);
+    nodeBall = mSceneMgr->getRootSceneNode()->createChildSceneNode("node" + name, spawnPoint);
     nodeBall->attachObject(entBall);
     nodeBall->scale(.05,.05,.05);
 
@@ -62,7 +62,7 @@ void Ball::addToBullet(btVector3 dir, Ogre::Real power)
 	velInfo[1]=(dir.getY()>=0);
 	velInfo[2]=(dir.getZ()>=0);
 	mBounce=0;
-	dangerous=true;
+//	dangerous=true;
 }
 
 void Ball::removeFromBullet(void)
@@ -73,7 +73,7 @@ void Ball::removeFromBullet(void)
 	velInfo[1]=true;
 	velInfo[2]=true;
 	mBounce=0;
-	dangerous=false;
+//	dangerous=false;
 }
 
 int Ball::numBounces(void)

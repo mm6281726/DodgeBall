@@ -62,6 +62,24 @@ GUIManager GUIManager::GUIControl;
         mTrayMgr->hideBackdrop();
     }
 
+    void GUIManager::nextRoundScreen(char* winner){
+        mTrayMgr->createLabel(OgreBites::TL_CENTER, "RoundTransition",winner);
+        mTrayMgr->createButton(OgreBites::TL_CENTER, "NextRound", "Next Round", 250);
+        mTrayMgr->createButton(OgreBites::TL_CENTER, "Exit", "Quit", 250);
+        mTrayMgr->showCursor();
+    }
+
+    void GUIManager::end_nextRoundScreen(){
+        mTrayMgr->destroyWidget("RoundTransition");
+        mTrayMgr->destroyWidget("NextRound");
+        mTrayMgr->destroyWidget("Quit");
+        mTrayMgr->hideCursor();
+    }
+
+    void GUIManager::endGame(char* winner){
+        mTrayMgr->createLabel(OgreBites::TL_CENTER, "GameOver",winner);
+    }
+
     void GUIManager::pause(){
         if(!mPause){
             mTrayMgr->showCursor();

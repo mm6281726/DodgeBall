@@ -62,7 +62,12 @@ protected:
     bool mCursorWasVisible; // was cursor visible before dialog appeared
     bool mShutDown;
     bool mPause;
+    int currRound;
+    int maxRounds;
+    int playersWin;		//increment if players win, decrement if enemies win
  
+    void loadNextRound();
+
     // OIS Input devices
     OIS::InputManager* mInputManager;
     OIS::Mouse* mMouse;

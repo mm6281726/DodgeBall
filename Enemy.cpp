@@ -12,8 +12,9 @@ Enemy::Enemy(Ogre::SceneManager* sceneMgr, Ogre::String name, int x, int z){
     ball = NULL;
     mPower = 1;
     mThrowing = false;
+    spawnPoint=Ogre::Vector3(x,-100,z);
     entEnemy = mSceneMgr->createEntity("ent" + name, "ninja.mesh");
-    nodeEnemy = mSceneMgr->getRootSceneNode()->createChildSceneNode("node" + name, Ogre::Vector3(x,-100,z));
+    nodeEnemy = mSceneMgr->getRootSceneNode()->createChildSceneNode("node" + name, spawnPoint);
     camEnemy = mSceneMgr->createCamera(name + "Cam");
     nodeEnemy->attachObject(camEnemy);
     nodeEnemy->yaw(Ogre::Degree(180));
@@ -23,6 +24,7 @@ Enemy::Enemy(Ogre::SceneManager* sceneMgr, Ogre::String name, int x, int z){
     camEnemy->setNearClipDistance(5);
     nodeEnemy->attachObject(entEnemy);
     nodeEnemy->scale(.50,.50,.50);
+    inPlay=true;
 }
 
 Ogre::Vector3 Enemy::getPosition(){
@@ -144,6 +146,21 @@ void Enemy::setRelease(bool b){
 
 bool Enemy::isReleasing(){
 	return mRelease;
+}
+
+bool Enemy::isInPlay()
+{
+	return inPlay;
+}
+
+void Enemy::setInPlay(bool b)
+{
+	inPlay=b;
+}
+
+void Enemy::respawn()
+{
+	nodeEnemy->setPosition(spawnPoint);
 }
 
 /*  std::stringstream ss (std::stringstream::in | std::stringstream::out);

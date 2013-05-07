@@ -64,3 +64,30 @@ Enemy* PlayerManager::closestEnemy(Ogre::Vector3 loc){
     }
     return closest;
 }
+
+int PlayerManager::playersLeft()
+{
+	std::cout<<"got here";
+	int total=0;
+	for(int i=0;i<player_list.size();i++)
+	{
+		total+=(player_list[i]->isInPlay()?1:0);
+	}
+	return total;
+}
+
+int PlayerManager::enemiesLeft()
+{
+	std::cout<<"got here 2";
+	int total=0;
+	for(int i=0;i<enemy_list.size();i++)
+	{
+		total+=(enemy_list[i]->isInPlay()?1:0);
+	}
+	return total;
+}
+
+
+
+
+

@@ -32,6 +32,8 @@ class Enemy{
 		bool mThrowing;
 		Ogre::Real mPower;
 		bool mRelease;
+		bool inPlay;
+		Ogre::Vector3 spawnPoint;
 	public:
 		Enemy(Ogre::SceneManager* sceneMgr, Ogre::String name, int x, int z);
 		Ogre::Vector3 getPosition();
@@ -48,6 +50,9 @@ class Enemy{
 		void getAwayBall(Ball* ball, const Ogre::FrameEvent& evt);
 		btVector3 throwDir();
 		Ogre::Real throwPower();
+		bool isInPlay();
+		void setInPlay(bool b);
+		void respawn();
 
 };
 

@@ -20,6 +20,9 @@ btDiscreteDynamicsWorld* world;
 
 bool DodgeBall::go(void)
 {
+    mShutDown=false;
+    playersWin=0;
+    currRound=0;
 #ifdef _DEBUG
     mResourcesCfg = "resources_d.cfg";
     mPluginsCfg = "plugins_d.cfg";
@@ -54,6 +57,7 @@ bool DodgeBall::go(void)
                 archName, typeName, secName);
         }
     }
+
 //-------------------------------------------------------------------------------------
     // configure
     // Show the configuration dialog and initialise the system
@@ -248,6 +252,7 @@ bool DodgeBall::go(void)
     entLeftWallBack->setMaterialName("Examples/Rockwall");
     entLeftWallBack->setCastShadows(false);
 
+
     mPause = false;
 
     mRoot->addFrameListener(this);
@@ -256,12 +261,12 @@ bool DodgeBall::go(void)
  
     return true;
 }
-
 bool DodgeBall::frameRenderingQueued(const Ogre::FrameEvent& evt)
 {
+
     if(mWindow->isClosed())
         return false;
- 
+
     if(mShutDown)
         return false;
 
@@ -271,6 +276,22 @@ bool DodgeBall::frameRenderingQueued(const Ogre::FrameEvent& evt)
 
     if(mPause)
         return true;
+    if(PlayerManager::PlayerControl.enemiesLeft()==0)
+    {
+		currRound++;
+		GUIManager::GUIControl.nextRoundScreen("Player Team Wins");
+		playersWin++;
+		mPause=true;
+		//Player team wins!
+    }
+    if(PlayerManager::PlayerControl.playersLeft()==0)
+    {
+		currRound++;
+		GUIManager::GUIControl.nextRoundScreen("Enemy Team Wins");
+		playersWin--;
+		mPause=true;
+		//Enemy team wins!
+    }
 
     //printf("before step simulation\n");
     world->stepSimulation(1/60.0);
@@ -323,6 +344,43 @@ bool DodgeBall::frameRenderingQueued(const Ogre::FrameEvent& evt)
  
     return true;
 }
+
+void DodgeBall::loadNextRound()
+{
+	if(currRound>=maxRounds)
+	{
+		if(playersWin>0)
+		{
+			GUIManager::GUIControl.endGame("Player Team Wins!");
+		}
+		if(playersWin==0)
+		{
+			GUIManager::GUIControl.endGame("Tie Game!");
+		}
+		if(playersWin<0)
+		{
+			GUIManager::GUIControl.endGame("Player Team Lost :-(");
+		}
+		mShutDown=true;//replace with options to replay if allowed
+	}
+	//reset simulator (or else put balls into position again in simulator)
+	//put player and balls back into position in ogre
+	for(int i=0;i<PlayerManager::PlayerControl.player_size();i++)		//need to make players throw balls prior to resetting them
+	{
+		PlayerManager::PlayerControl.getPlayer(i)->setInPlay(true);
+		PlayerManager::PlayerControl.getPlayer(i)->respawn();
+	}
+	for(int i=0;i<PlayerManager::PlayerControl.enemy_size();i++)		//need to make players throw balls prior to resetting them
+	{
+		PlayerManager::PlayerControl.getEnemy(i)->setInPlay(true);
+		PlayerManager::PlayerControl.getEnemy(i)->respawn();
+	}
+	for(int i = 0; i < BallManager::BallControl.size(); i++)		//need to make players throw balls prior to resetting them
+	{
+        	BallManager::BallControl.getBall(i)->respawn();
+	}
+}
+
 //-------------------------------------------------------------------------------------
 bool DodgeBall::keyPressed( const OIS::KeyEvent &arg )
 {
@@ -386,6 +444,16 @@ bool DodgeBall::keyReleased( const OIS::KeyEvent &arg )
         {
             player->stopMove("d");
         }
+	else if(arg.key == OIS::KC_R) // refresh all textures
+        {
+		player->respawn();
+		for(int i = 0; i < PlayerManager::PlayerControl.enemy_size(); i++){
+        	PlayerManager::PlayerControl.getEnemy(i)->respawn();
+	    	}
+		for(int i = 0; i < BallManager::BallControl.size(); i++){		//need to make players throw balls prior to resetting them
+        	BallManager::BallControl.getBall(i)->respawn();
+	    	}
+        }
     }
     return true;
 }
@@ -393,7 +461,7 @@ bool DodgeBall::keyReleased( const OIS::KeyEvent &arg )
 bool DodgeBall::mouseMoved( const OIS::MouseEvent &arg )
 {
     if (mTrayMgr->injectMouseMove(arg)) return true;
-    if(!GUIManager::GUIControl.isPaused()){
+    if(!GUIManager::GUIControl.isPaused() && !mPause){
         for(int i = 0; i < PlayerManager::PlayerControl.player_size(); i++)
             PlayerManager::PlayerControl.getPlayer(i)->lookAround(arg);
     }
@@ -432,6 +500,12 @@ void DodgeBall::buttonHit(OgreBites::Button* button){
         mShutDown = true;
     else if(button->getName().compare("Resume") == 0)
         GUIManager::GUIControl.pause();
+    else if(button->getName().compare("NextRound") == 0)
+    {
+        GUIManager::GUIControl.end_nextRoundScreen();
+	loadNextRound();
+	mPause=false;
+    }
     /*else if(button->getName().compare("MainMenu") == 0){
         GUIManager::GUIControl.pause();
         GUIManager::GUIControl.begin_MainScreen();

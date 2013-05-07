@@ -6,7 +6,7 @@ static Ogre::Real mMove = 150;      // The movement constant
 static Ogre::Real mRotate = 0.13;
 static Ogre::Vector3 transVector = Ogre::Vector3::ZERO;
 
-Player::Player(Ogre::SceneManager* sceneMgr, int x, int z, bool enemy){
+Player::Player(Ogre::SceneManager* sceneMgr, Ogre::String name, int x, int z){
 	mSceneMgr = sceneMgr;
     mHasBall = false;
     ball = NULL;
@@ -14,25 +14,22 @@ Player::Player(Ogre::SceneManager* sceneMgr, int x, int z, bool enemy){
     mThrowing = false;
     //mRayScnQuery = mSceneMgr->createRayQuery(Ogre::Ray());
 
-    if(!enemy){
-        entPlayer = mSceneMgr->createEntity("entPlayer", "ninja.mesh");
-        nodePlayer = mSceneMgr->getRootSceneNode()->createChildSceneNode("nodePlayer", Ogre::Vector3(x,-100,z));
-        camPlayer = mSceneMgr->createCamera("Player1Cam");
-        nodePlayer->attachObject(camPlayer);
-        
-    }else{
-        entPlayer = mSceneMgr->createEntity("entEnemy", "ninja.mesh");
-        nodePlayer = mSceneMgr->getRootSceneNode()->createChildSceneNode("nodeEnemy", Ogre::Vector3(x,-100,z));
-        camPlayer = mSceneMgr->createCamera("EnemyCam");
-        nodePlayer->attachObject(camPlayer);
-        nodePlayer->yaw(Ogre::Degree(180));
-    }
+    entPlayer = mSceneMgr->createEntity("ent" + name, "ninja.mesh");
+    spawnPoint=Ogre::Vector3(x,-100,z);
+    nodePlayer = mSceneMgr->getRootSceneNode()->createChildSceneNode("node" + name, spawnPoint);
+    camPlayer = mSceneMgr->createCamera(name + "Cam");
+    nodePlayer->attachObject(camPlayer);
 
     entPlayer->setCastShadows(true);
     camPlayer->setPosition(nodePlayer->getPosition().x, nodePlayer->getPosition().y + 180, nodePlayer->getPosition().x -10);
     camPlayer->setNearClipDistance(5);
     nodePlayer->attachObject(entPlayer);
     nodePlayer->scale(.50,.50,.50);
+    inPlay=true;
+}
+
+Ogre::Vector3 Player::getPosition(){
+    return nodePlayer->getPosition();
 }
 
 void Player::move(const Ogre::FrameEvent& evt){
@@ -145,10 +142,10 @@ void Player::beginThrow(){
 }
 
 void Player::chargeThrow(){
-    mPower+=0.02;
-    if(mPower > 3)
-        mPower = 3;
-    GUIManager::GUIControl.setPowerBarProgress(mPower/3);
+    mPower+=0.025;
+    if(mPower > 4)
+        mPower = 4;
+    GUIManager::GUIControl.setPowerBarProgress(mPower/4);
 }
 
 void Player::endThrow(){
@@ -194,6 +191,20 @@ Ogre::Real Player::throwPower(){
 
 void Player::setRelease(bool b){
 	mRelease=b;
+}
+
+bool Player::isReleasing(){
+	return mRelease;
+}
+
+bool Player::isInPlay()
+{
+	return inPlay;
+}
+
+void Player::setInPlay(bool b)
+{
+	inPlay=b;
 }
 
 /*  std::stringstream ss (std::stringstream::in | std::stringstream::out);

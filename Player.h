@@ -32,6 +32,8 @@ class Player{
 		bool mThrowing;
 		Ogre::Real mPower;
 		bool mRelease;
+		bool inPlay;
+		Ogre::Vector3 spawnPoint;
 	public:
 		Player(Ogre::SceneManager* sceneMgr, Ogre::String name, int x, int z);
 		Ogre::Vector3 getPosition();
@@ -50,7 +52,9 @@ class Player{
 		bool isThrowing();
 		btVector3 throwDir();
 		Ogre::Real throwPower();
-
+		bool isInPlay();
+		void setInPlay(bool b);
+		void respawn();
 };
 
 #endif

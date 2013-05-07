@@ -13,8 +13,8 @@ Ball::Ball(Ogre::SceneManager* sceneMgr, Simulator* s, Ogre::String name, int x)
     entBall = mSceneMgr->createEntity("ent" + name, "sphere.mesh");
     entBall->setMaterialName("Examples/SphereMappedRustySteel");
     entBall->setCastShadows(true);
- 
-    nodeBall = mSceneMgr->getRootSceneNode()->createChildSceneNode("node" + name, Ogre::Vector3(x,-95,0));
+    spawnPoint=Ogre::Vector3(x,-95,0);
+    nodeBall = mSceneMgr->getRootSceneNode()->createChildSceneNode("node" + name, spawnPoint);
     nodeBall->attachObject(entBall);
     nodeBall->scale(.05,.05,.05);
 
@@ -125,6 +125,18 @@ bool Ball::towardsPos(Ogre::Vector3 pos)
 	return relPos.directionEquals(vel,Ogre::Radian(.35));
 	//Ogre::Vector3 nextPos=nodeBall->getPosition()+vel;
 	
+}
+
+void Ball::respawn()
+{
+	nodeBall->setPosition(spawnPoint);
+	removeFromBullet();
+	btTransform t;
+	physicsBall->getMotionState()->getWorldTransform(t);
+	btVector3 pos = btVector3(nodeBall->getPosition().x,nodeBall->getPosition().y,nodeBall->getPosition().z);
+	t.setOrigin(pos);
+	physicsBall->proceedToTransform(t);
+	simulator->getWorld()->addRigidBody(physicsBall);
 }
 
 
