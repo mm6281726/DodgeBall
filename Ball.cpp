@@ -9,6 +9,7 @@ int mBounce;
 
 Ball::Ball(Ogre::SceneManager* sceneMgr, Simulator* s, Ogre::String name, int x){
 	mSceneMgr = sceneMgr;
+	mThrownByEnemy = false;
 
     entBall = mSceneMgr->createEntity("ent" + name, "sphere.mesh");
     entBall->setMaterialName("Examples/SphereMappedRustySteel");
@@ -139,8 +140,13 @@ void Ball::respawn()
 	physicsBall->setLinearVelocity(btVector3(0,0,0));
 	simulator->getWorld()->addRigidBody(physicsBall);
 }
+void Ball::thrownBy(bool thrownByEnemy){
+	mThrownByEnemy = thrownByEnemy;
+}
 
-
+bool Ball::thrownBy(){
+	return mThrownByEnemy;
+}
 
 
 

@@ -63,8 +63,8 @@ void Enemy::endThrow(Ogre::Vector3 playerloc){
     float mult = 20.0f/muldir.length();
     ball->setPosition(nodeEnemy->getPosition().x+(camEnemy->getDerivedDirection().x*mult), nodeEnemy->getPosition().y + 75, nodeEnemy->getPosition().z+(camEnemy->getDerivedDirection().z*mult));
     btVector3 dir=btVector3(camEnemy->getDerivedDirection().x,camEnemy->getDerivedDirection().y,camEnemy->getDerivedDirection().z);
-    //btVector3 dir=btVector3(playerloc.x - nodeEnemy->getPosition().x, playerloc.y - nodeEnemy->getPosition().y, playerloc.z - nodeEnemy->getPosition().z);
     ball->addToBullet(dir, 3);
+    ball->thrownBy(true);
     ball = NULL;
     mPower = 1;
     mThrowing = false;
@@ -75,7 +75,8 @@ void Enemy::extThrow(btVector3 dir, Ogre::Real pow){
     Ogre::Vector3 muldir=Ogre::Vector3(camEnemy->getDerivedDirection().x,0,camEnemy->getDerivedDirection().z);
     float mult = 20.0f/muldir.length();
     ball->setPosition(nodeEnemy->getPosition().x+(camEnemy->getDerivedDirection().x*mult), nodeEnemy->getPosition().y + 75, nodeEnemy->getPosition().z+(camEnemy->getDerivedDirection().z*mult));
-    ball->addToBullet(dir, pow); 
+    ball->addToBullet(dir, pow);
+    ball->thrownBy(true); 
     ball = NULL;
     mPower = 1;
     mThrowing = false;
@@ -96,7 +97,6 @@ void Enemy::getNearBall(Ball* ball, const Ogre::FrameEvent& evt){
 	    relPos+=vel;
 	    relPos.normalise();
 	    nodeEnemy->translate(relPos.x ,0,relPos.z, Ogre::Node::TS_WORLD);
-	    //nodeEnemy->translate((ball->getPosition().x - nodeEnemy->getPosition().x) * evt.timeSinceLastFrame,0,(ball->getPosition().z - nodeEnemy->getPosition().z) * evt.timeSinceLastFrame, Ogre::Node::TS_WORLD);
     }
 
     if(nodeEnemy->getPosition().z > 0)
@@ -120,7 +120,6 @@ void Enemy::getAwayBall(Ball* ball, const Ogre::FrameEvent& evt){
 	    btVector3 newdir = ballvel.cross(btVector3(0,1,0));
 	    newdir.normalize();
 	    nodeEnemy->translate(newdir.x()*10,0,newdir.z()*10, Ogre::Node::TS_WORLD);
-       // nodeEnemy->translate((ball->getPosition().x - nodeEnemy->getPosition().x) * evt.timeSinceLastFrame,0,(ball->getPosition().z - nodeEnemy->getPosition().z) * evt.timeSinceLastFrame, Ogre::Node::TS_WORLD);
     }
     if(nodeEnemy->getPosition().z > 0)
         nodeEnemy->setPosition(nodeEnemy->getPosition().x, nodeEnemy->getPosition().y, 0);
