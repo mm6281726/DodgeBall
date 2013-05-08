@@ -18,6 +18,7 @@ http://www.ogre3d.org/tikiwiki/
 Simulator* simulator;
 btDiscreteDynamicsWorld* world;
 int mNumberOfEnemies = 1;
+int mNumberOfBalls = 1;
 
 bool DodgeBall::go(void)
 {
@@ -98,9 +99,7 @@ bool DodgeBall::go(void)
     mSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_ADDITIVE);
     PlayerManager::PlayerControl.addPlayer(new Player(mSceneMgr, "Player1", 0, 200));
     PlayerManager::PlayerControl.addEnemy(new Enemy(mSceneMgr, 0, -100, -200));
-    BallManager::BallControl.addBall(new Ball(mSceneMgr, simulator, "Ball1", -20));
-    BallManager::BallControl.addBall(new Ball(mSceneMgr, simulator, "Ball2", 0));
-    BallManager::BallControl.addBall(new Ball(mSceneMgr, simulator, "Ball3", 20));
+    BallManager::BallControl.addBall(new Ball(mSceneMgr, simulator, "Ball", -20));
 //-------------------------------------------------------------------------------------
     // create viewports
     // Create one viewport, entire window
@@ -515,12 +514,12 @@ void DodgeBall::buttonHit(OgreBites::Button* button){
         GUIManager::GUIControl.end_MainScreen();
         GUIManager::GUIControl.begin_NumberOfEnemies();
     }
-    else if(button->getName().compare("+") == 0){
+    else if(button->getName().compare("+Enemies") == 0){
         if(mNumberOfEnemies < 10)
             mNumberOfEnemies++;
         GUIManager::GUIControl.updateNumberOfEnemies(mNumberOfEnemies);
     }
-    else if(button->getName().compare("-") == 0){
+    else if(button->getName().compare("-Enemies") == 0){
         if(mNumberOfEnemies > 0)
             mNumberOfEnemies--;
         GUIManager::GUIControl.updateNumberOfEnemies(mNumberOfEnemies);
@@ -528,7 +527,22 @@ void DodgeBall::buttonHit(OgreBites::Button* button){
     else if(button->getName().compare("NumberEnemiesContinue") == 0){
         GUIManager::GUIControl.end_NumberOfEnemies();
         for(int i = 1; i < mNumberOfEnemies; i++)
-            PlayerManager::PlayerControl.addEnemy(new Enemy(mSceneMgr, i, -100 + (50 * i), -200));
+            PlayerManager::PlayerControl.addEnemy(new Enemy(mSceneMgr, i, -100 + (20 * i), -200));
+    }
+    else if(button->getName().compare("+Balls") == 0){
+        if(mNumberOfBalls < 10)
+            mNumberOfBalls++;
+        GUIManager::GUIControl.updateNumberOfBalls(mNumberOfBalls);
+    }
+    else if(button->getName().compare("-Balls") == 0){
+        if(mNumberOfBalls > 0)
+            mNumberOfBalls--;
+        GUIManager::GUIControl.updateNumberOfBalls(mNumberOfBalls);
+    }
+    else if(button->getName().compare("NumberBallsContinue") == 0){
+        GUIManager::GUIControl.end_NumberOfBalls();
+        for(int i = 0; i < mNumberOfBalls; i++)
+            BallManager::BallControl.addBall(new Ball(mSceneMgr, simulator, "Ball" + Ogre::StringConverter::toString(i), -80 + (50 * i)));
     }
     /*else if(button->getName().compare("MainMenu") == 0){
         GUIManager::GUIControl.pause();

@@ -22,6 +22,9 @@ class GUIManager{
         void begin_NumberOfEnemies();
         void updateNumberOfEnemies(int num);
         void end_NumberOfEnemies();
+        void begin_NumberOfBalls();
+        void updateNumberOfBalls(int num);
+        void end_NumberOfBalls();
         void begin_MultiplayerScreen();
         void end_MultiplayerScreen();
         void pause();
