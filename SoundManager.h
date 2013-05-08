@@ -13,6 +13,7 @@ class SoundManager{
 		std::vector<Mix_Chunk*> SoundList;
 	public:
 		SoundManager();
+		void setup(int x, int y, int z);
 		int loadWAV(char* file);
 		void playAudio();
 		void pauseAudio();
@@ -20,6 +21,10 @@ class SoundManager{
 		void mixAudio(void *unused, Uint8 *stream, Uint32 len);
 		void cleanup();
 		
+		// Sounds
+    	int ballBounceWall;
+    	int ballPlayerHit;
+    	int ballPlayerThrow;
 		static SoundManager SoundControl;
 };
 

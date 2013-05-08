@@ -6,16 +6,16 @@ static Ogre::Real mMove = 150;      // The movement constant
 static Ogre::Real mRotate = 0.13;
 static Ogre::Vector3 transVector = Ogre::Vector3::ZERO;
 
-Enemy::Enemy(Ogre::SceneManager* sceneMgr, Ogre::String name, int x, int z,int ind){
+Enemy::Enemy(Ogre::SceneManager* sceneMgr,int i, int x, int z,int ind){
 	mSceneMgr = sceneMgr;
     mHasBall = false;
     ball = NULL;
     mPower = 1;
     mThrowing = false;
     spawnPoint=Ogre::Vector3(x,-100,z);
-    entEnemy = mSceneMgr->createEntity("ent" + name, "ninja.mesh");
-    nodeEnemy = mSceneMgr->getRootSceneNode()->createChildSceneNode("node" + name, spawnPoint);
-    camEnemy = mSceneMgr->createCamera(name + "Cam");
+    entEnemy = mSceneMgr->createEntity("entEnemy" + Ogre::StringConverter::toString(i), "ninja.mesh");
+    nodeEnemy = mSceneMgr->getRootSceneNode()->createChildSceneNode("nodeEnemy" + Ogre::StringConverter::toString(i), spawnPoint);
+    camEnemy = mSceneMgr->createCamera("camEnemy" + Ogre::StringConverter::toString(i));
     nodeEnemy->attachObject(camEnemy);
     nodeEnemy->yaw(Ogre::Degree(180));
 

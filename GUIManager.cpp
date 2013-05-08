@@ -15,10 +15,10 @@ GUIManager GUIManager::GUIControl;
     }
 
     void GUIManager::setup(OgreBites::SdkTrayManager* trayMgr){
-	    mTrayMgr = trayMgr;
+        mTrayMgr = trayMgr;
         mTrayMgr->hideCursor();
 
-        //createMainScreen();
+        begin_MainScreen();
 
         Ogre::FontManager::getSingleton().getByName("SdkTrays/Caption")->load();
 
@@ -35,10 +35,66 @@ GUIManager GUIManager::GUIControl;
     }
 
     void GUIManager::end_MainScreen(){
-        main = false;
         mTrayMgr->destroyWidget("MainScreen");
         mTrayMgr->destroyWidget("Singleplayer");
         mTrayMgr->destroyWidget("Multiplayer");
+        mTrayMgr->destroyWidget("Exit");
+        mTrayMgr->hideBackdrop();
+    }
+
+    bool GUIManager::inMainScreen(){
+        return main;
+    }
+
+    void GUIManager::begin_NumberOfEnemies(){
+        mTrayMgr->createLabel(OgreBites::TL_CENTER, "NumberOfEnemies", "Number of Enemies");
+        mTrayMgr->createLabel(OgreBites::TL_CENTER, "NOEnemies", "1");
+        mTrayMgr->createButton(OgreBites::TL_CENTER, "+Enemies", "+", 250);
+        mTrayMgr->createButton(OgreBites::TL_CENTER, "-Enemies", "-", 250);
+        mTrayMgr->createButton(OgreBites::TL_CENTER, "NumberEnemiesContinue", "Continue", 250);
+        mTrayMgr->createButton(OgreBites::TL_CENTER, "Exit", "Exit", 250);
+        mTrayMgr->showBackdrop("Examples/Chrome");
+    }
+
+    void GUIManager::updateNumberOfEnemies(int num){
+        OgreBites::Label* l = (OgreBites::Label*)mTrayMgr->getWidget("NOEnemies");
+        l->setCaption(Ogre::StringConverter::toString(num));
+    }
+
+    void GUIManager::end_NumberOfEnemies(){
+        main = false;
+        mTrayMgr->destroyWidget("NumberOfEnemies");
+        mTrayMgr->destroyWidget("NOEnemies");
+        mTrayMgr->destroyWidget("+Enemies");
+        mTrayMgr->destroyWidget("-Enemies");
+        mTrayMgr->destroyWidget("NumberEnemiesContinue");
+        mTrayMgr->destroyWidget("Exit");
+        mTrayMgr->hideBackdrop();
+        begin_NumberOfBalls();
+    }
+
+    void GUIManager::begin_NumberOfBalls(){
+        mTrayMgr->createLabel(OgreBites::TL_CENTER, "NumberOfBalls", "Number of Balls");
+        mTrayMgr->createLabel(OgreBites::TL_CENTER, "NOBalls", "1");
+        mTrayMgr->createButton(OgreBites::TL_CENTER, "+Balls", "+", 250);
+        mTrayMgr->createButton(OgreBites::TL_CENTER, "-Balls", "-", 250);
+        mTrayMgr->createButton(OgreBites::TL_CENTER, "NumberBallsContinue", "Continue", 250);
+        mTrayMgr->createButton(OgreBites::TL_CENTER, "Exit", "Exit", 250);
+        mTrayMgr->showBackdrop("Examples/Chrome");
+    }
+
+    void GUIManager::updateNumberOfBalls(int num){
+        OgreBites::Label* l = (OgreBites::Label*)mTrayMgr->getWidget("NOBalls");
+        l->setCaption(Ogre::StringConverter::toString(num));
+    }
+
+    void GUIManager::end_NumberOfBalls(){
+        main = false;
+        mTrayMgr->destroyWidget("NumberOfBalls");
+        mTrayMgr->destroyWidget("NOBalls");
+        mTrayMgr->destroyWidget("+Balls");
+        mTrayMgr->destroyWidget("-Balls");
+        mTrayMgr->destroyWidget("NumberBallsContinue");
         mTrayMgr->destroyWidget("Exit");
         mTrayMgr->hideCursor();
         mTrayMgr->hideBackdrop();
