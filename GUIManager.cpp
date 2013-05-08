@@ -72,7 +72,7 @@ GUIManager GUIManager::GUIControl;
     void GUIManager::end_nextRoundScreen(){
         mTrayMgr->destroyWidget("RoundTransition");
         mTrayMgr->destroyWidget("NextRound");
-        mTrayMgr->destroyWidget("Quit");
+        mTrayMgr->destroyWidget("Exit");
         mTrayMgr->hideCursor();
     }
 

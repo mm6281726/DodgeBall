@@ -7,8 +7,9 @@ static Ogre::Vector3 transVector = Ogre::Vector3::ZERO;
 bool velInfo[3];
 int mBounce;
 
-Ball::Ball(Ogre::SceneManager* sceneMgr, Simulator* s, Ogre::String name, int x){
+Ball::Ball(Ogre::SceneManager* sceneMgr, Simulator* s, Ogre::String name, int x,int ind){
 	mSceneMgr = sceneMgr;
+	mThrownByEnemy = false;
 
     entBall = mSceneMgr->createEntity("ent" + name, "sphere.mesh");
     entBall->setMaterialName("Examples/SphereMappedRustySteel");
@@ -20,7 +21,7 @@ Ball::Ball(Ogre::SceneManager* sceneMgr, Simulator* s, Ogre::String name, int x)
 
 
 	simulator = s;
-	physicsBall = simulator->addSphere(5,0,0,0,5);
+	physicsBall = simulator->addSphere(5,0,0,0,5,ind);
 	dangerous=false;
 }
 
@@ -136,11 +137,16 @@ void Ball::respawn()
 	btVector3 pos = btVector3(nodeBall->getPosition().x,nodeBall->getPosition().y,nodeBall->getPosition().z);
 	t.setOrigin(pos);
 	physicsBall->proceedToTransform(t);
-	physicsBall->setLinearVelocity(0);
+	physicsBall->setLinearVelocity(btVector3(0,0,0));
 	simulator->getWorld()->addRigidBody(physicsBall);
 }
+void Ball::thrownBy(bool thrownByEnemy){
+	mThrownByEnemy = thrownByEnemy;
+}
 
-
+bool Ball::thrownBy(){
+	return mThrownByEnemy;
+}
 
 
 

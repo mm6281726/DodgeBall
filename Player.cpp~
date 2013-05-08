@@ -6,7 +6,7 @@ static Ogre::Real mMove = 150;      // The movement constant
 static Ogre::Real mRotate = 0.13;
 static Ogre::Vector3 transVector = Ogre::Vector3::ZERO;
 
-Player::Player(Ogre::SceneManager* sceneMgr, Ogre::String name, int x, int z){
+Player::Player(Ogre::SceneManager* sceneMgr, Ogre::String name, int x, int z,int ind){
 	mSceneMgr = sceneMgr;
     mHasBall = false;
     ball = NULL;
@@ -26,6 +26,8 @@ Player::Player(Ogre::SceneManager* sceneMgr, Ogre::String name, int x, int z){
     nodePlayer->attachObject(entPlayer);
     nodePlayer->scale(.50,.50,.50);
     inPlay=true;
+
+    body = Simulator::Simulation.addCylinder(20,100,x,-50,z,0, true,ind);
 }
 
 Ogre::Vector3 Player::getPosition(){
@@ -45,6 +47,14 @@ void Player::move(const Ogre::FrameEvent& evt){
         nodePlayer->setPosition(-80, nodePlayer->getPosition().y, nodePlayer->getPosition().z);
     if(nodePlayer->getPosition().x > 80)
         nodePlayer->setPosition(80, nodePlayer->getPosition().y, nodePlayer->getPosition().z);
+	
+	Simulator::Simulation.getWorld()->removeRigidBody(body);
+	btTransform t;
+	body->getMotionState()->getWorldTransform(t);
+	btVector3 pos = btVector3(nodePlayer->getPosition().x,-50,nodePlayer->getPosition().z);
+	t.setOrigin(pos);
+	body->proceedToTransform(t);
+	Simulator::Simulation.getWorld()->addRigidBody(body);
 }
 
 void Player::startMove(Ogre::String key){
@@ -109,7 +119,13 @@ void Player::pickupBall(Ball* baller){
 		ball->removeFromBullet();
         mHasBall = true;
     }
+}
 
+void Player::pickupBallPhysics(Ball* baller){
+        ball = baller;
+        ball->setPosition(nodePlayer->getPosition().x, nodePlayer->getPosition().y + 75, nodePlayer->getPosition().z);
+		ball->removeFromBullet();
+        mHasBall = true;
     /*Ogre::Vector3 camPos = camPlayer->getPosition();
     Ogre::Ray cameraRay(Ogre::Vector3(camPos.x, 5000.0f, camPos.z), Ogre::Vector3::NEGATIVE_UNIT_Y);
  
@@ -154,7 +170,8 @@ void Player::endThrow(){
     float mult = 20.0f/muldir.length();
     ball->setPosition(nodePlayer->getPosition().x+(camPlayer->getDerivedDirection().x*mult), nodePlayer->getPosition().y + 75, nodePlayer->getPosition().z+(camPlayer->getDerivedDirection().z*mult));
     btVector3 dir=btVector3(camPlayer->getDerivedDirection().x,camPlayer->getDerivedDirection().y,camPlayer->getDerivedDirection().z);
-    ball->addToBullet(dir, mPower); 
+    ball->addToBullet(dir, mPower);
+    ball->thrownBy(false); 
     ball = NULL;
     mPower = 1;
     mThrowing = false;
@@ -168,7 +185,8 @@ void Player::extThrow(btVector3 dir, Ogre::Real pow){
     Ogre::Vector3 muldir=Ogre::Vector3(camPlayer->getDerivedDirection().x,0,camPlayer->getDerivedDirection().z);
     float mult = 20.0f/muldir.length();
     ball->setPosition(nodePlayer->getPosition().x+(camPlayer->getDerivedDirection().x*mult), nodePlayer->getPosition().y + 75, nodePlayer->getPosition().z+(camPlayer->getDerivedDirection().z*mult));
-    ball->addToBullet(dir, pow); 
+    ball->addToBullet(dir, pow);
+    ball->thrownBy(false); 
     ball = NULL;
     mPower = 1;
     mThrowing = false;
@@ -204,7 +222,28 @@ bool Player::isInPlay()
 
 void Player::setInPlay(bool b)
 {
+	if(inPlay&&!b)
+	{
+		nodePlayer->setVisible(false);
+		Simulator::Simulation.getWorld()->removeRigidBody(body);
+	}
 	inPlay=b;
+}
+
+void Player::respawn()
+{
+	if(!inPlay)
+	{
+		Simulator::Simulation.getWorld()->removeRigidBody(body);
+	}
+	nodePlayer->setPosition(spawnPoint);
+	nodePlayer->setVisible(true);
+	btTransform t;
+	body->getMotionState()->getWorldTransform(t);
+	btVector3 pos = btVector3(nodePlayer->getPosition().x,-50,nodePlayer->getPosition().z);
+	t.setOrigin(pos);
+	body->proceedToTransform(t);
+	Simulator::Simulation.getWorld()->addRigidBody(body);
 }
 
 /*  std::stringstream ss (std::stringstream::in | std::stringstream::out);

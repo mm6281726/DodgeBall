@@ -28,7 +28,7 @@ class Ball{
 		Ogre::Vector3 spawnPoint;
 		bool mThrownByEnemy;
 	public:
-		Ball(Ogre::SceneManager* sceneMgr, Simulator* s, Ogre::String name, int x);
+		Ball(Ogre::SceneManager* sceneMgr, Simulator* s, Ogre::String name, int x,int ind);
 		void setPosition(int x, int y, int z);
 		void setPosition(const Ogre::Vector3 &  pos);
 		Ogre::Vector3 getPosition();

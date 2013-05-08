@@ -1,6 +1,11 @@
 #include "Simulator.h"
+#include <Player.h>
+#include <Enemy.h>
+#include <PlayerManager.h>
+#include <Ball.h>
+#include <BallManager.h>
 
-
+Simulator Simulator::Simulation;
 Simulator::Simulator()
 {
 	//paddleLocation = btVector3(0.f,0.f,0.f);
@@ -10,6 +15,51 @@ Simulator::Simulator()
 Simulator::~Simulator(void)
 {
 }
+
+bool callbackFunc(btManifoldPoint& cp, const btCollisionObject* obj1, int id1, int index1, const btCollisionObject* obj2, int id2, int index2)
+{
+	bulletObject* a = (bulletObject*)obj1->getUserPointer();
+	bulletObject* b = (bulletObject*)obj2->getUserPointer();
+/*	std::cout << "\n-------------------------~~~~~~~~~~~~~~~~~~~~~~~~~************************\n";
+	std::cout << "Object a type: ";
+	std::cout << a->type;
+	std::cout << "\nObject b type: ";
+	std::cout << b->type;
+	std::cout << "\n-------------------------~~~~~~~~~~~~~~~~~~~~~~~~~************************\n";*/
+	if( (a->type == BALL && b->type == PLAYER) || (a->type == PLAYER && b->type == BALL) ){
+	//	std::cout << "\nBall hit Player\n";
+		Ball* ball = a->type == BALL?BallManager::BallControl.getBall(a->index):BallManager::BallControl.getBall(b->index);
+		Player* player=a->type == PLAYER?PlayerManager::PlayerControl.getPlayer(a->index):PlayerManager::PlayerControl.getPlayer(b->index);
+		if(ball->isDangerous())
+		{
+			player->setInPlay(false);
+		}
+		else if(!player->hasBall())
+		{
+			player->pickupBallPhysics(ball);
+		}
+		
+	}else if( (a->type == BALL && b->type == ENEMY) || (a->type == ENEMY && b->type == BALL) ){
+	//	std::cout << "\nBall hit Player\n";
+		Ball* ball = a->type == BALL?BallManager::BallControl.getBall(a->index):BallManager::BallControl.getBall(b->index);
+		Enemy* enemy=a->type == ENEMY?PlayerManager::PlayerControl.getEnemy(a->index):PlayerManager::PlayerControl.getEnemy(b->index);
+		if(ball->isDangerous())
+		{
+			enemy->setInPlay(false);
+		}
+		else if(!enemy->hasBall())
+		{
+			enemy->pickupBallPhysics(ball);
+		}
+		
+	} else if( (a->type == BALL && b->type == WALL) || (a->type == WALL && b->type == BALL) ){
+	//	std::cout << "\nBall hit Wall\n";
+		Ball* ball = a->type == BALL?BallManager::BallControl.getBall(a->index):BallManager::BallControl.getBall(b->index);
+		if(ball->isDangerous())
+			ball->setDanger(false);
+	}
+	return false;
+} 
 
 btRigidBody* Simulator::addPlane(float x,float y,float z,btVector3 normal)
 {
@@ -21,13 +71,14 @@ btRigidBody* Simulator::addPlane(float x,float y,float z,btVector3 normal)
 	btMotionState* motion= new btDefaultMotionState(t);
 	btRigidBody::btRigidBodyConstructionInfo info(0.0,motion,plane);
 	btRigidBody* body=new btRigidBody(info);
-    	body->setRestitution(1.0);
-	world->addRigidBody(body);
-	bodies.push_back(body);
+  body->setRestitution(1.0);
+	world->addRigidBody(body);//, COL_WALL, COL_BALL);
+	bodies.push_back(new bulletObject(body, WALL,-1));
+	body->setUserPointer(bodies[bodies.size()-1]);
 	return body;
 }
 
-btRigidBody* Simulator::addSphere(float rad,float x,float y,float z,float mass)
+btRigidBody* Simulator::addSphere(float rad,float x,float y,float z,float mass, int index)
 {
 	btTransform t;	//position and rotation
 	t.setIdentity();
@@ -40,11 +91,32 @@ btRigidBody* Simulator::addSphere(float rad,float x,float y,float z,float mass)
 	btMotionState* motion=new btDefaultMotionState(t);	//set the position (and motion)
 	btRigidBody::btRigidBodyConstructionInfo info(mass,motion,sphere,inertia);	//create the constructioninfo, you can create multiple bodies with the same info
 	btRigidBody* body=new btRigidBody(info);	//let's create the body itself
-  	body->setRestitution(0.9);
+  body->setRestitution(0.9);
+	body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);	
 	body->setLinearVelocity(btVector3(0,0,0));
-	world->addRigidBody(body);	//and let the world know about it
-	bodies.push_back(body);	//to be easier to clean, I store them a vector
+	world->addRigidBody(body);//, COL_BALL, COL_WALL|COL_PLAYER|COL_ENEMY|COL_BALL);	//and let the world know about it
+	bodies.push_back(new bulletObject(body, BALL,index));
+	body->setUserPointer(bodies[bodies.size()-1]);
 	return body;
+}
+
+btRigidBody* Simulator::addCylinder(float d,float h,float x,float y,float z,float mass, bool isPlayer, int index)
+{
+	btTransform t;
+  t.setIdentity();
+  t.setOrigin(btVector3(x,y,z));
+  btCylinderShape* sphere=new btCylinderShape(btVector3(d/2.0,h/2.0,d/2.0));
+  btVector3 inertia(0,0,0);
+  if(mass!=0.0)
+	  sphere->calculateLocalInertia(mass,inertia);
+     
+  btMotionState* motion=new btDefaultMotionState(t);
+  btRigidBody::btRigidBodyConstructionInfo info(mass,motion,sphere,inertia);
+  btRigidBody* body=new btRigidBody(info);
+  world->addRigidBody(body);	
+  bodies.push_back(new bulletObject(body, isPlayer?PLAYER:ENEMY, index));
+  body->setUserPointer(bodies[bodies.size()-1]);
+  return body;
 }
 
 btDiscreteDynamicsWorld* Simulator::setupSimulator(void)
@@ -64,65 +136,10 @@ btDiscreteDynamicsWorld* Simulator::setupSimulator(void)
 	addPlane(0,0,300,btVector3(0,0,-1));
 	
 	std::cout << "****************************************************************************************setup complete";
-
+	gContactAddedCallback = callbackFunc;
 	return world;
 }
 
-void Simulator::handleCollisions(void)
-{
-	std::cout << "~~~------~~~~~~~-------~~~------~~~~~~~-------got to handle collisions";
-	//for(int c=0;c<1000 && simulate;c++)
-	while(simulate)
-	{
-	//	paddleBody->getMotionState()->getWorldTransform()->setOrigin(paddleLocation);
-		world->stepSimulation(1.f/60.f,10);
-		//check for collisions (Somehow)			---	-		--		--		This may not work... I had trouble running Bullet at home, so this is the extent of my ability. 
-		int numManifolds = world->getDispatcher()->getNumManifolds();		//	Try using world->ContactResultCallback().
-		for (int i=0;i<numManifolds;i++)
-		{
-			btPersistentManifold* contactManifold =  world->getDispatcher()->getManifoldByIndexInternal(i);
-			btCollisionObject* obA = static_cast<btCollisionObject*>(contactManifold->getBody0());
-			btCollisionObject* obB = static_cast<btCollisionObject*>(contactManifold->getBody1());
-			btRigidBody* first = btRigidBody::upcast(obA);
-			btRigidBody* second = btRigidBody::upcast(obB);
-			if((first && first == ballBody) || (second && second == ballBody))			//may need two if statements to determine which is the ball (and maybe to tell which wall it is?)
-			{
-				std::cout << "~~~------~~~~~~~-------ball collision------~~~~~~~-------~~~";	//could also use collision points to determine the side of the ball that hit. (use contactManifold)
-				//bounce ball - applycentralforce = -2 x force in wall direction
-				//check other body to determine bounce direction 
-				//ball sfx
-			}
-			if(first == paddleBody || second == paddleBody)
-			{
-				std::cout << "~~~------~~~~~~~-------paddle collision------~~~~~~~-------~~~";
-				//paddle sfx
-			}
-		}
-	}
-}
-
-bool Simulator::updatePaddle(Ogre::Vector3 location)
-{
-	paddleLocation = btVector3(location.x,location.y,location.z);
-	return true;
-}
-	
-
-void Simulator::runSimulator(bool sim)
-{
-	simulate = sim;
-}
-
-btVector3 Simulator::getBallLocation(void)			///Discover why this segfaults
-{
-	std::cout << "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~getting ball location";
-	btTransform* ballt;
-	ballBody->getMotionState()->getWorldTransform(*ballt);
-	std::cout << "got ball transform";
-	btVector3 temp =ballt->getOrigin();
-	return temp;
-	//return Ogre::Vector3(temp.x(),temp.y(),temp.z());
-}
 
 void Simulator::deletePhysics(void)
 {

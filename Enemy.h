@@ -33,12 +33,14 @@ class Enemy{
 		Ogre::Real mPower;
 		bool mRelease;
 		bool inPlay;
+		btRigidBody* body;
 		Ogre::Vector3 spawnPoint;
 	public:
-		Enemy(Ogre::SceneManager* sceneMgr, Ogre::String name, int x, int z);
+		Enemy(Ogre::SceneManager* sceneMgr, Ogre::String name, int x, int z,int ind);
 		Ogre::Vector3 getPosition();
 		bool hasBall();
 		void pickupBall(Ball* ball);
+		void pickupBallPhysics(Ball* baller);
 		void beginThrow();
 		void chargeThrow();
 		void endThrow(Ogre::Vector3 playerloc);

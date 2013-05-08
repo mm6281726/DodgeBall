@@ -15,7 +15,7 @@ http://www.ogre3d.org/tikiwiki/
 */
 #include "DodgeBall.h"
 
-Simulator* simulator;
+//Simulator* simulator;
 btDiscreteDynamicsWorld* world;
 
 bool DodgeBall::go(void)
@@ -23,6 +23,7 @@ bool DodgeBall::go(void)
     mShutDown=false;
     playersWin=0;
     currRound=0;
+	maxRounds=1;
 #ifdef _DEBUG
     mResourcesCfg = "resources_d.cfg";
     mPluginsCfg = "plugins_d.cfg";
@@ -89,18 +90,19 @@ bool DodgeBall::go(void)
     Ogre::ResourceGroupManager::getSingleton().initialiseAllResourceGroups();
 //-------------------------------------------------------------------------------------
     // set up physics
-	simulator = new Simulator();
-	world = simulator->setupSimulator();
+	//simulator = new Simulator();
+	//Simulator::Simulation()/*simulator*/
+	world = Simulator::Simulation.setupSimulator();
 //-------------------------------------------------------------------------------------
 
     //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Create Player/Enemy/Ball
     mSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_ADDITIVE);
-    PlayerManager::PlayerControl.addPlayer(new Player(mSceneMgr, "Player1", 0, 200));
-    PlayerManager::PlayerControl.addEnemy(new Enemy(mSceneMgr, "Enemy1", 50, -200));
-    PlayerManager::PlayerControl.addEnemy(new Enemy(mSceneMgr, "Enemy2",-50, -200));
-    BallManager::BallControl.addBall(new Ball(mSceneMgr, simulator, "Ball1", -20));
-    BallManager::BallControl.addBall(new Ball(mSceneMgr, simulator, "Ball2", 0));
-    BallManager::BallControl.addBall(new Ball(mSceneMgr, simulator, "Ball3", 20));
+    PlayerManager::PlayerControl.addPlayer(new Player(mSceneMgr, "Player1", 0, 200,PlayerManager::PlayerControl.player_size()));
+    PlayerManager::PlayerControl.addEnemy(new Enemy(mSceneMgr, "Enemy1", 50, -200,PlayerManager::PlayerControl.enemy_size()));
+    PlayerManager::PlayerControl.addEnemy(new Enemy(mSceneMgr, "Enemy2",-50, -200,PlayerManager::PlayerControl.enemy_size()));
+    BallManager::BallControl.addBall(new Ball(mSceneMgr, &Simulator::Simulation/*simulator*/, "Ball1", -20,BallManager::BallControl.size()));
+    BallManager::BallControl.addBall(new Ball(mSceneMgr, &Simulator::Simulation/*simulator*/, "Ball2", 0,BallManager::BallControl.size()));
+    BallManager::BallControl.addBall(new Ball(mSceneMgr, &Simulator::Simulation/*simulator*/, "Ball3", 20,BallManager::BallControl.size()));
 //-------------------------------------------------------------------------------------
     // create viewports
     // Create one viewport, entire window
@@ -293,19 +295,15 @@ bool DodgeBall::frameRenderingQueued(const Ogre::FrameEvent& evt)
 		//Enemy team wins!
     }
 
-    //printf("before step simulation\n");
-    world->stepSimulation(1/60.0);
-    //printf("after step simulation\n");
-        
-    BallManager::BallControl.updateBalls();
-
-    Player* player;
+	Player* player;
     for(int i = 0; i < PlayerManager::PlayerControl.player_size(); i++){
         player = PlayerManager::PlayerControl.getPlayer(i);
+		if(!player->isInPlay())
+			continue;
         player->move(evt);
         if(!player->hasBall()){
-            for(int i = 0; i < BallManager::BallControl.size(); i++)   
-                player->pickupBall(BallManager::BallControl.getBall(i));
+  //          for(int i = 0; i < BallManager::BallControl.size(); i++)   
+//                player->pickupBall(BallManager::BallControl.getBall(i));
             if(player->hasBall())
                 GUIManager::GUIControl.hasBall();
         }
@@ -315,20 +313,32 @@ bool DodgeBall::frameRenderingQueued(const Ogre::FrameEvent& evt)
     Enemy* enemy;
     for(int i = 0; i < PlayerManager::PlayerControl.enemy_size(); i++){
         enemy = PlayerManager::PlayerControl.getEnemy(i);
+		if(!enemy->isInPlay())
+		{
+			continue;
+		}
         if(!enemy->hasBall()){
 	        Ball* ball = BallManager::BallControl.getNearestBall(enemy->getPosition());
-	        ball->setDanger(false);
+	 //       ball->setDanger(false);
 	        if(!ball->isDangerous() && PlayerManager::PlayerControl.isClosestEnemy(enemy->getPosition(), ball->getPosition()))
             	enemy->getNearBall(ball, evt);
 	        else if(ball->towardsPos(enemy->getPosition()))
 		        enemy->getAwayBall(ball, evt);
-            for(int i = 0; i < BallManager::BallControl.size(); i++)   
-                enemy->pickupBall(BallManager::BallControl.getBall(i));
+    //        for(int i = 0; i < BallManager::BallControl.size(); i++)   
+   //             enemy->pickupBall(BallManager::BallControl.getBall(i));
         }else{
             enemy->beginThrow();
             enemy->endThrow(PlayerManager::PlayerControl.getPlayer(0)->getPosition());
         }
     }
+
+    //printf("before step simulation\n");
+    world->stepSimulation(1/60.0);
+    //printf("after step simulation\n");
+        
+    BallManager::BallControl.updateBalls();
+
+    
 
     mTrayMgr->frameRenderingQueued(evt);
  
@@ -361,19 +371,17 @@ void DodgeBall::loadNextRound()
 		{
 			GUIManager::GUIControl.endGame("Player Team Lost :-(");
 		}
-		mShutDown=true;//replace with options to replay if allowed
+	//	mShutDown=true;//replace with options to replay if allowed
 	}
 	//reset simulator (or else put balls into position again in simulator)
 	//put player and balls back into position in ogre
 	for(int i=0;i<PlayerManager::PlayerControl.player_size();i++)		//need to make players throw balls prior to resetting them
 	{
-		std::cout<<"\resetting players\n";
 		Player* p=PlayerManager::PlayerControl.getPlayer(i);
-		p->setInPlay(true);
 		p->respawn();
+		p->setInPlay(true);
 		if(p->hasBall())
 		{
-			std::cout<<"\nforced throw\n";
 			p->extThrow(btVector3(0,0,0),5);
 		}
 		
@@ -381,8 +389,8 @@ void DodgeBall::loadNextRound()
 	for(int i=0;i<PlayerManager::PlayerControl.enemy_size();i++)		//need to make players throw balls prior to resetting them
 	{
 		Enemy* e=PlayerManager::PlayerControl.getEnemy(i);
-		e->setInPlay(true);
 		e->respawn();
+		e->setInPlay(true);
 		if(e->hasBall())
 		{
 			e->extThrow(btVector3(0,0,0),5);
@@ -459,13 +467,14 @@ bool DodgeBall::keyReleased( const OIS::KeyEvent &arg )
         }
 	else if(arg.key == OIS::KC_R) // refresh all textures
         {
-		player->respawn();
+		loadNextRound();
+	/*	player->respawn();
 		for(int i = 0; i < PlayerManager::PlayerControl.enemy_size(); i++){
         	PlayerManager::PlayerControl.getEnemy(i)->respawn();
 	    	}
 		for(int i = 0; i < BallManager::BallControl.size(); i++){		//need to make players throw balls prior to resetting them
         	BallManager::BallControl.getBall(i)->respawn();
-	    	}
+	    	}*/
         }
     }
     return true;
@@ -516,8 +525,8 @@ void DodgeBall::buttonHit(OgreBites::Button* button){
     else if(button->getName().compare("NextRound") == 0)
     {
         GUIManager::GUIControl.end_nextRoundScreen();
-	loadNextRound();
-	mPause=false;
+		loadNextRound();
+		mPause=false;
     }
     /*else if(button->getName().compare("MainMenu") == 0){
         GUIManager::GUIControl.pause();

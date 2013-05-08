@@ -76,6 +76,10 @@ GUIManager GUIManager::GUIControl;
         mTrayMgr->hideCursor();
     }
 
+    void GUIManager::endGame(char* winner){
+        mTrayMgr->createLabel(OgreBites::TL_CENTER, "GameOver",winner);
+    }
+
     void GUIManager::pause(){
         if(!mPause){
             mTrayMgr->showCursor();

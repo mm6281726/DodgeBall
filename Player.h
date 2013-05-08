@@ -18,6 +18,7 @@
 
 #include <Ball.h>
 #include <GUIManager.h>
+#include <Simulator.h>
 
 class Player{
 	private:
@@ -32,10 +33,11 @@ class Player{
 		bool mThrowing;
 		Ogre::Real mPower;
 		bool mRelease;
+		btRigidBody* body;
 		bool inPlay;
 		Ogre::Vector3 spawnPoint;
 	public:
-		Player(Ogre::SceneManager* sceneMgr, Ogre::String name, int x, int z);
+		Player(Ogre::SceneManager* sceneMgr, Ogre::String name, int x, int z,int ind);
 		Ogre::Vector3 getPosition();
 		void move(const Ogre::FrameEvent& evt);
 		void startMove(Ogre::String key);
@@ -43,6 +45,7 @@ class Player{
 		void lookAround(const OIS::MouseEvent &arg);
 		bool hasBall();
 		void pickupBall(Ball* ball);
+		void pickupBallPhysics(Ball* baller);
 		void beginThrow();
 		void chargeThrow();
 		void endThrow();

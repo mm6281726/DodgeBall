@@ -6,7 +6,7 @@ static Ogre::Real mMove = 150;      // The movement constant
 static Ogre::Real mRotate = 0.13;
 static Ogre::Vector3 transVector = Ogre::Vector3::ZERO;
 
-Enemy::Enemy(Ogre::SceneManager* sceneMgr, Ogre::String name, int x, int z){
+Enemy::Enemy(Ogre::SceneManager* sceneMgr, Ogre::String name, int x, int z,int ind){
 	mSceneMgr = sceneMgr;
     mHasBall = false;
     ball = NULL;
@@ -25,6 +25,8 @@ Enemy::Enemy(Ogre::SceneManager* sceneMgr, Ogre::String name, int x, int z){
     nodeEnemy->attachObject(entEnemy);
     nodeEnemy->scale(.50,.50,.50);
     inPlay=true;
+
+	body = Simulator::Simulation.addCylinder(20,100,x,-50,z,0, false,ind);
 }
 
 Ogre::Vector3 Enemy::getPosition(){
@@ -44,6 +46,13 @@ void Enemy::pickupBall(Ball* baller){
 		ball->removeFromBullet();
         mHasBall = true;
     }
+}
+
+void Enemy::pickupBallPhysics(Ball* baller){
+        ball = baller;
+        ball->setPosition(nodeEnemy->getPosition().x, nodeEnemy->getPosition().y + 75, nodeEnemy->getPosition().z);
+		ball->removeFromBullet();
+        mHasBall = true;
 }
 
 void Enemy::beginThrow(){
@@ -107,6 +116,15 @@ void Enemy::getNearBall(Ball* ball, const Ogre::FrameEvent& evt){
         nodeEnemy->setPosition(-80, nodeEnemy->getPosition().y, nodeEnemy->getPosition().z);
     if(nodeEnemy->getPosition().x > 80)
         nodeEnemy->setPosition(80, nodeEnemy->getPosition().y, nodeEnemy->getPosition().z);
+
+
+	Simulator::Simulation.getWorld()->removeRigidBody(body);
+	btTransform t;
+	body->getMotionState()->getWorldTransform(t);
+	btVector3 pos = btVector3(nodeEnemy->getPosition().x,-50,nodeEnemy->getPosition().z);
+	t.setOrigin(pos);
+	body->proceedToTransform(t);
+	Simulator::Simulation.getWorld()->addRigidBody(body);
 }
 
 void Enemy::getAwayBall(Ball* ball, const Ogre::FrameEvent& evt){
@@ -129,6 +147,14 @@ void Enemy::getAwayBall(Ball* ball, const Ogre::FrameEvent& evt){
         nodeEnemy->setPosition(-80, nodeEnemy->getPosition().y, nodeEnemy->getPosition().z);
     if(nodeEnemy->getPosition().x > 80)
         nodeEnemy->setPosition(80, nodeEnemy->getPosition().y, nodeEnemy->getPosition().z);
+
+	Simulator::Simulation.getWorld()->removeRigidBody(body);
+	btTransform t;
+	body->getMotionState()->getWorldTransform(t);
+	btVector3 pos = btVector3(nodeEnemy->getPosition().x,-50,nodeEnemy->getPosition().z);
+	t.setOrigin(pos);
+	body->proceedToTransform(t);
+	Simulator::Simulation.getWorld()->addRigidBody(body);
 }
 
 btVector3 Enemy::throwDir(){
@@ -154,12 +180,28 @@ bool Enemy::isInPlay()
 
 void Enemy::setInPlay(bool b)
 {
+	if(inPlay&&!b)
+	{
+		nodeEnemy->setVisible(false);
+		Simulator::Simulation.getWorld()->removeRigidBody(body);
+	}
 	inPlay=b;
 }
 
 void Enemy::respawn()
 {
+	if(inPlay)
+	{
+		Simulator::Simulation.getWorld()->removeRigidBody(body);
+	}
 	nodeEnemy->setPosition(spawnPoint);
+	nodeEnemy->setVisible(true);
+	btTransform t;
+	body->getMotionState()->getWorldTransform(t);
+	btVector3 pos = btVector3(nodeEnemy->getPosition().x,-50,nodeEnemy->getPosition().z);
+	t.setOrigin(pos);
+	body->proceedToTransform(t);
+	Simulator::Simulation.getWorld()->addRigidBody(body);
 }
 
 /*  std::stringstream ss (std::stringstream::in | std::stringstream::out);

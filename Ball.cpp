@@ -7,7 +7,7 @@ static Ogre::Vector3 transVector = Ogre::Vector3::ZERO;
 bool velInfo[3];
 int mBounce;
 
-Ball::Ball(Ogre::SceneManager* sceneMgr, Simulator* s, Ogre::String name, int x){
+Ball::Ball(Ogre::SceneManager* sceneMgr, Simulator* s, Ogre::String name, int x,int ind){
 	mSceneMgr = sceneMgr;
 	mThrownByEnemy = false;
 
@@ -21,7 +21,7 @@ Ball::Ball(Ogre::SceneManager* sceneMgr, Simulator* s, Ogre::String name, int x)
 
 
 	simulator = s;
-	physicsBall = simulator->addSphere(5,0,0,0,5);
+	physicsBall = simulator->addSphere(5,0,0,0,5,ind);
 	dangerous=false;
 }
 
@@ -63,7 +63,7 @@ void Ball::addToBullet(btVector3 dir, Ogre::Real power)
 	velInfo[1]=(dir.getY()>=0);
 	velInfo[2]=(dir.getZ()>=0);
 	mBounce=0;
-//	dangerous=true;
+	dangerous=true;
 }
 
 void Ball::removeFromBullet(void)
@@ -74,7 +74,7 @@ void Ball::removeFromBullet(void)
 	velInfo[1]=true;
 	velInfo[2]=true;
 	mBounce=0;
-//	dangerous=false;
+	dangerous=false;
 }
 
 int Ball::numBounces(void)
