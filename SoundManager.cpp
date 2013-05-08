@@ -17,6 +17,12 @@ int SoundManager::loadWAV(char* file){
   return (SoundList.size() - 1);
 }
 
+void SoundManager::setup(int x, int y, int z){
+    ballBounceWall = x;
+    ballPlayerHit = y;
+    ballPlayerThrow = z;
+}
+
 void SoundManager::playAudio(){
 	SDL_PauseAudio(false);
 }

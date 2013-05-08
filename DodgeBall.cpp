@@ -108,7 +108,7 @@ bool DodgeBall::go(void)
  
     // Alter the camera aspect ratio to match the viewport
     mSceneMgr->getCamera("Player1Cam")->setAspectRatio(
-        Ogre::Real(vp->getActualWidth()) / Ogre::Real(vp->getActualHeight()));
+    Ogre::Real(vp->getActualWidth()) / Ogre::Real(vp->getActualHeight()));
 
 //-------------------------------------------------------------------------------------
     // Create the scene
@@ -249,6 +249,25 @@ bool DodgeBall::go(void)
     entLeftWallBack->setMaterialName("Examples/Rockwall");
     entLeftWallBack->setCastShadows(false);
 
+    //-------------------------------------------------------------------------------------
+    //load Sounds
+    if(Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096) < 0)
+        return false;
+    
+    if((ballBounceWall = SoundManager::SoundControl.loadWAV("sound/slap2.wav")) == -1)
+        return false;
+    if((ballPlayerHit = SoundManager::SoundControl.loadWAV("sound/slap1.wav")) == -1)
+        return false;
+    if((ballPlayerThrow = SoundManager::SoundControl.loadWAV("sound/sword_hit_single2.wav")) == -1)
+        return false;
+    SoundManager::SoundControl.playAudio();
+
+    music = Mix_LoadMUS("sound/risveglio.wav");
+    Mix_PlayMusic(music, -1);
+
+    SoundManager::SoundControl.setup(ballBounceWall, ballPlayerHit, ballPlayerThrow);
+    
+    //---------------------------------------------------------------------------------
     mPause = false;
 
     mRoot->addFrameListener(this);
@@ -323,6 +342,7 @@ bool DodgeBall::frameRenderingQueued(const Ogre::FrameEvent& evt)
         }else{
             enemy->beginThrow();
             enemy->endThrow(PlayerManager::PlayerControl.getPlayer(0)->getPosition());
+            SoundManager::SoundControl.playClip(ballPlayerThrow, 0);
         }
     }
 
@@ -499,8 +519,10 @@ bool DodgeBall::mouseReleased( const OIS::MouseEvent &arg, OIS::MouseButtonID id
     Player* player;
     for(int i = 0; i < PlayerManager::PlayerControl.player_size(); i++){
         player = PlayerManager::PlayerControl.getPlayer(i);
-        if(player->hasBall())
+        if(player->hasBall()){
             player->endThrow();
+            SoundManager::SoundControl.playClip(ballPlayerThrow, 0);
+        }
     }
     return true;
 }
@@ -527,7 +549,7 @@ void DodgeBall::buttonHit(OgreBites::Button* button){
     else if(button->getName().compare("NumberEnemiesContinue") == 0){
         GUIManager::GUIControl.end_NumberOfEnemies();
         for(int i = 1; i < mNumberOfEnemies; i++)
-            PlayerManager::PlayerControl.addEnemy(new Enemy(mSceneMgr, i, -100 + (20 * i), -200));
+            PlayerManager::PlayerControl.addEnemy(new Enemy(mSceneMgr, i, -100 + (30 * i), -200));
     }
     else if(button->getName().compare("+Balls") == 0){
         if(mNumberOfBalls < 10)
@@ -541,7 +563,7 @@ void DodgeBall::buttonHit(OgreBites::Button* button){
     }
     else if(button->getName().compare("NumberBallsContinue") == 0){
         GUIManager::GUIControl.end_NumberOfBalls();
-        for(int i = 0; i < mNumberOfBalls; i++)
+        for(int i = 1; i < mNumberOfBalls; i++)
             BallManager::BallControl.addBall(new Ball(mSceneMgr, simulator, "Ball" + Ogre::StringConverter::toString(i), -80 + (50 * i)));
     }
     /*else if(button->getName().compare("MainMenu") == 0){
