@@ -17,6 +17,7 @@ http://www.ogre3d.org/tikiwiki/
 
 Simulator* simulator;
 btDiscreteDynamicsWorld* world;
+int mNumberOfEnemies = 1;
 
 bool DodgeBall::go(void)
 {
@@ -96,8 +97,7 @@ bool DodgeBall::go(void)
     //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Create Player/Enemy/Ball
     mSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_ADDITIVE);
     PlayerManager::PlayerControl.addPlayer(new Player(mSceneMgr, "Player1", 0, 200));
-    PlayerManager::PlayerControl.addEnemy(new Enemy(mSceneMgr, "Enemy1", 50, -200));
-    PlayerManager::PlayerControl.addEnemy(new Enemy(mSceneMgr, "Enemy2",-50, -200));
+    PlayerManager::PlayerControl.addEnemy(new Enemy(mSceneMgr, 0, -100, -200));
     BallManager::BallControl.addBall(new Ball(mSceneMgr, simulator, "Ball1", -20));
     BallManager::BallControl.addBall(new Ball(mSceneMgr, simulator, "Ball2", 0));
     BallManager::BallControl.addBall(new Ball(mSceneMgr, simulator, "Ball3", 20));
@@ -147,8 +147,6 @@ bool DodgeBall::go(void)
  
     mTrayMgr = new OgreBites::SdkTrayManager("InterfaceName", mWindow, mMouse, this);
     GUIManager::GUIControl.setup(mTrayMgr);
-    mTrayMgr->hideCursor();
- 
 
 /////////////////////////////////////////////////////////////////////////////////// WALLS YAY
     Ogre::Plane roofFront(Ogre::Vector3::NEGATIVE_UNIT_Y, -100);
@@ -251,7 +249,6 @@ bool DodgeBall::go(void)
     mSceneMgr->getRootSceneNode()->createChildSceneNode()->attachObject(entLeftWallBack);
     entLeftWallBack->setMaterialName("Examples/Rockwall");
     entLeftWallBack->setCastShadows(false);
-
 
     mPause = false;
 
@@ -514,16 +511,33 @@ void DodgeBall::buttonHit(OgreBites::Button* button){
         mShutDown = true;
     else if(button->getName().compare("Resume") == 0)
         GUIManager::GUIControl.pause();
-    else if(button->getName().compare("NextRound") == 0)
-    {
-        GUIManager::GUIControl.end_nextRoundScreen();
-	loadNextRound();
-	mPause=false;
+    else if(button->getName().compare("Singleplayer") == 0){
+        GUIManager::GUIControl.end_MainScreen();
+        GUIManager::GUIControl.begin_NumberOfEnemies();
+    }
+    else if(button->getName().compare("+") == 0){
+        if(mNumberOfEnemies < 10)
+            mNumberOfEnemies++;
+        GUIManager::GUIControl.updateNumberOfEnemies(mNumberOfEnemies);
+    }
+    else if(button->getName().compare("-") == 0){
+        if(mNumberOfEnemies > 0)
+            mNumberOfEnemies--;
+        GUIManager::GUIControl.updateNumberOfEnemies(mNumberOfEnemies);
+    }
+    else if(button->getName().compare("NumberEnemiesContinue") == 0){
+        GUIManager::GUIControl.end_NumberOfEnemies();
+        for(int i = 1; i < mNumberOfEnemies; i++)
+            PlayerManager::PlayerControl.addEnemy(new Enemy(mSceneMgr, i, -100 + (50 * i), -200));
     }
     /*else if(button->getName().compare("MainMenu") == 0){
         GUIManager::GUIControl.pause();
         GUIManager::GUIControl.begin_MainScreen();
-    }*/
+    }
+    BallManager::BallControl.addBall(new Ball(mSceneMgr, simulator, "Ball1", -20));
+    BallManager::BallControl.addBall(new Ball(mSceneMgr, simulator, "Ball2", 0));
+    BallManager::BallControl.addBall(new Ball(mSceneMgr, simulator, "Ball3", 20));
+    */
 }
  
 //Adjust mouse clipping area
