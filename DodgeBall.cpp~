@@ -365,16 +365,28 @@ void DodgeBall::loadNextRound()
 	}
 	//reset simulator (or else put balls into position again in simulator)
 	//put player and balls back into position in ogre
-	//idea: to cut down on hardcoding, have player and ball set starting positions to accessable variables (or else make a respawn function if variables are preferred to be private)
 	for(int i=0;i<PlayerManager::PlayerControl.player_size();i++)		//need to make players throw balls prior to resetting them
 	{
-		PlayerManager::PlayerControl.getPlayer(i)->setInPlay(true);
-		PlayerManager::PlayerControl.getPlayer(i)->respawn();
+		std::cout<<"\resetting players\n";
+		Player* p=PlayerManager::PlayerControl.getPlayer(i);
+		p->setInPlay(true);
+		p->respawn();
+		if(p->hasBall())
+		{
+			std::cout<<"\nforced throw\n";
+			p->extThrow(btVector3(0,0,0),5);
+		}
+		
 	}
 	for(int i=0;i<PlayerManager::PlayerControl.enemy_size();i++)		//need to make players throw balls prior to resetting them
 	{
-		PlayerManager::PlayerControl.getEnemy(i)->setInPlay(true);
-		PlayerManager::PlayerControl.getEnemy(i)->respawn();
+		Enemy* e=PlayerManager::PlayerControl.getEnemy(i);
+		e->setInPlay(true);
+		e->respawn();
+		if(e->hasBall())
+		{
+			e->extThrow(btVector3(0,0,0),5);
+		}
 	}
 	for(int i = 0; i < BallManager::BallControl.size(); i++)		//need to make players throw balls prior to resetting them
 	{

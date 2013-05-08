@@ -367,13 +367,26 @@ void DodgeBall::loadNextRound()
 	//put player and balls back into position in ogre
 	for(int i=0;i<PlayerManager::PlayerControl.player_size();i++)		//need to make players throw balls prior to resetting them
 	{
-		PlayerManager::PlayerControl.getPlayer(i)->setInPlay(true);
-		PlayerManager::PlayerControl.getPlayer(i)->respawn();
+		std::cout<<"\resetting players\n";
+		Player* p=PlayerManager::PlayerControl.getPlayer(i);
+		p->setInPlay(true);
+		p->respawn();
+		if(p->hasBall())
+		{
+			std::cout<<"\nforced throw\n";
+			p->extThrow(btVector3(0,0,0),5);
+		}
+		
 	}
 	for(int i=0;i<PlayerManager::PlayerControl.enemy_size();i++)		//need to make players throw balls prior to resetting them
 	{
-		PlayerManager::PlayerControl.getEnemy(i)->setInPlay(true);
-		PlayerManager::PlayerControl.getEnemy(i)->respawn();
+		Enemy* e=PlayerManager::PlayerControl.getEnemy(i);
+		e->setInPlay(true);
+		e->respawn();
+		if(e->hasBall())
+		{
+			e->extThrow(btVector3(0,0,0),5);
+		}
 	}
 	for(int i = 0; i < BallManager::BallControl.size(); i++)		//need to make players throw balls prior to resetting them
 	{
@@ -446,13 +459,14 @@ bool DodgeBall::keyReleased( const OIS::KeyEvent &arg )
         }
 	else if(arg.key == OIS::KC_R) // refresh all textures
         {
-		player->respawn();
+		loadNextRound();
+	/*	player->respawn();
 		for(int i = 0; i < PlayerManager::PlayerControl.enemy_size(); i++){
         	PlayerManager::PlayerControl.getEnemy(i)->respawn();
 	    	}
 		for(int i = 0; i < BallManager::BallControl.size(); i++){		//need to make players throw balls prior to resetting them
         	BallManager::BallControl.getBall(i)->respawn();
-	    	}
+	    	}*/
         }
     }
     return true;

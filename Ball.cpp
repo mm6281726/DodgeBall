@@ -136,6 +136,7 @@ void Ball::respawn()
 	btVector3 pos = btVector3(nodeBall->getPosition().x,nodeBall->getPosition().y,nodeBall->getPosition().z);
 	t.setOrigin(pos);
 	physicsBall->proceedToTransform(t);
+	physicsBall->setLinearVelocity(btVector3(0,0,0));
 	simulator->getWorld()->addRigidBody(physicsBall);
 }
 
