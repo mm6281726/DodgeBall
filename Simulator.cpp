@@ -34,8 +34,10 @@ bool callbackFunc(btManifoldPoint& cp, const btCollisionObject* obj1, int id1, i
 		Player* player=a->type == PLAYER?PlayerManager::PlayerControl.getPlayer(a->index):PlayerManager::PlayerControl.getPlayer(b->index);
 		if(ball->isDangerous())
 		{
-			SoundManager::SoundControl.playClip(SoundManager::SoundControl.ballPlayerHit, 0);
+			ball->getBody()->setLinearVelocity(btVector3(0,-1,0));
+			ball->setDanger(false);
 			player->setInPlay(false);
+			SoundManager::SoundControl.playClip(SoundManager::SoundControl.ballPlayerHit, 0);
 		}
 		else if(!player->hasBall())
 		{
@@ -49,6 +51,8 @@ bool callbackFunc(btManifoldPoint& cp, const btCollisionObject* obj1, int id1, i
 		Enemy* enemy=a->type == ENEMY?PlayerManager::PlayerControl.getEnemy(a->index):PlayerManager::PlayerControl.getEnemy(b->index);
 		if(ball->isDangerous())
 		{
+			ball->getBody()->setLinearVelocity(btVector3(0,-1,0));
+			ball->setDanger(false);
 			SoundManager::SoundControl.playClip(SoundManager::SoundControl.ballPlayerHit, 0);
 			enemy->setInPlay(false);
 		}
