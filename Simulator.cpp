@@ -61,13 +61,16 @@ bool callbackFunc(btManifoldPoint& cp, const btCollisionObject* obj1, int id1, i
 			enemy->pickupBallPhysics(ball);
 		}
 		
-	} else if( (a->type == BALL && b->type == WALL) || (a->type == WALL && b->type == BALL) ){
+	} else if( (a->type == BALL && b->type == WALL) || (a->type == WALL && b->type == BALL) )
+	{
 	//	std::cout << "\nBall hit Wall\n";
 		SoundManager::SoundControl.playClip(SoundManager::SoundControl.ballBounceWall, 0);
 		Ball* ball = a->type == BALL?BallManager::BallControl.getBall(a->index):BallManager::BallControl.getBall(b->index);
 		if(ball->isDangerous())
 			ball->setDanger(false);
-	}else if (a->type == BALL && b->type == Ball){
+	}
+	else if (a->type == BALL && b->type == BALL)
+	{
 		SoundManager::SoundControl.playClip(SoundManager::SoundControl.ballBounceWall, 0);
 	}
 	return false;
