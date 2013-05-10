@@ -48,7 +48,7 @@ GUIManager GUIManager::GUIControl;
 
     void GUIManager::begin_NumberOfEnemies(){
         mTrayMgr->createLabel(OgreBites::TL_CENTER, "NumberOfEnemies", "Number of Enemies");
-        mTrayMgr->createLabel(OgreBites::TL_CENTER, "NOEnemies", "1");
+        mTrayMgr->createLabel(OgreBites::TL_CENTER, "NOEnemies", "3");
         mTrayMgr->createButton(OgreBites::TL_CENTER, "+Enemies", "+", 250);
         mTrayMgr->createButton(OgreBites::TL_CENTER, "-Enemies", "-", 250);
         mTrayMgr->createButton(OgreBites::TL_CENTER, "NumberEnemiesContinue", "Continue", 250);
@@ -75,7 +75,7 @@ GUIManager GUIManager::GUIControl;
 
     void GUIManager::begin_NumberOfBalls(){
         mTrayMgr->createLabel(OgreBites::TL_CENTER, "NumberOfBalls", "Number of Balls");
-        mTrayMgr->createLabel(OgreBites::TL_CENTER, "NOBalls", "1");
+        mTrayMgr->createLabel(OgreBites::TL_CENTER, "NOBalls", "5");
         mTrayMgr->createButton(OgreBites::TL_CENTER, "+Balls", "+", 250);
         mTrayMgr->createButton(OgreBites::TL_CENTER, "-Balls", "-", 250);
         mTrayMgr->createButton(OgreBites::TL_CENTER, "NumberBallsContinue", "Continue", 250);
@@ -134,6 +134,8 @@ GUIManager GUIManager::GUIControl;
 
     void GUIManager::endGame(char* winner){
         mTrayMgr->createLabel(OgreBites::TL_CENTER, "GameOver",winner);
+        mTrayMgr->createButton(OgreBites::TL_CENTER, "Exit", "Quit", 250);
+        mTrayMgr->showCursor();
     }
 
     void GUIManager::pause(){

@@ -4,6 +4,8 @@
 #include <PlayerManager.h>
 #include <Ball.h>
 #include <BallManager.h>
+#include <GUIManager.h>
+#include <SoundManager.h>
 
 Simulator Simulator::Simulation;
 Simulator::Simulator()
@@ -32,11 +34,13 @@ bool callbackFunc(btManifoldPoint& cp, const btCollisionObject* obj1, int id1, i
 		Player* player=a->type == PLAYER?PlayerManager::PlayerControl.getPlayer(a->index):PlayerManager::PlayerControl.getPlayer(b->index);
 		if(ball->isDangerous())
 		{
+			SoundManager::SoundControl.playClip(SoundManager::SoundControl.ballPlayerHit, 0);
 			player->setInPlay(false);
 		}
 		else if(!player->hasBall())
 		{
 			player->pickupBallPhysics(ball);
+			GUIManager::GUIControl.hasBall();
 		}
 		
 	}else if( (a->type == BALL && b->type == ENEMY) || (a->type == ENEMY && b->type == BALL) ){
@@ -45,6 +49,7 @@ bool callbackFunc(btManifoldPoint& cp, const btCollisionObject* obj1, int id1, i
 		Enemy* enemy=a->type == ENEMY?PlayerManager::PlayerControl.getEnemy(a->index):PlayerManager::PlayerControl.getEnemy(b->index);
 		if(ball->isDangerous())
 		{
+			SoundManager::SoundControl.playClip(SoundManager::SoundControl.ballPlayerHit, 0);
 			enemy->setInPlay(false);
 		}
 		else if(!enemy->hasBall())
@@ -54,9 +59,12 @@ bool callbackFunc(btManifoldPoint& cp, const btCollisionObject* obj1, int id1, i
 		
 	} else if( (a->type == BALL && b->type == WALL) || (a->type == WALL && b->type == BALL) ){
 	//	std::cout << "\nBall hit Wall\n";
+		SoundManager::SoundControl.playClip(SoundManager::SoundControl.ballBounceWall, 0);
 		Ball* ball = a->type == BALL?BallManager::BallControl.getBall(a->index):BallManager::BallControl.getBall(b->index);
 		if(ball->isDangerous())
 			ball->setDanger(false);
+	}else if (a->type == BALL && b->type == Ball){
+		SoundManager::SoundControl.playClip(SoundManager::SoundControl.ballBounceWall, 0);
 	}
 	return false;
 } 
@@ -128,8 +136,8 @@ btDiscreteDynamicsWorld* Simulator::setupSimulator(void)
 	world = new btDiscreteDynamicsWorld(dispatcher,overlappingPairCache,solver,collisionConfiguration);
 	world->setGravity(btVector3(0,-40,0));
 
-	addPlane(-100,0,0,btVector3(1,0,0));
-	addPlane(100,0,0,btVector3(-1,0,0));
+	addPlane(-300,0,0,btVector3(1,0,0));
+	addPlane(300,0,0,btVector3(-1,0,0));
   	addPlane(0,-100,0,btVector3(0,1,0));
 	addPlane(0,100,0,btVector3(0,-1,0));
 	addPlane(0,0,-300,btVector3(0,0,1));

@@ -44,6 +44,7 @@ void Enemy::pickupBall(Ball* baller){
         ball = baller;
         ball->setPosition(nodeEnemy->getPosition().x, nodeEnemy->getPosition().y + 75, nodeEnemy->getPosition().z);
 		ball->removeFromBullet();
+        ball->gotPickedUp();
         mHasBall = true;
     }
 }
@@ -52,6 +53,7 @@ void Enemy::pickupBallPhysics(Ball* baller){
         ball = baller;
         ball->setPosition(nodeEnemy->getPosition().x, nodeEnemy->getPosition().y + 75, nodeEnemy->getPosition().z);
 		ball->removeFromBullet();
+        ball->gotPickedUp();
         mHasBall = true;
 }
 
@@ -74,6 +76,7 @@ void Enemy::endThrow(Ogre::Vector3 playerloc){
     btVector3 dir=btVector3(camEnemy->getDerivedDirection().x,camEnemy->getDerivedDirection().y,camEnemy->getDerivedDirection().z);
     ball->addToBullet(dir, 3);
     ball->thrownBy(true);
+    ball->gotThrown();
     ball = NULL;
     mPower = 1;
     mThrowing = false;
@@ -86,6 +89,7 @@ void Enemy::extThrow(btVector3 dir, Ogre::Real pow){
     ball->setPosition(nodeEnemy->getPosition().x+(camEnemy->getDerivedDirection().x*mult), nodeEnemy->getPosition().y + 75, nodeEnemy->getPosition().z+(camEnemy->getDerivedDirection().z*mult));
     ball->addToBullet(dir, pow);
     ball->thrownBy(true); 
+    ball->gotThrown();
     ball = NULL;
     mPower = 1;
     mThrowing = false;
@@ -112,10 +116,10 @@ void Enemy::getNearBall(Ball* ball, const Ogre::FrameEvent& evt){
         nodeEnemy->setPosition(nodeEnemy->getPosition().x, nodeEnemy->getPosition().y, 0);
     if(nodeEnemy->getPosition().z < -280)
         nodeEnemy->setPosition(nodeEnemy->getPosition().x, nodeEnemy->getPosition().y, -280);
-    if(nodeEnemy->getPosition().x < -80)
-        nodeEnemy->setPosition(-80, nodeEnemy->getPosition().y, nodeEnemy->getPosition().z);
-    if(nodeEnemy->getPosition().x > 80)
-        nodeEnemy->setPosition(80, nodeEnemy->getPosition().y, nodeEnemy->getPosition().z);
+    if(nodeEnemy->getPosition().x < -280)
+        nodeEnemy->setPosition(-280, nodeEnemy->getPosition().y, nodeEnemy->getPosition().z);
+    if(nodeEnemy->getPosition().x > 280)
+        nodeEnemy->setPosition(280, nodeEnemy->getPosition().y, nodeEnemy->getPosition().z);
 
 
 	Simulator::Simulation.getWorld()->removeRigidBody(body);
@@ -133,7 +137,7 @@ void Enemy::getAwayBall(Ball* ball, const Ogre::FrameEvent& evt){
 //    std::cout<<" <- danger\n";
     if (ball->getPosition().z < -10){
 	    btVector3 ballvel=ball->getBody()->getLinearVelocity();
-	    ballvel/=60;
+	    //ballvel/=60;
 	    ballvel.setY(0);
 	    btVector3 newdir = ballvel.cross(btVector3(0,1,0));
 	    newdir.normalize();
@@ -143,10 +147,10 @@ void Enemy::getAwayBall(Ball* ball, const Ogre::FrameEvent& evt){
         nodeEnemy->setPosition(nodeEnemy->getPosition().x, nodeEnemy->getPosition().y, 0);
     if(nodeEnemy->getPosition().z < -280)
         nodeEnemy->setPosition(nodeEnemy->getPosition().x, nodeEnemy->getPosition().y, -280);
-    if(nodeEnemy->getPosition().x < -80)
-        nodeEnemy->setPosition(-80, nodeEnemy->getPosition().y, nodeEnemy->getPosition().z);
-    if(nodeEnemy->getPosition().x > 80)
-        nodeEnemy->setPosition(80, nodeEnemy->getPosition().y, nodeEnemy->getPosition().z);
+    if(nodeEnemy->getPosition().x < -280)
+        nodeEnemy->setPosition(-280, nodeEnemy->getPosition().y, nodeEnemy->getPosition().z);
+    if(nodeEnemy->getPosition().x > 280)
+        nodeEnemy->setPosition(280, nodeEnemy->getPosition().y, nodeEnemy->getPosition().z);
 
 	Simulator::Simulation.getWorld()->removeRigidBody(body);
 	btTransform t;

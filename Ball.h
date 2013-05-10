@@ -27,8 +27,12 @@ class Ball{
 		bool dangerous;
 		Ogre::Vector3 spawnPoint;
 		bool mThrownByEnemy;
+		bool mIsPickedUp;
 	public:
 		Ball(Ogre::SceneManager* sceneMgr, Simulator* s, Ogre::String name, int x,int ind);
+		void gotPickedUp();
+		void gotThrown();
+		bool isPickedUp();
 		void setPosition(int x, int y, int z);
 		void setPosition(const Ogre::Vector3 &  pos);
 		Ogre::Vector3 getPosition();

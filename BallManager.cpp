@@ -17,11 +17,14 @@ int BallManager::size(){
 void BallManager::updateBalls(){
 	for(int i = 0; i < ball_list.size(); i++){
 		Ball* ball = ball_list[i];
-		btTransform t;
-    	ball->getBody()->getMotionState()->getWorldTransform(t);
-    	btVector3 position = t.getOrigin();
-    	ball->setPosition(Ogre::Vector3((float)position[0],(float)position[1],(float)position[2]));
-	ball->bounceCheck();
+		if(!ball->isPickedUp())
+		{
+			btTransform t;
+    		ball->getBody()->getMotionState()->getWorldTransform(t);
+    		btVector3 position = t.getOrigin();
+    		ball->setPosition(Ogre::Vector3((float)position[0],(float)position[1],(float)position[2]));
+			ball->bounceCheck();
+		}
 	}
 }
 

@@ -17,13 +17,14 @@ http://www.ogre3d.org/tikiwiki/
 
 //Simulator* simulator;
 btDiscreteDynamicsWorld* world;
-int mNumberOfEnemies = 1;
-int mNumberOfBalls = 1;
+int mNumberOfEnemies = 3;
+int mNumberOfBalls = 5;
 
 bool DodgeBall::go(void)
 {
     mShutDown=false;
-    playersWin=0;
+    playerwins=0;
+    enemywins = 0;
     currRound=0;
 	maxRounds=3;
 #ifdef _DEBUG
@@ -100,7 +101,7 @@ bool DodgeBall::go(void)
     //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!Create Player/Enemy/Ball
     mSceneMgr->setShadowTechnique(Ogre::SHADOWTYPE_STENCIL_ADDITIVE);
     PlayerManager::PlayerControl.addPlayer(new Player(mSceneMgr, "Player1", 0, 200,PlayerManager::PlayerControl.player_size()));
-    PlayerManager::PlayerControl.addEnemy(new Enemy(mSceneMgr, 0, -100, -200,PlayerManager::PlayerControl.enemy_size()));
+    PlayerManager::PlayerControl.addEnemy(new Enemy(mSceneMgr, 0, 0, -200,PlayerManager::PlayerControl.enemy_size()));
     BallManager::BallControl.addBall(new Ball(mSceneMgr, &Simulator::Simulation/*simulator*/, "Ball", -20,BallManager::BallControl.size()));
 //-------------------------------------------------------------------------------------
     // create viewports
@@ -156,10 +157,10 @@ bool DodgeBall::go(void)
     Ogre::Plane roofBack(Ogre::Vector3::UNIT_Y, 100);
     Ogre::Plane floorFront(Ogre::Vector3::UNIT_Y, -100);
     Ogre::Plane floorBack(Ogre::Vector3::NEGATIVE_UNIT_Y, 100);
-    Ogre::Plane rightWallFront(Ogre::Vector3::NEGATIVE_UNIT_X, -100);
-    Ogre::Plane rightWallBack(Ogre::Vector3::UNIT_X, 100);
-    Ogre::Plane leftWallFront(Ogre::Vector3::UNIT_X, -100);
-    Ogre::Plane leftWallBack(Ogre::Vector3::NEGATIVE_UNIT_X, 100);
+    Ogre::Plane rightWallFront(Ogre::Vector3::NEGATIVE_UNIT_X, -300);
+    Ogre::Plane rightWallBack(Ogre::Vector3::UNIT_X, 300);
+    Ogre::Plane leftWallFront(Ogre::Vector3::UNIT_X, -300);
+    Ogre::Plane leftWallBack(Ogre::Vector3::NEGATIVE_UNIT_X, 300);
     Ogre::Plane frontWallFront(Ogre::Vector3::UNIT_Z, -300);
     Ogre::Plane frontWallBack(Ogre::Vector3::NEGATIVE_UNIT_Z, 300);
     Ogre::Plane backWallFront(Ogre::Vector3::NEGATIVE_UNIT_Z, -300);
@@ -167,13 +168,13 @@ bool DodgeBall::go(void)
 
     
     Ogre::MeshManager::getSingleton().createPlane("roofFront", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-    roofFront, 200, 600, 20, 20, true, 1, 5, 5, Ogre::Vector3::UNIT_Z);
+    roofFront, 600, 600, 20, 20, true, 1, 5, 5, Ogre::Vector3::UNIT_Z);
     Ogre::MeshManager::getSingleton().createPlane("roofBack", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-    roofBack, 200, 600, 20, 20, true, 1, 5, 5, Ogre::Vector3::UNIT_Z);
+    roofBack, 600, 600, 20, 20, true, 1, 5, 5, Ogre::Vector3::UNIT_Z);
     Ogre::MeshManager::getSingleton().createPlane("floorFront", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-    floorFront, 200, 600, 20, 20, true, 1, 5, 5, Ogre::Vector3::UNIT_Z);
+    floorFront, 600, 600, 20, 20, true, 1, 5, 5, Ogre::Vector3::UNIT_Z);
     Ogre::MeshManager::getSingleton().createPlane("floorBack", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
-    floorBack, 200, 600, 20, 20, true, 1, 5, 5, Ogre::Vector3::UNIT_Z);
+    floorBack, 600, 600, 20, 20, true, 1, 5, 5, Ogre::Vector3::UNIT_Z);
     Ogre::MeshManager::getSingleton().createPlane("rightWallFront", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
     rightWallFront, 600, 200, 20, 20, true, 1, 5, 5, Ogre::Vector3::UNIT_Y);
     Ogre::MeshManager::getSingleton().createPlane("rightWallBack", Ogre::ResourceGroupManager::DEFAULT_RESOURCE_GROUP_NAME,
@@ -268,11 +269,13 @@ bool DodgeBall::go(void)
 
     music = Mix_LoadMUS("sound/risveglio.wav");
     Mix_PlayMusic(music, -1);
+    Mix_Volume(1,MIX_MAX_VOLUME/2);
 
     SoundManager::SoundControl.setup(ballBounceWall, ballPlayerHit, ballPlayerThrow);
     
     //---------------------------------------------------------------------------------
     mPause = false;
+    mGameOver = false;
 
     mRoot->addFrameListener(this);
 //-------------------------------------------------------------------------------------
@@ -295,19 +298,34 @@ bool DodgeBall::frameRenderingQueued(const Ogre::FrameEvent& evt)
 
     if(mPause)
         return true;
-    if(PlayerManager::PlayerControl.enemiesLeft()==0)
+
+    if(playerwins>=maxRounds)
+    {
+        GUIManager::GUIControl.endGame("Player Team Wins!");
+        mPause = true;
+        mGameOver = true;
+        return true;
+    }else if(enemywins>=maxRounds)
+    {
+        GUIManager::GUIControl.endGame("Player Team Lost :-(");
+        mPause = true;
+        mGameOver = true;
+        return true;
+    }
+
+    if(PlayerManager::PlayerControl.enemiesLeft()==0 && !mGameOver)
     {
 		currRound++;
 		GUIManager::GUIControl.nextRoundScreen("Player Team Wins");
-		playersWin++;
+		playerwins++;
 		mPause=true;
 		//Player team wins!
     }
-    if(PlayerManager::PlayerControl.playersLeft()==0)
+    if(PlayerManager::PlayerControl.playersLeft()==0 && !mGameOver)
     {
 		currRound++;
 		GUIManager::GUIControl.nextRoundScreen("Enemy Team Wins");
-		playersWin--;
+		enemywins++;
 		mPause=true;
 		//Enemy team wins!
     }
@@ -318,12 +336,6 @@ bool DodgeBall::frameRenderingQueued(const Ogre::FrameEvent& evt)
 		if(!player->isInPlay())
 			continue;
         player->move(evt);
-        if(!player->hasBall()){
-  //          for(int i = 0; i < BallManager::BallControl.size(); i++)   
-//                player->pickupBall(BallManager::BallControl.getBall(i));
-            if(player->hasBall())
-                GUIManager::GUIControl.hasBall();
-        }
         if(player->isThrowing())
             player->chargeThrow();
     }
@@ -356,9 +368,6 @@ bool DodgeBall::frameRenderingQueued(const Ogre::FrameEvent& evt)
         
     BallManager::BallControl.updateBalls();
 
-    
-
-
     mTrayMgr->frameRenderingQueued(evt);
  
     GUIManager::GUIControl.frameRenderingQueued(evt); 
@@ -376,22 +385,6 @@ bool DodgeBall::frameRenderingQueued(const Ogre::FrameEvent& evt)
 
 void DodgeBall::loadNextRound()
 {
-	if(currRound>=maxRounds)
-	{
-		if(playersWin>0)
-		{
-			GUIManager::GUIControl.endGame("Player Team Wins!");
-		}
-		if(playersWin==0)
-		{
-			GUIManager::GUIControl.endGame("Tie Game!");
-		}
-		if(playersWin<0)
-		{
-			GUIManager::GUIControl.endGame("Player Team Lost :-(");
-		}
-	//	mShutDown=true;//replace with options to replay if allowed
-	}
 	//reset simulator (or else put balls into position again in simulator)
 	//put player and balls back into position in ogre
 	for(int i=0;i<PlayerManager::PlayerControl.player_size();i++)		//need to make players throw balls prior to resetting them
@@ -541,8 +534,10 @@ bool DodgeBall::mouseReleased( const OIS::MouseEvent &arg, OIS::MouseButtonID id
 void DodgeBall::buttonHit(OgreBites::Button* button){
     if (button->getName().compare("Exit") == 0 || button->getName().compare("PauseExit") == 0)
         mShutDown = true;
-    else if(button->getName().compare("Resume") == 0)
+    else if(button->getName().compare("Resume") == 0){
         GUIManager::GUIControl.pause();
+        mPause = false;
+    }
     else if(button->getName().compare("Singleplayer") == 0){
         GUIManager::GUIControl.end_MainScreen();
         GUIManager::GUIControl.begin_NumberOfEnemies();
@@ -560,7 +555,7 @@ void DodgeBall::buttonHit(OgreBites::Button* button){
     else if(button->getName().compare("NumberEnemiesContinue") == 0){
         GUIManager::GUIControl.end_NumberOfEnemies();
         for(int i = 1; i < mNumberOfEnemies; i++)
-            PlayerManager::PlayerControl.addEnemy(new Enemy(mSceneMgr, i, -100 + (30 * i), -200,PlayerManager::PlayerControl.enemy_size()));
+            PlayerManager::PlayerControl.addEnemy(new Enemy(mSceneMgr, i, -300 + (50 * i), -200,PlayerManager::PlayerControl.enemy_size()));
     }
     else if(button->getName().compare("+Balls") == 0){
         if(mNumberOfBalls < 10)

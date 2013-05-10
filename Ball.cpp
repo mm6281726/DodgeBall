@@ -10,6 +10,7 @@ int mBounce;
 Ball::Ball(Ogre::SceneManager* sceneMgr, Simulator* s, Ogre::String name, int x,int ind){
 	mSceneMgr = sceneMgr;
 	mThrownByEnemy = false;
+	mIsPickedUp = false;
 
     entBall = mSceneMgr->createEntity("ent" + name, "sphere.mesh");
     entBall->setMaterialName("Examples/SphereMappedRustySteel");
@@ -23,6 +24,18 @@ Ball::Ball(Ogre::SceneManager* sceneMgr, Simulator* s, Ogre::String name, int x,
 	simulator = s;
 	physicsBall = simulator->addSphere(5,0,0,0,5,ind);
 	dangerous=false;
+}
+
+void Ball::gotPickedUp(){
+	mIsPickedUp = true;
+}
+
+void Ball::gotThrown(){
+	mIsPickedUp = false;
+}
+
+bool Ball::isPickedUp(){
+	return mIsPickedUp;
 }
 
 void Ball::setPosition(int x, int y, int z){
@@ -109,6 +122,10 @@ bool Ball::bounceCheck(void)
 void Ball::setDanger(bool dan)
 {
 	dangerous=dan;
+	if(dangerous)
+		entBall->setMaterialName("Examples/Chrome");
+	else
+		entBall->setMaterialName("Examples/SphereMappedRustySteel");
 }
 
 bool Ball::isDangerous(void)
