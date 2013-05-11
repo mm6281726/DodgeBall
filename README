@@ -8,3 +8,23 @@ Project 4: Dodgeball
  * A README text file that tells us both what exactly are the steps involved in building the program from what you've turned in.*/ 
 
  This project should be able to be built using buildit and makeit and then running the executable.
+
+/**********RULES****************/
+The goal of the game is to knock out the ninja.  You do this by picking up balls and throwing it at the ninja.  The balls can only eliminate a ninja if it is live.  A ball is live only if it hasn't hit anything since it was thrown.  The ninja will also pick up balls and try to hit you so you have to doge.  If a ball can eliminate you the ball will be blue.  If it is safe to pick up it will be bronze.
+
+The game consists of rounds.  You win a round by eliminating all the ninja.  You win the game by winning a specified number of rounds
+
+
+/*********CONTROLS************/
+W- moves player forwards
+S- moves player backwards
+A- moves player to the left
+D- moves player to the right
+
+left mouse button- hold to charge up throw. Release to throw ball
+
+You pick up balls by touching them
+
+
+/********BUGS**************/
+Sometimes some balls can't be picked up at boundaries.  Reseting the game fixes this.

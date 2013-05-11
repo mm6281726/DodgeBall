@@ -257,8 +257,12 @@ bool DodgeBall::go(void)
 
     //-------------------------------------------------------------------------------------
     //load Sounds
+    SDL_InitSubSystem(SDL_INIT_AUDIO);
+
     if(Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 4096) < 0)
         return false;
+
+     Mix_AllocateChannels(32); 
     
     if((ballBounceWall = SoundManager::SoundControl.loadWAV("sound/slap2.wav")) == -1)
         return false;
@@ -271,7 +275,7 @@ bool DodgeBall::go(void)
     SoundManager::SoundControl.setup(ballBounceWall, ballPlayerHit, ballPlayerThrow);
     music = Mix_LoadMUS("sound/risveglio.wav");
     Mix_PlayMusic(music, -1);
-    //Mix_Volume(-1,MIX_MAX_VOLUME/6);
+    Mix_Volume(-1,MIX_MAX_VOLUME/6);
     SoundManager::SoundControl.pauseAudio();
     
     //---------------------------------------------------------------------------------
@@ -561,7 +565,7 @@ void DodgeBall::buttonHit(OgreBites::Button* button){
         GUIManager::GUIControl.end_NumberOfEnemies();
         int row1 = 1;
         int row2 = 0;
-        for(int i = 2; i < mNumberOfEnemies; i++){
+        for(int i = 1; i < mNumberOfEnemies; i++){
             if(i <=10){
                 PlayerManager::PlayerControl.addEnemy(new Enemy(mSceneMgr, i, 0 + pow(-1.0, i) * (50 * row1), -200,PlayerManager::PlayerControl.enemy_size()));
                 if(i % 2 == 0)
@@ -587,7 +591,7 @@ void DodgeBall::buttonHit(OgreBites::Button* button){
     else if(button->getName().compare("NumberBallsContinue") == 0){
         GUIManager::GUIControl.end_NumberOfBalls();
         GUIManager::GUIControl.begin_NumberOfWins();
-        for(int i = 2; i < mNumberOfBalls; i++)
+        for(int i = 1; i < mNumberOfBalls; i++)
             BallManager::BallControl.addBall(new Ball(mSceneMgr, &Simulator::Simulation, "Ball" + Ogre::StringConverter::toString(i), -80 + (50 * i),BallManager::BallControl.size()));
 	}else if(button->getName().compare("+Wins") == 0){
         if(mNumberOfWins < 20)
