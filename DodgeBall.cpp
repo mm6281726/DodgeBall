@@ -17,8 +17,8 @@ http://www.ogre3d.org/tikiwiki/
 
 //Simulator* simulator;
 btDiscreteDynamicsWorld* world;
-int mNumberOfEnemies = 3;
-int mNumberOfBalls = 5;
+int mNumberOfEnemies = 7;
+int mNumberOfBalls = 7;
 
 bool DodgeBall::go(void)
 {

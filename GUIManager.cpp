@@ -27,8 +27,7 @@ GUIManager GUIManager::GUIControl;
     void GUIManager::begin_MainScreen(){
         main = true;
         mTrayMgr->createLabel(OgreBites::TL_CENTER, "MainScreen", "NINJA DODGEBALL");
-        mTrayMgr->createButton(OgreBites::TL_CENTER, "Singleplayer", "Singleplayer", 250);
-        mTrayMgr->createButton(OgreBites::TL_CENTER, "Multiplayer", "Multiplayer", 250);
+        mTrayMgr->createButton(OgreBites::TL_CENTER, "Singleplayer", "Play", 250);
         mTrayMgr->createButton(OgreBites::TL_CENTER, "Exit", "Exit", 250);
         mTrayMgr->showCursor();
         mTrayMgr->showBackdrop("Examples/Chrome");
@@ -37,7 +36,6 @@ GUIManager GUIManager::GUIControl;
     void GUIManager::end_MainScreen(){
         mTrayMgr->destroyWidget("MainScreen");
         mTrayMgr->destroyWidget("Singleplayer");
-        mTrayMgr->destroyWidget("Multiplayer");
         mTrayMgr->destroyWidget("Exit");
         mTrayMgr->hideBackdrop();
     }

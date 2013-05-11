@@ -139,7 +139,7 @@ void Player::beginThrow(){
 }
 
 void Player::chargeThrow(){
-    mPower+=0.025;
+    mPower+=0.04;
     if(mPower > 4)
         mPower = 4;
     GUIManager::GUIControl.setPowerBarProgress(mPower/4);
