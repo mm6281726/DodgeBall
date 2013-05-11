@@ -24,7 +24,7 @@ class Ball{
 		Ogre::Entity* entBall;
 		Ogre::SceneNode* nodeBall;
 		btRigidBody* physicsBall;
-		bool dangerous;
+		int dangerous;
 		Ogre::Vector3 spawnPoint;
 		bool mThrownByEnemy;
 		bool mIsPickedUp;
@@ -44,8 +44,8 @@ class Ball{
 		void removeFromBullet(void);
 		int numBounces(void);
 		bool bounceCheck(void);
-		void setDanger(bool dan);
-		bool isDangerous(void);
+		void setDanger(int dan);
+		int isDangerous(void);
 		bool towardsPos(Ogre::Vector3 pos);
 		void thrownBy(bool thrownByEnemy);
 		bool thrownBy();

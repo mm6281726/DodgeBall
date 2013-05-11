@@ -32,10 +32,10 @@ bool callbackFunc(btManifoldPoint& cp, const btCollisionObject* obj1, int id1, i
 	//	std::cout << "\nBall hit Player\n";
 		Ball* ball = a->type == BALL?BallManager::BallControl.getBall(a->index):BallManager::BallControl.getBall(b->index);
 		Player* player=a->type == PLAYER?PlayerManager::PlayerControl.getPlayer(a->index):PlayerManager::PlayerControl.getPlayer(b->index);
-		if(ball->isDangerous())
+		if(ball->isDangerous() < 0)
 		{
 			ball->getBody()->setLinearVelocity(btVector3(0,-1,0));
-			ball->setDanger(false);
+			ball->setDanger(0);
 			player->setInPlay(false);
 			SoundManager::SoundControl.playClip(SoundManager::SoundControl.ballPlayerHit, 0);
 		}
@@ -49,10 +49,10 @@ bool callbackFunc(btManifoldPoint& cp, const btCollisionObject* obj1, int id1, i
 	//	std::cout << "\nBall hit Player\n";
 		Ball* ball = a->type == BALL?BallManager::BallControl.getBall(a->index):BallManager::BallControl.getBall(b->index);
 		Enemy* enemy=a->type == ENEMY?PlayerManager::PlayerControl.getEnemy(a->index):PlayerManager::PlayerControl.getEnemy(b->index);
-		if(ball->isDangerous())
+		if(ball->isDangerous() > 0)
 		{
 			ball->getBody()->setLinearVelocity(btVector3(0,-1,0));
-			ball->setDanger(false);
+			ball->setDanger(0);
 			SoundManager::SoundControl.playClip(SoundManager::SoundControl.ballPlayerHit, 0);
 			enemy->setInPlay(false);
 		}
@@ -66,12 +66,12 @@ bool callbackFunc(btManifoldPoint& cp, const btCollisionObject* obj1, int id1, i
 	//	std::cout << "\nBall hit Wall\n";
 		SoundManager::SoundControl.playClip(SoundManager::SoundControl.ballBounceWall, 0);
 		Ball* ball = a->type == BALL?BallManager::BallControl.getBall(a->index):BallManager::BallControl.getBall(b->index);
-		if(ball->isDangerous())
-			ball->setDanger(false);
+		if(ball->isDangerous() != 0)
+			ball->setDanger(0);
 	}
 	else if (a->type == BALL && b->type == BALL)
 	{
-		SoundManager::SoundControl.playClip(SoundManager::SoundControl.ballBounceWall, 0);
+		SoundManager::SoundControl.playClip(SoundManager::SoundControl.ballPlayerHit, 0);
 	}
 	return false;
 } 

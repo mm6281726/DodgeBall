@@ -77,6 +77,7 @@ void Enemy::endThrow(Ogre::Vector3 playerloc){
     ball->addToBullet(dir, 3);
     ball->thrownBy(true);
     ball->gotThrown();
+    ball->setDanger(-1);
     ball = NULL;
     mPower = 1;
     mThrowing = false;
@@ -90,6 +91,7 @@ void Enemy::extThrow(btVector3 dir, Ogre::Real pow){
     ball->addToBullet(dir, pow);
     ball->thrownBy(true); 
     ball->gotThrown();
+    ball->setDanger(-1);
     ball = NULL;
     mPower = 1;
     mThrowing = false;

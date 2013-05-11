@@ -17,8 +17,8 @@ http://www.ogre3d.org/tikiwiki/
 
 //Simulator* simulator;
 btDiscreteDynamicsWorld* world;
-int mNumberOfEnemies = 3;
-int mNumberOfBalls = 5;
+int mNumberOfEnemies = 7;
+int mNumberOfBalls = 7;
 
 bool DodgeBall::go(void)
 {
@@ -265,13 +265,12 @@ bool DodgeBall::go(void)
         return false;
     if((ballPlayerThrow = SoundManager::SoundControl.loadWAV("sound/sword_hit_single2.wav")) == -1)
         return false;
-    SoundManager::SoundControl.playAudio();
-
-    music = Mix_LoadMUS("sound/risveglio.wav");
-    Mix_PlayMusic(music, -1);
-    Mix_Volume(1,MIX_MAX_VOLUME/2);
 
     SoundManager::SoundControl.setup(ballBounceWall, ballPlayerHit, ballPlayerThrow);
+    music = Mix_LoadMUS("sound/risveglio.wav");
+    Mix_PlayMusic(music, -1);
+    Mix_Volume(-1,MIX_MAX_VOLUME/6);
+    SoundManager::SoundControl.pauseAudio();
     
     //---------------------------------------------------------------------------------
     mPause = false;
@@ -349,7 +348,7 @@ bool DodgeBall::frameRenderingQueued(const Ogre::FrameEvent& evt)
         if(!enemy->hasBall()){
 	        Ball* ball = BallManager::BallControl.getNearestBall(enemy->getPosition());
 	 //       ball->setDanger(false);
-	        if(!ball->isDangerous() && PlayerManager::PlayerControl.isClosestEnemy(enemy->getPosition(), ball->getPosition()))
+	        if(ball->isDangerous() <= 0 && PlayerManager::PlayerControl.isClosestEnemy(enemy->getPosition(), ball->getPosition()))
             	enemy->getNearBall(ball, evt);
 	        else if(ball->towardsPos(enemy->getPosition()))
 		        enemy->getAwayBall(ball, evt);
@@ -543,7 +542,7 @@ void DodgeBall::buttonHit(OgreBites::Button* button){
         GUIManager::GUIControl.begin_NumberOfEnemies();
     }
     else if(button->getName().compare("+Enemies") == 0){
-        if(mNumberOfEnemies < 10)
+        if(mNumberOfEnemies < 20)
             mNumberOfEnemies++;
         GUIManager::GUIControl.updateNumberOfEnemies(mNumberOfEnemies);
     }
@@ -554,11 +553,23 @@ void DodgeBall::buttonHit(OgreBites::Button* button){
     }
     else if(button->getName().compare("NumberEnemiesContinue") == 0){
         GUIManager::GUIControl.end_NumberOfEnemies();
-        for(int i = 1; i < mNumberOfEnemies; i++)
-            PlayerManager::PlayerControl.addEnemy(new Enemy(mSceneMgr, i, -300 + (50 * i), -200,PlayerManager::PlayerControl.enemy_size()));
+        int row1 = 1;
+        int row2 = 0;
+        for(int i = 1; i < mNumberOfEnemies; i++){
+            if(i <=10){
+                PlayerManager::PlayerControl.addEnemy(new Enemy(mSceneMgr, i, 0 + pow(-1.0, i) * (50 * row1), -200,PlayerManager::PlayerControl.enemy_size()));
+                if(i % 2 == 0)
+                    row1++;
+            }
+            else{
+                PlayerManager::PlayerControl.addEnemy(new Enemy(mSceneMgr, i, 0 + pow(-1.0, i) * (50 * row2), -250,PlayerManager::PlayerControl.enemy_size()));
+                if(i % 2 == 0)
+                    row2++;
+            }
+        }
     }
     else if(button->getName().compare("+Balls") == 0){
-        if(mNumberOfBalls < 10)
+        if(mNumberOfBalls < 20)
             mNumberOfBalls++;
         GUIManager::GUIControl.updateNumberOfBalls(mNumberOfBalls);
     }
@@ -571,6 +582,7 @@ void DodgeBall::buttonHit(OgreBites::Button* button){
         GUIManager::GUIControl.end_NumberOfBalls();
         for(int i = 1; i < mNumberOfBalls; i++)
             BallManager::BallControl.addBall(new Ball(mSceneMgr, &Simulator::Simulation, "Ball" + Ogre::StringConverter::toString(i), -80 + (50 * i),BallManager::BallControl.size()));
+        SoundManager::SoundControl.playAudio();
     
 	}else if(button->getName().compare("NextRound") == 0)
     {
