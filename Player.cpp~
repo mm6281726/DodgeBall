@@ -86,7 +86,7 @@ void Player::stopMove(Ogre::String key){
     if(key.compare("w") == 0)
 	{
 		wKey=false;
-        transVector.z = sKey?-mMove:0;
+        transVector.z = sKey?mMove:0;
 	}    
 	if(key.compare("a") == 0)
 	{
@@ -96,7 +96,7 @@ void Player::stopMove(Ogre::String key){
     if(key.compare("s") == 0)
 	{
 		sKey=false;
-        transVector.z = wKey?mMove:0;
+        transVector.z = wKey?-mMove:0;
 	}
     if(key.compare("d") == 0)
 	{

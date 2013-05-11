@@ -30,6 +30,10 @@ Player::Player(Ogre::SceneManager* sceneMgr, Ogre::String name, int x, int z,int
     inPlay=true;
 
     body = Simulator::Simulation.addCylinder(20,100,x,-50,z,0, true,ind);
+	wKey=false;
+	aKey=false;
+	sKey=false;
+	dKey=false;
 }
 
 Ogre::Vector3 Player::getPosition(){
