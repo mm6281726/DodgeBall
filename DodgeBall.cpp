@@ -320,7 +320,7 @@ bool DodgeBall::frameRenderingQueued(const Ogre::FrameEvent& evt)
 		mPause=true;
 		//Player team wins!
     }
-    if(PlayerManager::PlayerControl.playersLeft()==0 && !mGameOver)
+    else if(PlayerManager::PlayerControl.playersLeft()==0 && !mGameOver)
     {
 		GUIManager::GUIControl.nextRoundScreen("Enemy Team Wins");
 		enemywins++;
