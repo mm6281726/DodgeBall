@@ -140,7 +140,7 @@ bool Ball::towardsPos(Ogre::Vector3 pos)
 	vel.normalise();
 	Ogre::Vector3 relPos = pos - nodeBall->getPosition();
 	relPos.normalise();
-	return relPos.directionEquals(vel,Ogre::Radian(.35));
+	return relPos.directionEquals(vel,Ogre::Radian(.5));
 	//Ogre::Vector3 nextPos=nodeBall->getPosition()+vel;
 	
 }

@@ -65,6 +65,26 @@ Enemy* PlayerManager::closestEnemy(Ogre::Vector3 loc){
     return closest;
 }
 
+
+Player* PlayerManager::closestPlayer(Ogre::Vector3 loc){
+    if(player_list.size() == 1)
+        return player_list[0];
+    Player* closest=player_list[0];
+    Ogre::Vector3 playerloc = player_list[0]->getPosition();
+    Ogre::Vector3 playerdist = playerloc - loc;
+    playerdist.y=0;
+    for(int i = 1; i < player_list.size(); i++){
+	Ogre::Vector3 relLoc=player_list[i]->getPosition() - loc;
+	relLoc.y=0;
+        if(playerdist.length() > relLoc.length())
+	{
+            playerdist=relLoc;
+	    closest=player_list[i];
+	}
+    }
+    return closest;
+}
+
 int PlayerManager::playersLeft()
 {
 	int total=0;

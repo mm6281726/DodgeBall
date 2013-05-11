@@ -35,6 +35,10 @@ class Enemy{
 		bool inPlay;
 		btRigidBody* body;
 		Ogre::Vector3 spawnPoint;
+		Ogre::Real enemyX;
+		Ogre::Real enemyZ;
+		int randCounterX;
+		int randCounterZ;
 	public:
 		Enemy(Ogre::SceneManager* sceneMgr, int i, int x, int z,int ind);
 		Ogre::Vector3 getPosition();
@@ -48,13 +52,14 @@ class Enemy{
 		void setRelease(bool b);
 		bool isReleasing();
 		bool isThrowing();
-		void getNearBall(Ball* ball, const Ogre::FrameEvent& evt);
+		bool getNearBall(Ball* ball, const Ogre::FrameEvent& evt);
 		void getAwayBall(Ball* ball, const Ogre::FrameEvent& evt);
 		btVector3 throwDir();
 		Ogre::Real throwPower();
 		bool isInPlay();
 		void setInPlay(bool b);
 		void respawn();
+		void randomMove();
 
 };
 

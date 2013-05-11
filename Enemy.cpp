@@ -2,9 +2,12 @@
 #include <Enemy.h>
 #include <sstream>
 
+#include <PlayerManager.h>
+
 static Ogre::Real mMove = 150;      // The movement constant
 static Ogre::Real mRotate = 0.13;
 static Ogre::Vector3 transVector = Ogre::Vector3::ZERO;
+
 
 Enemy::Enemy(Ogre::SceneManager* sceneMgr,int i, int x, int z,int ind){
 	mSceneMgr = sceneMgr;
@@ -27,6 +30,10 @@ Enemy::Enemy(Ogre::SceneManager* sceneMgr,int i, int x, int z,int ind){
     inPlay=true;
 
 	body = Simulator::Simulation.addCylinder(20,100,x,-50,z,0, false,ind);
+	enemyX=0;
+	enemyZ=0;
+	randCounterX=0;
+	randCounterZ=0;
 }
 
 Ogre::Vector3 Enemy::getPosition(){
@@ -99,8 +106,9 @@ bool Enemy::isThrowing(){
     return mThrowing;
 }
 
-void Enemy::getNearBall(Ball* ball, const Ogre::FrameEvent& evt){
-    if (ball->getPosition().z < -10){
+bool Enemy::getNearBall(Ball* ball, const Ogre::FrameEvent& evt){
+	Ogre::Vector3 originalPos=nodeEnemy->getPosition();
+    if (ball->getPosition().z < -1){
 	    Ogre::Vector3 relPos = ball->getPosition() - nodeEnemy->getPosition();
         relPos=Ogre::Vector3(relPos.x,0,relPos.z);
 	    btVector3 speed=ball->getBody()->getLinearVelocity();
@@ -109,7 +117,7 @@ void Enemy::getNearBall(Ball* ball, const Ogre::FrameEvent& evt){
 	    vel.normalise();
 	    relPos+=vel;
 	    relPos.normalise();
-	    nodeEnemy->translate(relPos.x ,0,relPos.z, Ogre::Node::TS_WORLD);
+	    nodeEnemy->translate(relPos.x*2 ,0,relPos.z*2, Ogre::Node::TS_WORLD);
     }
 
     if(nodeEnemy->getPosition().z > 0)
@@ -121,6 +129,38 @@ void Enemy::getNearBall(Ball* ball, const Ogre::FrameEvent& evt){
     if(nodeEnemy->getPosition().x > 280)
         nodeEnemy->setPosition(280, nodeEnemy->getPosition().y, nodeEnemy->getPosition().z);
 
+	if(originalPos.positionEquals(nodeEnemy->getPosition(),0))
+	{
+		return false;
+	}
+	Simulator::Simulation.getWorld()->removeRigidBody(body);
+	btTransform t;
+	body->getMotionState()->getWorldTransform(t);
+	btVector3 pos = btVector3(nodeEnemy->getPosition().x,-50,nodeEnemy->getPosition().z);
+	t.setOrigin(pos);
+	body->proceedToTransform(t);
+	Simulator::Simulation.getWorld()->addRigidBody(body);
+	return true;
+}
+
+void Enemy::getAwayBall(Ball* ball, const Ogre::FrameEvent& evt){
+
+    if (ball->getPosition().z < -10){
+	    btVector3 ballvel=ball->getBody()->getLinearVelocity();
+	    ballvel.setY(0);
+	    btVector3 newdir = ballvel.cross(btVector3(0,1,0));
+	    newdir.normalize();
+		newdir *= Ogre::Math::RangeRandom(1,2)==1?1:-1;
+	    nodeEnemy->translate(newdir.x()*10,0,newdir.z()*10, Ogre::Node::TS_WORLD);
+    }
+    if(nodeEnemy->getPosition().z > 0)
+        nodeEnemy->setPosition(nodeEnemy->getPosition().x, nodeEnemy->getPosition().y, 0);
+    if(nodeEnemy->getPosition().z < -280)
+        nodeEnemy->setPosition(nodeEnemy->getPosition().x, nodeEnemy->getPosition().y, -280);
+    if(nodeEnemy->getPosition().x < -280)
+        nodeEnemy->setPosition(-280, nodeEnemy->getPosition().y, nodeEnemy->getPosition().z);
+    if(nodeEnemy->getPosition().x > 280)
+        nodeEnemy->setPosition(280, nodeEnemy->getPosition().y, nodeEnemy->getPosition().z);
 
 	Simulator::Simulation.getWorld()->removeRigidBody(body);
 	btTransform t;
@@ -131,19 +171,45 @@ void Enemy::getNearBall(Ball* ball, const Ogre::FrameEvent& evt){
 	Simulator::Simulation.getWorld()->addRigidBody(body);
 }
 
-void Enemy::getAwayBall(Ball* ball, const Ogre::FrameEvent& evt){
-//    std::cout<<"\nOHSHIT OHSHIT OHSHIT\n";
-//    std::cout<<ball->isDangerous();
-//    std::cout<<" <- danger\n";
-    if (ball->getPosition().z < -10){
-	    btVector3 ballvel=ball->getBody()->getLinearVelocity();
-	    //ballvel/=60;
-	    ballvel.setY(0);
-	    btVector3 newdir = ballvel.cross(btVector3(0,1,0));
-	    newdir.normalize();
-	    nodeEnemy->translate(newdir.x()*10,0,newdir.z()*10, Ogre::Node::TS_WORLD);
-    }
-    if(nodeEnemy->getPosition().z > 0)
+void Enemy::randomMove(){
+	//
+	Ogre::Vector3 originalPos=nodeEnemy->getPosition();
+	int rand=Ogre::Math::RangeRandom(1,3);
+	randCounterX+=rand;
+	rand=Ogre::Math::RangeRandom(1,3);
+	randCounterZ+=rand;
+	int xDir=Ogre::Math::Abs(enemyX)/enemyX;
+	int zDir=Ogre::Math::Abs(enemyZ)/enemyZ;
+	enemyX=xDir*(Ogre::Math::RangeRandom(1,3));
+	enemyZ=zDir*(Ogre::Math::RangeRandom(1,3));
+	if(randCounterX>70)
+	{
+		enemyX=-enemyX;
+		randCounterX=0;
+	}
+	if(randCounterZ>80)
+	{
+		enemyZ=-enemyZ;
+		randCounterZ=0;
+	}
+	//enemyX=rand<10?enemyX:-enemyX;
+	//enemyZ=rand<5?enemyZ:-enemyZ;
+	
+/*	std::cout<<"\nenemy x: ";	
+	std::cout<<enemyX;
+	std::cout<<" and z: ";
+	std::cout<<enemyZ;
+	std::cout<<"\n";*/
+	Ogre::Vector3 newdir = Ogre::Vector3(enemyX,0,enemyZ);
+	newdir.normalise();
+	nodeEnemy->translate(newdir.x*2,0,newdir.z*2, Ogre::Node::TS_WORLD);
+
+/*	if(nodeEnemy->getPosition().positionEquals(PlayerManager::PlayerControl.closestEnemyToEnemy(this,nodeEnemy->getPosition())->getPosition(),20))
+	{
+		nodeEnemy->setPosition(originalPos);
+		return;
+	}*/
+	if(nodeEnemy->getPosition().z > -10)
         nodeEnemy->setPosition(nodeEnemy->getPosition().x, nodeEnemy->getPosition().y, 0);
     if(nodeEnemy->getPosition().z < -280)
         nodeEnemy->setPosition(nodeEnemy->getPosition().x, nodeEnemy->getPosition().y, -280);
@@ -191,6 +257,7 @@ void Enemy::setInPlay(bool b)
 	}
 	inPlay=b;
 }
+
 
 void Enemy::respawn()
 {

@@ -65,24 +65,68 @@ Enemy* PlayerManager::closestEnemy(Ogre::Vector3 loc){
     return closest;
 }
 
+/*Enemy* PlayerManager::closestEnemyToEnemy(Enemy* enemy, Ogre::Vector3 loc){
+    if(enemy_list.size() == 1)
+        return enemy_list[0];
+    Enemy* closest=enemy_list[0];
+	int i=1;
+	if(strcmp(enemy->getName(),closest->getName())==0)
+	{
+		closest=enemy_list[1];
+		i=2;
+	}
+    Ogre::Vector3 enemyloc = closest->getPosition();
+    Ogre::Vector3 enemydist = enemyloc - enemy->getPosition();
+    enemydist.y=0;
+    for(; i < enemy_list.size(); i++){
+		if(strcmp(enemy->getName(),enemy_list[i]->getName())==0)
+			continue;
+		Ogre::Vector3 relLoc=enemy_list[i]->getPosition() - enemy->getPosition();
+		relLoc.y=0;
+		if(enemydist.length() > relLoc.length())
+		{
+			enemydist=relLoc;
+			closest=enemy_list[i];
+		}
+    }
+    return closest;
+}*/
+
+Player* PlayerManager::closestPlayer(Ogre::Vector3 loc){
+    if(player_list.size() == 1)
+        return player_list[0];
+    Player* closest=player_list[0];
+    Ogre::Vector3 playerloc = player_list[0]->getPosition();
+    Ogre::Vector3 playerdist = playerloc - loc;
+    playerdist.y=0;
+    for(int i = 1; i < player_list.size(); i++){
+	Ogre::Vector3 relLoc=player_list[i]->getPosition() - loc;
+	relLoc.y=0;
+        if(playerdist.length() > relLoc.length())
+	{
+            playerdist=relLoc;
+	    closest=player_list[i];
+	}
+    }
+    return closest;
+}
+
 int PlayerManager::playersLeft()
 {
-	std::cout<<"got here";
 	int total=0;
 	for(int i=0;i<player_list.size();i++)
 	{
-		total+=(player_list[i]->isInPlay()?1:0);
+		total+=(int)(player_list[i]->isInPlay()?1:0);
 	}
 	return total;
 }
 
 int PlayerManager::enemiesLeft()
 {
-	std::cout<<"got here 2";
 	int total=0;
 	for(int i=0;i<enemy_list.size();i++)
 	{
-		total+=(enemy_list[i]->isInPlay()?1:0);
+		total+=(int)(enemy_list[i]->isInPlay()?1:0);
 	}
 	return total;
 }

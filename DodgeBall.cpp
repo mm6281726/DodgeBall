@@ -349,15 +349,21 @@ bool DodgeBall::frameRenderingQueued(const Ogre::FrameEvent& evt)
         if(!enemy->hasBall()){
 	        Ball* ball = BallManager::BallControl.getNearestBall(enemy->getPosition());
 	 //       ball->setDanger(false);
+		bool chase=false;
 	        if(!ball->isDangerous() && PlayerManager::PlayerControl.isClosestEnemy(enemy->getPosition(), ball->getPosition()))
-            	enemy->getNearBall(ball, evt);
-	        else if(ball->towardsPos(enemy->getPosition()))
+		{
+            		chase=enemy->getNearBall(ball, evt);
+		}	        
+		if(!chase && ball->isDangerous() && ball->towardsPos(enemy->getPosition()))
 		        enemy->getAwayBall(ball, evt);
+		else if(!chase){
+			enemy->randomMove();
+		}
     //        for(int i = 0; i < BallManager::BallControl.size(); i++)   
    //             enemy->pickupBall(BallManager::BallControl.getBall(i));
         }else{
             enemy->beginThrow();
-            enemy->endThrow(PlayerManager::PlayerControl.getPlayer(0)->getPosition());
+            enemy->endThrow(PlayerManager::PlayerControl.closestPlayer(enemy->getPosition())->getPosition());
         	SoundManager::SoundControl.playClip(ballPlayerThrow, 0);
 		}
     }
