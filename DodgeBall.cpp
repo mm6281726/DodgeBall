@@ -19,14 +19,13 @@ http://www.ogre3d.org/tikiwiki/
 btDiscreteDynamicsWorld* world;
 int mNumberOfEnemies = 7;
 int mNumberOfBalls = 7;
+int mNumberOfWins = 3;
 
 bool DodgeBall::go(void)
 {
     mShutDown=false;
     playerwins=0;
     enemywins = 0;
-    currRound=0;
-	maxRounds=3;
 #ifdef _DEBUG
     mResourcesCfg = "resources_d.cfg";
     mPluginsCfg = "plugins_d.cfg";
@@ -299,13 +298,13 @@ bool DodgeBall::frameRenderingQueued(const Ogre::FrameEvent& evt)
     if(mPause)
         return true;
 
-    if(playerwins>=maxRounds)
+    if(playerwins>=mNumberOfWins)
     {
         GUIManager::GUIControl.endGame("Player Team Wins!");
         mPause = true;
         mGameOver = true;
         return true;
-    }else if(enemywins>=maxRounds)
+    }else if(enemywins>=mNumberOfWins)
     {
         GUIManager::GUIControl.endGame("Player Team Lost :-(");
         mPause = true;
@@ -315,7 +314,6 @@ bool DodgeBall::frameRenderingQueued(const Ogre::FrameEvent& evt)
 
     if(PlayerManager::PlayerControl.enemiesLeft()==0 && !mGameOver)
     {
-		currRound++;
 		GUIManager::GUIControl.nextRoundScreen("Player Team Wins");
 		playerwins++;
 		mPause=true;
@@ -323,7 +321,6 @@ bool DodgeBall::frameRenderingQueued(const Ogre::FrameEvent& evt)
     }
     if(PlayerManager::PlayerControl.playersLeft()==0 && !mGameOver)
     {
-		currRound++;
 		GUIManager::GUIControl.nextRoundScreen("Enemy Team Wins");
 		enemywins++;
 		mPause=true;
@@ -587,11 +584,23 @@ void DodgeBall::buttonHit(OgreBites::Button* button){
     }
     else if(button->getName().compare("NumberBallsContinue") == 0){
         GUIManager::GUIControl.end_NumberOfBalls();
+        GUIManager::GUIControl.begin_NumberOfWins();
         for(int i = 1; i < mNumberOfBalls; i++)
             BallManager::BallControl.addBall(new Ball(mSceneMgr, &Simulator::Simulation, "Ball" + Ogre::StringConverter::toString(i), -80 + (50 * i),BallManager::BallControl.size()));
+	}else if(button->getName().compare("+Wins") == 0){
+        if(mNumberOfWins < 20)
+            mNumberOfWins++;
+        GUIManager::GUIControl.updateNumberOfWins(mNumberOfWins);
+    }
+    else if(button->getName().compare("-Wins") == 0){
+        if(mNumberOfWins > 1)
+            mNumberOfWins--;
+        GUIManager::GUIControl.updateNumberOfWins(mNumberOfWins);
+    }
+    else if(button->getName().compare("NumberWinsContinue") == 0){
+        GUIManager::GUIControl.end_NumberOfWins();
         SoundManager::SoundControl.playAudio();
-    
-	}else if(button->getName().compare("NextRound") == 0)
+    }else if(button->getName().compare("NextRound") == 0)
     {
         GUIManager::GUIControl.end_nextRoundScreen();
 		loadNextRound();

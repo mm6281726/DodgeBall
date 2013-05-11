@@ -25,8 +25,9 @@ class GUIManager{
         void begin_NumberOfBalls();
         void updateNumberOfBalls(int num);
         void end_NumberOfBalls();
-        void begin_MultiplayerScreen();
-        void end_MultiplayerScreen();
+        void begin_NumberOfWins();
+        void updateNumberOfWins(int num);
+        void end_NumberOfWins();
         void pause();
         bool isPaused();
         bool isDialogVisible();

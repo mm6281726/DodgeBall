@@ -94,24 +94,31 @@ GUIManager GUIManager::GUIControl;
         mTrayMgr->destroyWidget("-Balls");
         mTrayMgr->destroyWidget("NumberBallsContinue");
         mTrayMgr->destroyWidget("Exit");
-        mTrayMgr->hideCursor();
-        mTrayMgr->hideBackdrop();
     }
 
-    void GUIManager::begin_MultiplayerScreen(){
-        mTrayMgr->createLabel(OgreBites::TL_CENTER, "MultiScreen", "Multiplayer");
-        mTrayMgr->createButton(OgreBites::TL_CENTER, "Host", "Host", 250);
-        mTrayMgr->createButton(OgreBites::TL_CENTER, "Client", "Client", 250);
-        mTrayMgr->createButton(OgreBites::TL_CENTER, "Back", "Back", 250);
-        mTrayMgr->showCursor();
-        mTrayMgr->showBackdrop("Examples/BeachStones");
+    void GUIManager::begin_NumberOfWins(){
+        mTrayMgr->createLabel(OgreBites::TL_CENTER, "NumberOfWins", "First To How Many Wins?");
+        mTrayMgr->createLabel(OgreBites::TL_CENTER, "NOWins", "3");
+        mTrayMgr->createButton(OgreBites::TL_CENTER, "+Wins", "+", 250);
+        mTrayMgr->createButton(OgreBites::TL_CENTER, "-Wins", "-", 250);
+        mTrayMgr->createButton(OgreBites::TL_CENTER, "NumberWinsContinue", "Continue", 250);
+        mTrayMgr->createButton(OgreBites::TL_CENTER, "Exit", "Exit", 250);
+        mTrayMgr->showBackdrop("Examples/Chrome");
     }
-    
-    void GUIManager::end_MultiplayerScreen(){
-        mTrayMgr->destroyWidget("MultiScreen");
-        mTrayMgr->destroyWidget("Host");
-        mTrayMgr->destroyWidget("Client");
-        mTrayMgr->destroyWidget("Back");
+
+    void GUIManager::updateNumberOfWins(int num){
+        OgreBites::Label* l = (OgreBites::Label*)mTrayMgr->getWidget("NOWins");
+        l->setCaption(Ogre::StringConverter::toString(num));
+    }
+
+    void GUIManager::end_NumberOfWins(){
+        main = false;
+        mTrayMgr->destroyWidget("NumberOfWins");
+        mTrayMgr->destroyWidget("NOWins");
+        mTrayMgr->destroyWidget("+Wins");
+        mTrayMgr->destroyWidget("-Wins");
+        mTrayMgr->destroyWidget("NumberWinsContinue");
+        mTrayMgr->destroyWidget("Exit");
         mTrayMgr->hideCursor();
         mTrayMgr->hideBackdrop();
     }
