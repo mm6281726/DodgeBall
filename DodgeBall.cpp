@@ -562,7 +562,7 @@ void DodgeBall::buttonHit(OgreBites::Button* button){
         GUIManager::GUIControl.end_NumberOfEnemies();
         int row1 = 1;
         int row2 = 0;
-        for(int i = 1; i < mNumberOfEnemies; i++){
+        for(int i = 2; i < mNumberOfEnemies; i++){
             if(i <=10){
                 PlayerManager::PlayerControl.addEnemy(new Enemy(mSceneMgr, i, 0 + pow(-1.0, i) * (50 * row1), -200,PlayerManager::PlayerControl.enemy_size()));
                 if(i % 2 == 0)
@@ -587,7 +587,7 @@ void DodgeBall::buttonHit(OgreBites::Button* button){
     }
     else if(button->getName().compare("NumberBallsContinue") == 0){
         GUIManager::GUIControl.end_NumberOfBalls();
-        for(int i = 1; i < mNumberOfBalls; i++)
+        for(int i = 2; i < mNumberOfBalls; i++)
             BallManager::BallControl.addBall(new Ball(mSceneMgr, &Simulator::Simulation, "Ball" + Ogre::StringConverter::toString(i), -80 + (50 * i),BallManager::BallControl.size()));
         SoundManager::SoundControl.playAudio();
     

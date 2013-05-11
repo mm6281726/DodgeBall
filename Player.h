@@ -27,7 +27,10 @@ class Player{
 		Ogre::Entity* entPlayer;
 		Ogre::SceneNode* nodePlayer;
 		Ogre::RaySceneQuery* mRayScnQuery;
-
+		bool wKey;
+		bool aKey;
+		bool sKey;
+		bool dKey;
 		Ball* ball;
 		bool mHasBall;
 		bool mThrowing;

@@ -153,6 +153,8 @@ void Enemy::getAwayBall(Ball* ball, const Ogre::FrameEvent& evt){
 	    btVector3 newdir = ballvel.cross(btVector3(0,1,0));
 	    newdir.normalize();
 		newdir *= Ogre::Math::RangeRandom(1,2)==1?1:-1;
+		enemyX=newdir.x();
+		enemyZ=newdir.z();
 	    nodeEnemy->translate(newdir.x()*10,0,newdir.z()*10, Ogre::Node::TS_WORLD);
     }
     if(nodeEnemy->getPosition().z > 0)

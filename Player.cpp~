@@ -61,24 +61,48 @@ void Player::move(const Ogre::FrameEvent& evt){
 
 void Player::startMove(Ogre::String key){
     if(key.compare("w") == 0)
+	{
+		wKey=true;
         transVector.z = -mMove;
-    if(key.compare("a") == 0)
-        transVector.x = -mMove;
-    if(key.compare("s") == 0)
+	}	
+	if(key.compare("s") == 0)
+	{
+		sKey=true;
         transVector.z = mMove;
+	}    
+	if(key.compare("a") == 0)
+    {
+		aKey=true;
+	    transVector.x = -mMove;
+	}
     if(key.compare("d") == 0)
+	{
+		dKey=true;
         transVector.x = mMove;
+	}
 }
 
 void Player::stopMove(Ogre::String key){
     if(key.compare("w") == 0)
-        transVector.z = 0;
-    if(key.compare("a") == 0)
-        transVector.x = 0;
+	{
+		wKey=false;
+        transVector.z = sKey?-mMove:0;
+	}    
+	if(key.compare("a") == 0)
+	{
+		aKey=false;
+        transVector.x = dKey?mMove:0;
+	}
     if(key.compare("s") == 0)
-        transVector.z = 0;
+	{
+		sKey=false;
+        transVector.z = wKey?mMove:0;
+	}
     if(key.compare("d") == 0)
-        transVector.x = 0;
+	{
+		dKey=false;
+        transVector.x = aKey?-mMove:0;
+	}
 }
 
 void Player::lookAround(const OIS::MouseEvent &arg){
@@ -139,7 +163,7 @@ void Player::beginThrow(){
 }
 
 void Player::chargeThrow(){
-    mPower+=0.025;
+    mPower+=0.04;
     if(mPower > 4)
         mPower = 4;
     GUIManager::GUIControl.setPowerBarProgress(mPower/4);

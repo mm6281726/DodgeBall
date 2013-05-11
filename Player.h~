@@ -45,6 +45,7 @@ class Player{
 		void lookAround(const OIS::MouseEvent &arg);
 		bool hasBall();
 		void pickupBall(Ball* ball);
+		void pickupBallPhysics(Ball* baller);
 		void beginThrow();
 		void chargeThrow();
 		void endThrow();

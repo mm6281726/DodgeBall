@@ -84,6 +84,7 @@ void Enemy::endThrow(Ogre::Vector3 playerloc){
     ball->addToBullet(dir, 3);
     ball->thrownBy(true);
     ball->gotThrown();
+    ball->setDanger(-1);
     ball = NULL;
     mPower = 1;
     mThrowing = false;
@@ -97,6 +98,7 @@ void Enemy::extThrow(btVector3 dir, Ogre::Real pow){
     ball->addToBullet(dir, pow);
     ball->thrownBy(true); 
     ball->gotThrown();
+    ball->setDanger(-1);
     ball = NULL;
     mPower = 1;
     mThrowing = false;
@@ -109,12 +111,6 @@ bool Enemy::isThrowing(){
 bool Enemy::getNearBall(Ball* ball, const Ogre::FrameEvent& evt){
 	Ogre::Vector3 originalPos=nodeEnemy->getPosition();
     if (ball->getPosition().z < -1){
-/*	std::cout<<"\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n";
-	std::cout<<"Enemy: ";
-	std::cout<<nodeEnemy->getName();
-	std::cout<<"\n is targetting Ball: ";
-	std::cout<<ball->getPosition().z;
-	std::cout<<"\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n";*/
 	    Ogre::Vector3 relPos = ball->getPosition() - nodeEnemy->getPosition();
         relPos=Ogre::Vector3(relPos.x,0,relPos.z);
 	    btVector3 speed=ball->getBody()->getLinearVelocity();
@@ -139,11 +135,6 @@ bool Enemy::getNearBall(Ball* ball, const Ogre::FrameEvent& evt){
 	{
 		return false;
 	}
-	/*if(nodeEnemy->getPosition().positionEquals(PlayerManager::PlayerControl.closestEnemyToEnemy(this,nodeEnemy->getPosition())->getPosition(),20))
-	{
-		nodeEnemy->setPosition(originalPos);
-		return false;
-	}*/
 	Simulator::Simulation.getWorld()->removeRigidBody(body);
 	btTransform t;
 	body->getMotionState()->getWorldTransform(t);
@@ -155,16 +146,15 @@ bool Enemy::getNearBall(Ball* ball, const Ogre::FrameEvent& evt){
 }
 
 void Enemy::getAwayBall(Ball* ball, const Ogre::FrameEvent& evt){
-//    std::cout<<"\nOHSHIT OHSHIT OHSHIT\n";
-//    std::cout<<ball->isDangerous();
-//    std::cout<<" <- danger\n";
+
     if (ball->getPosition().z < -10){
 	    btVector3 ballvel=ball->getBody()->getLinearVelocity();
-	    //ballvel/=60;
 	    ballvel.setY(0);
 	    btVector3 newdir = ballvel.cross(btVector3(0,1,0));
 	    newdir.normalize();
 		newdir *= Ogre::Math::RangeRandom(1,2)==1?1:-1;
+		enemyX=newdir.x();
+		enemyZ=newdir.z();
 	    nodeEnemy->translate(newdir.x()*10,0,newdir.z()*10, Ogre::Node::TS_WORLD);
     }
     if(nodeEnemy->getPosition().z > 0)
@@ -272,10 +262,6 @@ void Enemy::setInPlay(bool b)
 	inPlay=b;
 }
 
-/*char* Enemy::getName()
-{
-	return c_str(nodeEnemy->getName());
-}*/
 
 void Enemy::respawn()
 {
