@@ -24,6 +24,7 @@ int mNumberOfWins = 3;
 bool DodgeBall::go(void)
 {
     mShutDown=false;
+    mRoundOver = false;
     playerwins=0;
     enemywins = 0;
 
@@ -270,7 +271,7 @@ bool DodgeBall::go(void)
     SoundManager::SoundControl.setup(ballBounceWall, ballPlayerHit, ballPlayerThrow);
     music = Mix_LoadMUS("sound/risveglio.wav");
     Mix_PlayMusic(music, -1);
-    Mix_Volume(-1,MIX_MAX_VOLUME/6);
+    //Mix_Volume(-1,MIX_MAX_VOLUME/6);
     SoundManager::SoundControl.pauseAudio();
     
     //---------------------------------------------------------------------------------
@@ -296,7 +297,7 @@ bool DodgeBall::frameRenderingQueued(const Ogre::FrameEvent& evt)
     mKeyboard->capture();
     mMouse->capture();
 
-    if(mPause)
+    if(mPause || mRoundOver)
         return true;
 
     if(playerwins>=mNumberOfWins)
@@ -317,14 +318,14 @@ bool DodgeBall::frameRenderingQueued(const Ogre::FrameEvent& evt)
     {
 		GUIManager::GUIControl.nextRoundScreen("Player Team Wins");
 		playerwins++;
-		mPause=true;
+		mRoundOver=true;
 		//Player team wins!
     }
     if(PlayerManager::PlayerControl.playersLeft()==0 && !mGameOver)
     {
 		GUIManager::GUIControl.nextRoundScreen("Enemy Team Wins");
 		enemywins++;
-		mPause=true;
+		mRoundOver=true;
 		//Enemy team wins!
     }
 
@@ -452,7 +453,7 @@ bool DodgeBall::keyPressed( const OIS::KeyEvent &arg )
     {
         mWindow->writeContentsToTimestampedFile("screenshot", ".jpg");
     }
-    else if (arg.key == OIS::KC_ESCAPE)
+    else if (arg.key == OIS::KC_ESCAPE && !mRoundOver)
     {
         GUIManager::GUIControl.pause();
         mPause = mPause ? false : true; 
@@ -499,7 +500,7 @@ bool DodgeBall::keyReleased( const OIS::KeyEvent &arg )
 bool DodgeBall::mouseMoved( const OIS::MouseEvent &arg )
 {
     if (mTrayMgr->injectMouseMove(arg)) return true;
-    if(!GUIManager::GUIControl.isPaused() && !mPause){
+    if(!GUIManager::GUIControl.isPaused() && !mPause && !mRoundOver){
         for(int i = 0; i < PlayerManager::PlayerControl.player_size(); i++)
             PlayerManager::PlayerControl.getPlayer(i)->lookAround(arg);
     }
@@ -606,11 +607,13 @@ void DodgeBall::buttonHit(OgreBites::Button* button){
         GUIManager::GUIControl.end_nextRoundScreen();
 		loadNextRound();
 		mPause=false;
+        mRoundOver = false;
     }else if(button->getName().compare("Replay") == 0){
         enemywins = 0;
         playerwins = 0;
         mGameOver = false;
         mPause = false;
+        mRoundOver = false;
         GUIManager::GUIControl.replay();
     }
     /*else if(button->getName().compare("MainMenu") == 0){

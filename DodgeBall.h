@@ -67,6 +67,7 @@ protected:
     int playerwins;		
     int enemywins; 
     bool mGameOver;
+    bool mRoundOver;
  
     void loadNextRound();
 
