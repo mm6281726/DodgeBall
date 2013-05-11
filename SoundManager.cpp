@@ -24,11 +24,11 @@ void SoundManager::setup(int x, int y, int z){
 }
 
 void SoundManager::playAudio(){
-	SDL_PauseAudio(false);
+	Mix_Resume(-1);
 }
 
 void SoundManager::pauseAudio(){
-	SDL_PauseAudio(true);
+	Mix_Pause(-1);
 }
 
 void SoundManager::playClip(int clipID, int loop){

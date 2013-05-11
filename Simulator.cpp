@@ -32,10 +32,10 @@ bool callbackFunc(btManifoldPoint& cp, const btCollisionObject* obj1, int id1, i
 	//	std::cout << "\nBall hit Player\n";
 		Ball* ball = a->type == BALL?BallManager::BallControl.getBall(a->index):BallManager::BallControl.getBall(b->index);
 		Player* player=a->type == PLAYER?PlayerManager::PlayerControl.getPlayer(a->index):PlayerManager::PlayerControl.getPlayer(b->index);
-		if(ball->isDangerous())
+		if(ball->isDangerous() < 0)
 		{
 			ball->getBody()->setLinearVelocity(btVector3(0,-1,0));
-			ball->setDanger(false);
+			ball->setDanger(0);
 			player->setInPlay(false);
 			SoundManager::SoundControl.playClip(SoundManager::SoundControl.ballPlayerHit, 0);
 		}
@@ -49,10 +49,10 @@ bool callbackFunc(btManifoldPoint& cp, const btCollisionObject* obj1, int id1, i
 	//	std::cout << "\nBall hit Player\n";
 		Ball* ball = a->type == BALL?BallManager::BallControl.getBall(a->index):BallManager::BallControl.getBall(b->index);
 		Enemy* enemy=a->type == ENEMY?PlayerManager::PlayerControl.getEnemy(a->index):PlayerManager::PlayerControl.getEnemy(b->index);
-		if(ball->isDangerous())
+		if(ball->isDangerous() > 0)
 		{
 			ball->getBody()->setLinearVelocity(btVector3(0,-1,0));
-			ball->setDanger(false);
+			ball->setDanger(0);
 			SoundManager::SoundControl.playClip(SoundManager::SoundControl.ballPlayerHit, 0);
 			enemy->setInPlay(false);
 		}
@@ -61,14 +61,17 @@ bool callbackFunc(btManifoldPoint& cp, const btCollisionObject* obj1, int id1, i
 			enemy->pickupBallPhysics(ball);
 		}
 		
-	} else if( (a->type == BALL && b->type == WALL) || (a->type == WALL && b->type == BALL) ){
+	} else if( (a->type == BALL && b->type == WALL) || (a->type == WALL && b->type == BALL) )
+	{
 	//	std::cout << "\nBall hit Wall\n";
 		SoundManager::SoundControl.playClip(SoundManager::SoundControl.ballBounceWall, 0);
 		Ball* ball = a->type == BALL?BallManager::BallControl.getBall(a->index):BallManager::BallControl.getBall(b->index);
-		if(ball->isDangerous())
-			ball->setDanger(false);
-	}else if (a->type == BALL && b->type == BALL){
-		SoundManager::SoundControl.playClip(SoundManager::SoundControl.ballBounceWall, 0);
+		if(ball->isDangerous() != 0)
+			ball->setDanger(0);
+	}
+	else if (a->type == BALL && b->type == BALL)
+	{
+		SoundManager::SoundControl.playClip(SoundManager::SoundControl.ballPlayerHit, 0);
 	}
 	return false;
 } 
@@ -83,7 +86,7 @@ btRigidBody* Simulator::addPlane(float x,float y,float z,btVector3 normal)
 	btMotionState* motion= new btDefaultMotionState(t);
 	btRigidBody::btRigidBodyConstructionInfo info(0.0,motion,plane);
 	btRigidBody* body=new btRigidBody(info);
-  body->setRestitution(1.0);
+  	body->setRestitution(0.8);
 	world->addRigidBody(body);//, COL_WALL, COL_BALL);
 	bodies.push_back(new bulletObject(body, WALL,-1));
 	body->setUserPointer(bodies[bodies.size()-1]);
@@ -103,7 +106,7 @@ btRigidBody* Simulator::addSphere(float rad,float x,float y,float z,float mass, 
 	btMotionState* motion=new btDefaultMotionState(t);	//set the position (and motion)
 	btRigidBody::btRigidBodyConstructionInfo info(mass,motion,sphere,inertia);	//create the constructioninfo, you can create multiple bodies with the same info
 	btRigidBody* body=new btRigidBody(info);	//let's create the body itself
-  body->setRestitution(0.9);
+  	body->setRestitution(0.5);
 	body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);	
 	body->setLinearVelocity(btVector3(0,0,0));
 	world->addRigidBody(body);//, COL_BALL, COL_WALL|COL_PLAYER|COL_ENEMY|COL_BALL);	//and let the world know about it

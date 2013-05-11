@@ -23,7 +23,7 @@ Ball::Ball(Ogre::SceneManager* sceneMgr, Simulator* s, Ogre::String name, int x,
 
 	simulator = s;
 	physicsBall = simulator->addSphere(5,0,0,0,5,ind);
-	dangerous=false;
+	dangerous=0;
 }
 
 void Ball::gotPickedUp(){
@@ -76,7 +76,7 @@ void Ball::addToBullet(btVector3 dir, Ogre::Real power)
 	velInfo[1]=(dir.getY()>=0);
 	velInfo[2]=(dir.getZ()>=0);
 	mBounce=0;
-	dangerous=true;
+	//dangerous=-1;
 }
 
 void Ball::removeFromBullet(void)
@@ -87,7 +87,7 @@ void Ball::removeFromBullet(void)
 	velInfo[1]=true;
 	velInfo[2]=true;
 	mBounce=0;
-	dangerous=false;
+	dangerous=0;
 }
 
 int Ball::numBounces(void)
@@ -99,7 +99,7 @@ bool Ball::bounceCheck(void)
 {
 	bool bounced=false;
 	btVector3 vel = physicsBall->getLinearVelocity();
-	if(dangerous && ((vel.getX()>=0) != velInfo[0]) || ((vel.getZ()>=0) != velInfo[2]))
+	if(dangerous == -1 && ((vel.getX()>=0) != velInfo[0]) || ((vel.getZ()>=0) != velInfo[2]))
 	{
 		velInfo[0]=(vel.getX()>=0);
 		velInfo[2]=(vel.getZ()>=0);
@@ -119,16 +119,16 @@ bool Ball::bounceCheck(void)
 	return bounced;
 }
 
-void Ball::setDanger(bool dan)
+void Ball::setDanger(int dan)
 {
 	dangerous=dan;
-	if(dangerous)
-		entBall->setMaterialName("Examples/Chrome");
+	if(dangerous < 0)
+		entBall->setMaterialName("Examples/Fish");
 	else
 		entBall->setMaterialName("Examples/SphereMappedRustySteel");
 }
 
-bool Ball::isDangerous(void)
+int Ball::isDangerous(void)
 {
 	return dangerous;
 }
@@ -148,7 +148,8 @@ bool Ball::towardsPos(Ogre::Vector3 pos)
 void Ball::respawn()
 {
 	nodeBall->setPosition(spawnPoint);
-	removeFromBullet();
+	if(!mIsPickedUp)
+		removeFromBullet();
 	btTransform t;
 	physicsBall->getMotionState()->getWorldTransform(t);
 	btVector3 pos = btVector3(nodeBall->getPosition().x,nodeBall->getPosition().y,nodeBall->getPosition().z);
@@ -156,6 +157,7 @@ void Ball::respawn()
 	physicsBall->proceedToTransform(t);
 	physicsBall->setLinearVelocity(btVector3(0,0,0));
 	simulator->getWorld()->addRigidBody(physicsBall);
+	setDanger(0);
 }
 void Ball::thrownBy(bool thrownByEnemy){
 	mThrownByEnemy = thrownByEnemy;
@@ -164,34 +166,3 @@ void Ball::thrownBy(bool thrownByEnemy){
 bool Ball::thrownBy(){
 	return mThrownByEnemy;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

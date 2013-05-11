@@ -33,6 +33,8 @@ http://www.ogre3d.org/tikiwiki/
 #include <SdkTrays.h>
 #include <SdkCameraMan.h>
 
+#include <math.h>
+
 #include <GUIManager.h>
 #include <SoundManager.h>
 #include <NetworkManager.h>

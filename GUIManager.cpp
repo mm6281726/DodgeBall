@@ -26,7 +26,7 @@ GUIManager GUIManager::GUIControl;
 
     void GUIManager::begin_MainScreen(){
         main = true;
-        mTrayMgr->createLabel(OgreBites::TL_CENTER, "MainScreen", "Main Menu");
+        mTrayMgr->createLabel(OgreBites::TL_CENTER, "MainScreen", "NINJA DODGEBALL");
         mTrayMgr->createButton(OgreBites::TL_CENTER, "Singleplayer", "Singleplayer", 250);
         mTrayMgr->createButton(OgreBites::TL_CENTER, "Multiplayer", "Multiplayer", 250);
         mTrayMgr->createButton(OgreBites::TL_CENTER, "Exit", "Exit", 250);
@@ -48,7 +48,7 @@ GUIManager GUIManager::GUIControl;
 
     void GUIManager::begin_NumberOfEnemies(){
         mTrayMgr->createLabel(OgreBites::TL_CENTER, "NumberOfEnemies", "Number of Enemies");
-        mTrayMgr->createLabel(OgreBites::TL_CENTER, "NOEnemies", "3");
+        mTrayMgr->createLabel(OgreBites::TL_CENTER, "NOEnemies", "7");
         mTrayMgr->createButton(OgreBites::TL_CENTER, "+Enemies", "+", 250);
         mTrayMgr->createButton(OgreBites::TL_CENTER, "-Enemies", "-", 250);
         mTrayMgr->createButton(OgreBites::TL_CENTER, "NumberEnemiesContinue", "Continue", 250);
@@ -75,7 +75,7 @@ GUIManager GUIManager::GUIControl;
 
     void GUIManager::begin_NumberOfBalls(){
         mTrayMgr->createLabel(OgreBites::TL_CENTER, "NumberOfBalls", "Number of Balls");
-        mTrayMgr->createLabel(OgreBites::TL_CENTER, "NOBalls", "5");
+        mTrayMgr->createLabel(OgreBites::TL_CENTER, "NOBalls", "7");
         mTrayMgr->createButton(OgreBites::TL_CENTER, "+Balls", "+", 250);
         mTrayMgr->createButton(OgreBites::TL_CENTER, "-Balls", "-", 250);
         mTrayMgr->createButton(OgreBites::TL_CENTER, "NumberBallsContinue", "Continue", 250);
@@ -134,6 +134,7 @@ GUIManager GUIManager::GUIControl;
 
     void GUIManager::endGame(char* winner){
         mTrayMgr->createLabel(OgreBites::TL_CENTER, "GameOver",winner);
+        mTrayMgr->createButton(OgreBites::TL_CENTER, "Replay", "Replay", 250);
         mTrayMgr->createButton(OgreBites::TL_CENTER, "Exit", "Quit", 250);
         mTrayMgr->showCursor();
     }
@@ -198,4 +199,11 @@ GUIManager GUIManager::GUIControl;
 
     void GUIManager::setPowerBarProgress(Ogre::Real power){
         pb->setProgress(power);
+    }
+
+    void GUIManager::replay(){
+        mTrayMgr->destroyWidget("GameOver");
+        mTrayMgr->destroyWidget("Replay");
+        mTrayMgr->destroyWidget("Exit");
+        mTrayMgr->hideCursor();
     }

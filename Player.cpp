@@ -154,6 +154,7 @@ void Player::endThrow(){
     ball->addToBullet(dir, mPower);
     ball->thrownBy(false); 
     ball->gotThrown();
+    ball->setDanger(1);
     ball = NULL;
     mPower = 1;
     mThrowing = false;
@@ -170,6 +171,7 @@ void Player::extThrow(btVector3 dir, Ogre::Real pow){
     ball->addToBullet(dir, pow);
     ball->thrownBy(false); 
     ball->gotThrown();
+    ball->setDanger(1);
     ball = NULL;
     mPower = 1;
     mThrowing = false;
