@@ -64,8 +64,6 @@ protected:
     bool mCursorWasVisible; // was cursor visible before dialog appeared
     bool mShutDown;
     bool mPause;
-    int currRound;
-    int maxRounds;
     int playerwins;		
     int enemywins; 
     bool mGameOver;
