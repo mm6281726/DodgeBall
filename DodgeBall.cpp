@@ -547,7 +547,7 @@ void DodgeBall::buttonHit(OgreBites::Button* button){
         GUIManager::GUIControl.updateNumberOfEnemies(mNumberOfEnemies);
     }
     else if(button->getName().compare("-Enemies") == 0){
-        if(mNumberOfEnemies > 0)
+        if(mNumberOfEnemies > 1)
             mNumberOfEnemies--;
         GUIManager::GUIControl.updateNumberOfEnemies(mNumberOfEnemies);
     }
@@ -574,7 +574,7 @@ void DodgeBall::buttonHit(OgreBites::Button* button){
         GUIManager::GUIControl.updateNumberOfBalls(mNumberOfBalls);
     }
     else if(button->getName().compare("-Balls") == 0){
-        if(mNumberOfBalls > 0)
+        if(mNumberOfBalls > 1)
             mNumberOfBalls--;
         GUIManager::GUIControl.updateNumberOfBalls(mNumberOfBalls);
     }
@@ -589,6 +589,12 @@ void DodgeBall::buttonHit(OgreBites::Button* button){
         GUIManager::GUIControl.end_nextRoundScreen();
 		loadNextRound();
 		mPause=false;
+    }else if(button->getName().compare("Replay") == 0){
+        enemywins = 0;
+        playerwins = 0;
+        mGameOver = false;
+        mPause = false;
+        GUIManager::GUIControl.replay();
     }
     /*else if(button->getName().compare("MainMenu") == 0){
         GUIManager::GUIControl.pause();

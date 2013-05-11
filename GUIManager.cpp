@@ -134,6 +134,7 @@ GUIManager GUIManager::GUIControl;
 
     void GUIManager::endGame(char* winner){
         mTrayMgr->createLabel(OgreBites::TL_CENTER, "GameOver",winner);
+        mTrayMgr->createButton(OgreBites::TL_CENTER, "Replay", "Replay", 250);
         mTrayMgr->createButton(OgreBites::TL_CENTER, "Exit", "Quit", 250);
         mTrayMgr->showCursor();
     }
@@ -198,4 +199,11 @@ GUIManager GUIManager::GUIControl;
 
     void GUIManager::setPowerBarProgress(Ogre::Real power){
         pb->setProgress(power);
+    }
+
+    void GUIManager::replay(){
+        mTrayMgr->destroyWidget("GameOver");
+        mTrayMgr->destroyWidget("Replay");
+        mTrayMgr->destroyWidget("Exit");
+        mTrayMgr->hideCursor();
     }

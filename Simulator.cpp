@@ -86,7 +86,7 @@ btRigidBody* Simulator::addPlane(float x,float y,float z,btVector3 normal)
 	btMotionState* motion= new btDefaultMotionState(t);
 	btRigidBody::btRigidBodyConstructionInfo info(0.0,motion,plane);
 	btRigidBody* body=new btRigidBody(info);
-  body->setRestitution(1.0);
+  	body->setRestitution(0.8);
 	world->addRigidBody(body);//, COL_WALL, COL_BALL);
 	bodies.push_back(new bulletObject(body, WALL,-1));
 	body->setUserPointer(bodies[bodies.size()-1]);
@@ -106,7 +106,7 @@ btRigidBody* Simulator::addSphere(float rad,float x,float y,float z,float mass, 
 	btMotionState* motion=new btDefaultMotionState(t);	//set the position (and motion)
 	btRigidBody::btRigidBodyConstructionInfo info(mass,motion,sphere,inertia);	//create the constructioninfo, you can create multiple bodies with the same info
 	btRigidBody* body=new btRigidBody(info);	//let's create the body itself
-  body->setRestitution(0.9);
+  	body->setRestitution(0.5);
 	body->setCollisionFlags(body->getCollisionFlags() | btCollisionObject::CF_CUSTOM_MATERIAL_CALLBACK);	
 	body->setLinearVelocity(btVector3(0,0,0));
 	world->addRigidBody(body);//, COL_BALL, COL_WALL|COL_PLAYER|COL_ENEMY|COL_BALL);	//and let the world know about it

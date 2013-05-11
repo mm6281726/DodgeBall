@@ -40,6 +40,8 @@ class GUIManager{
         void endGame(char* winner);
         void end_nextRoundScreen();
         void setPowerBarProgress(Ogre::Real power);
+        void replay();
+
         static GUIManager GUIControl;
 };
 

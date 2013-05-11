@@ -148,7 +148,8 @@ bool Ball::towardsPos(Ogre::Vector3 pos)
 void Ball::respawn()
 {
 	nodeBall->setPosition(spawnPoint);
-	removeFromBullet();
+	if(!mIsPickedUp)
+		removeFromBullet();
 	btTransform t;
 	physicsBall->getMotionState()->getWorldTransform(t);
 	btVector3 pos = btVector3(nodeBall->getPosition().x,nodeBall->getPosition().y,nodeBall->getPosition().z);
@@ -156,6 +157,7 @@ void Ball::respawn()
 	physicsBall->proceedToTransform(t);
 	physicsBall->setLinearVelocity(btVector3(0,0,0));
 	simulator->getWorld()->addRigidBody(physicsBall);
+	setDanger(0);
 }
 void Ball::thrownBy(bool thrownByEnemy){
 	mThrownByEnemy = thrownByEnemy;
@@ -164,34 +166,3 @@ void Ball::thrownBy(bool thrownByEnemy){
 bool Ball::thrownBy(){
 	return mThrownByEnemy;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
