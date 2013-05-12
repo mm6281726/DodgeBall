@@ -73,7 +73,7 @@ GUIManager GUIManager::GUIControl;
 
     void GUIManager::begin_NumberOfBalls(){
         mTrayMgr->createLabel(OgreBites::TL_CENTER, "NumberOfBalls", "Number of Balls");
-        mTrayMgr->createLabel(OgreBites::TL_CENTER, "NOBalls", "7");
+        mTrayMgr->createLabel(OgreBites::TL_CENTER, "NOBalls", "10");
         mTrayMgr->createButton(OgreBites::TL_CENTER, "+Balls", "+", 250);
         mTrayMgr->createButton(OgreBites::TL_CENTER, "-Balls", "-", 250);
         mTrayMgr->createButton(OgreBites::TL_CENTER, "NumberBallsContinue", "Continue", 250);
@@ -145,6 +145,7 @@ GUIManager GUIManager::GUIControl;
     }
 
     void GUIManager::pause(){
+        if(!main){
         if(!mPause){
             mTrayMgr->showCursor();
             mTrayMgr->createLabel(OgreBites::TL_CENTER, "PauseScreen", "Pause");
@@ -160,6 +161,7 @@ GUIManager GUIManager::GUIControl;
             mTrayMgr->destroyWidget("PauseExit");
             mPause = false;
         }
+    }
     }
 
     bool GUIManager::isPaused(){
